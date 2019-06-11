@@ -1,74 +1,71 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title></title>
     <script src="/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 </head>
+
 <body>
-<b>Welcome ROOM : <%= room%></b><p>
-
-    Name <input type="text" id="nickname" /> <input type="button" id="changename" value="Change name"/><br>
-
-    To
-    <select id="to">
-
-        <option value="ALL">ALL</option>
-
-    </select>
-
-    Message  <input type="text" id="msgbox"/>
-
-    <br>
-
-    <span id="msgs"></span>
-
- 
+    <b>Welcome ROOM : <%= room%></b>
+    <p>
+        Name <input type="text" id="nickname" /> <input type="button" id="changename" value="Change name" /><br>
+        To
+        <select id="to">
+            <option value="ALL">ALL</option>
+        </select>
+        Message <input type="text" id="msgbox" />
+        <br>
+        <span id="msgs"></span>
+    </p>
 
     <script type="text/javascript">
+        // 로직 전부다 vanilla JS로 변경
+        // 완성 후 자바스크립트 따로 빼서 압축시켜버리기
+        var serverURL = 'http://localhost:4000';
+        var socket = io.connect(serverURL, { transports: ['websocket'] });
 
-        var serverURL = 'http://localhost:3000';
+        socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: false });
 
-        var socket = io.connect(serverURL);
-
-        socket.emit('joinroom',{room:'<%=room%>'});
-        
-        $('#changename').click(function(){
-            socket.emit('changename',{nickname:$('#nickname').val()});
+        $('#changename').click(function () {
+            socket.emit('changename', { nickname: $('#nickname').val() });
         });
 
-        $("#msgbox").keyup(function(event) {
+        $("#msgbox").keypress(function (event) {
             if (event.which == 13) {
-                socket.emit('send_msg',{to:$('#to').val(),msg:$('#msgbox').val()});
+                socket.emit('send_msg', { to: $('#to').val(), msg: $('#msgbox').val() });
                 $('#msgbox').val('');
             }
         });
 
-        socket.on('new',function(data){
+        socket.on('new', function (data) {
             console.log(data.nickname);
             $('#nickname').val(data.nickname);
         });
 
- 
-
         // 새로운 사용자가 들어오거나, 사용자가 이름을 바꿨을때 "To" 리스트를 변경함
-        socket.on('userlist',function(data){
+        socket.on('userlist', function (data) {
             var users = data.users;
             console.log(users);
             console.log(data.users.length);
             $('#to').empty().append('<option value="ALL">ALL</option>');
-            for(var i=0;i<data.users.length;i++){
-                $('#to').append('<option value="'+users[i]+'">'+users[i]+"</option>");
+            for (var i = 0; i < data.users.length; i++) {
+                $('#to').append('<option value="' + users[i] + '">' + users[i] + "</option>");
             }
         });
- 
-        socket.on('broadcast_msg',function(data){
+
+        socket.on('broadcast_msg', function (data) {
             console.log(data.msg);
-            $('#msgs').append(data.msg+'<BR>');
+            $('#msgs').append(data.msg + '<BR>');
         });
 
+        // 접속 끊겼을 때
+        socket.on('reconnect', function (data) {
+            console.log('reconnect');
+            socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: true });
+        });
     </script>
-
 </body>
-
 </html>
