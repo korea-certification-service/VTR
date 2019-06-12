@@ -33,6 +33,9 @@ app.use(
 );
 
 // router
+router.get("/temp", (req, res, next) => {
+  res.render("chat", {});
+});
 router.get("/seller", (req, res, next) => {
     let session = req.session;
     session.user = {
@@ -154,14 +157,14 @@ io.sockets.on("connection", function(socket) {
             let data = { msg: nickname + " 님이 나가셨습니다." };
             io.sockets.to(room).emit("broadcast_msg", data);
             io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
-			break;
-		case "client namespace disconnect": // [Client Side] Got disconnect packet from client
-			console.log("@@@@@@@ client namespace disconnect @@@@@@@");
-			break;			
-		case "transport error": // [Server  Side] Transport error
+            break;
+        case "client namespace disconnect": // [Client Side] Got disconnect packet from client
+            console.log("@@@@@@@ client namespace disconnect @@@@@@@");
+            break;			
+        case "transport error": // [Server  Side] Transport error
             console.log("@@@@@@@ transport error @@@@@@@");
             break;			
-		case "server namespace disconnect": // [Server  Side] Server performs a socket.disconnect()
+        case "server namespace disconnect": // [Server  Side] Server performs a socket.disconnect()
             console.log("@@@@@@@ server namespace disconnect @@@@@@@");
             break;			
         default:

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title></title>
     <script src="/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 </head>
-
 <body>
     <b>Welcome ROOM : <%= room%></b>
     <p>
@@ -25,7 +23,7 @@
         // 로직 전부다 vanilla JS로 변경
         // 완성 후 자바스크립트 따로 빼서 압축시켜버리기
         var serverURL = 'http://localhost:4000';
-        var socket = io.connect(serverURL, { transports: ['websocket'] });
+        var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 
         socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: false });
 
