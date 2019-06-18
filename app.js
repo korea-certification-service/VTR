@@ -18,7 +18,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.engine(".html", require("ejs").__express);
 app.set("view engine", "html");
-
+app.set("port", 4000);
+app.use("/img",express.static(__dirname+'/public/img'));
 //app.use("/js",express.static(__dirname+'/public/js'));
 
 //app.use(express.logger('dev'));
@@ -75,8 +76,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 });
 
-var httpServer = http.createServer(app).listen(4000, function(req, res) {
-  console.log("Socket IO server has been started");
+var httpServer = http.createServer(app).listen(app.get("port"), function(req, res) {
+  console.log("Socket IO server has been started. port:" + app.get("port"));
 });
 
 var io = require("socket.io")(httpServer, {
