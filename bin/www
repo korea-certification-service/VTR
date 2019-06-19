@@ -22,6 +22,11 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
+ * io와 server 연결용
+ */
+app.io.attach(server);
+
+/**
  * Listen on provided port, on all network interfaces.
  */
 
@@ -88,5 +93,3 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-
-module.exports = server;

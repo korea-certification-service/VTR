@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>Document</title>
 <link href="/css/vtr.css" rel="stylesheet">
-<script src="/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/jquery.min.js"></script>
 </head>
 <body>
@@ -15,6 +15,7 @@
             <h1>세라핌 클레압 팝니다</h1>
         </header>
         <div class="content" id="content">
+                Name <input type="text" id="nickname" /> 
             <!--
             <em class="other_id">other</em>
             <div class="bubble other_speech"><p>안녕하세요 &#128513;</p></div>
@@ -72,7 +73,34 @@
     </div>
 <script>
 var serverURL = 'http://localhost:4000';
-var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
+//var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
+var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
+
+// 방 입장
+socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: false });
+
+$("#iptChat").keypress(function (event) {
+    if (event.which == 13) {
+        socket.emit('send_msg', { to: "ALL", msg: $('#iptChat').val() });
+        $('#iptChat').val('');
+    }
+});
+
+socket.on('new', function (data) {
+    console.log(data.nickname);
+    $('#nickname').val(data.nickname);
+});
+
+socket.on('broadcast_msg', function (data) {
+    console.log(data.msg);
+    $('#content').append(data.msg + '<BR>');
+});
+
+// 접속 끊겼을 때
+socket.on('reconnect', function (data) {
+    console.log('reconnect');
+    socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: true });
+});
 
 var chatUI = {
     isDim: false,
