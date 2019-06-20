@@ -66,7 +66,7 @@ function eventBinding(app){
                 break;
             case "transport close": // [Client Side] Client stopped sending data
                 console.log("@@@@@@@ transport close @@@@@@@");
-                let data = { msg: nickname + " 님이 나가셨습니다." };
+                let data = { who: "computer", msg: nickname + " 님이 나가셨습니다." };
                 app.io.sockets.to(room).emit("broadcast_msg", data);
                 app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
                 break;
@@ -109,10 +109,18 @@ function eventBinding(app){
           let nickname = socket.nickname;
     
           if (nickname != undefined) {
-            data.msg = nickname + " : " + data.msg;
+            //data.msg = nickname + " : " + data.msg;
     
-            console.log("in send msg room is " + room + data.msg);
+            console.dir(data);
+            console.dir(socket.nickname);
     
+            if(data.who === socket.nickname) { // 보낸 대상이 나
+              socket.broadcast.to(room).emit("my_msg", data);
+            } else { // 보낸 대상이 다른 누군가
+              socket.broadcast.to(room).emit("broadcast_msg", data);
+            }
+
+            /*
             if (data.to == "ALL")
               socket.broadcast.to(room).emit("broadcast_msg", data);
             // 자신을 제외하고 다른 클라이언트에게 보냄
@@ -122,8 +130,9 @@ function eventBinding(app){
               if (socket_id != undefined) {
                 data.msg = "귓속말 :" + data.msg;
                 app.io.sockets.to(socket_id).emit("broadcast_msg", data);
-              } // if
+              }
             }
+            */
     
             //자기자신 전송
             socket.emit("broadcast_msg", data);

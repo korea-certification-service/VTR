@@ -72,7 +72,8 @@
         </footer>
     </div>
 <script>
-var serverURL = 'http://localhost:4000';
+var serverURL = 'http://192.168.0.10:4000';
+
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 
@@ -81,7 +82,9 @@ socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: f
 
 $("#iptChat").keypress(function (event) {
     if (event.which == 13) {
-        socket.emit('send_msg', { to: "ALL", msg: $('#iptChat').val() });
+        //socket.emit('send_msg', { to: "ALL", msg: $('#iptChat').val() });
+        //"주체", "대상아이디", "메세지"
+        socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
         $('#iptChat').val('');
     }
 });
@@ -92,8 +95,30 @@ socket.on('new', function (data) {
 });
 
 socket.on('broadcast_msg', function (data) {
-    console.log(data.msg);
-    $('#content').append(data.msg + '<BR>');
+    console.log(data);
+    var txtChat = '';
+
+    txtChat += '<em class="my_id"><%=userId%></em>';
+    txtChat += '<div class="bubble my_speech"><p>' + data.msg + '</p></div>';
+
+    $('#content').append(txtChat);
+});
+
+socket.on('my_msg', function (data) {
+    console.log(data);
+    var txtChat = '';
+
+    txtChat += '<em class="other_id">other</em>';
+    txtChat += '<div class="bubble other_speech"><p>' + data.msg;
+    txtChat += '<span class="chat_time">오전 1:47</span></p></div>';
+    
+    if (data.who==="me") {
+
+    } else { // 챗봇, 시스템, 상대방 3가지 who 더 필요
+
+    }
+
+    $('#content').append(txtChat);
 });
 
 // 접속 끊겼을 때
