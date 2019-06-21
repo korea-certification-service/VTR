@@ -38,7 +38,7 @@ input:-webkit-autofill {-webkit-box-shadow: 0 0 0 30px #fff inset ; -webkit-text
 input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, 
 input:-webkit-autofill:active { transition: background-color 5000s ease-in-out 0s; }
 input::placeholder {font-size: 18px;}
-button{border: none; cursor: pointer;}
+button{border: none; cursor: pointer; background-color: #fff;}
 *{outline: none;}
 .cf:after{display: block; content: ''; clear: both;}
 .chat_wrap{position: relative; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
@@ -60,7 +60,7 @@ button{border: none; cursor: pointer;}
 .content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
 .content .other_speech .chat_time{right: -50px;}
 .content .my_speech .chat_time{left: -50px;}
-
+.content .p_system{text-align: center;}
 
 .footer{height: 70px; position: relative;}
 .footer .btn_sharp{font-size: 28px;}

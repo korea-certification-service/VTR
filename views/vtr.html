@@ -15,7 +15,7 @@
             <h1>세라핌 클레압 팝니다</h1>
         </header>
         <div class="content" id="content">
-                Name <input type="text" id="nickname" /> 
+                Name <input type="text" id="nickname" readonly/> 
             <!--
             <em class="other_id">other</em>
             <div class="bubble other_speech"><p>안녕하세요 &#128513;</p></div>
@@ -53,7 +53,7 @@
             <div class="msg_sec cf">
                 <button class="btn_at" id="btnAt"><img src="/img/ico_@.png" alt="@"></button>
                 <input type="text" class="ipt_chat" id="iptChat" placeholder="메세지를 입력하세요.">
-                <button class="btn_send">Send</button>
+                <button class="btn_send" id="btnSend">Send</button>
             </div>
             <!-- <div class="util_sec cf">
                 <button class="btn_sharp">#</button>
@@ -72,6 +72,8 @@
         </footer>
     </div>
 <script>
+// 로직 전부다 vanilla JS로 변경
+// 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
 var serverURL = 'http://192.168.0.10:4000';
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
@@ -80,45 +82,97 @@ var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안
 // 방 입장
 socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: false });
 
+function fnSendMsg() {
+    socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
+    $('#iptChat').val('');
+}
+
 $("#iptChat").keypress(function (event) {
     if (event.which == 13) {
-        //socket.emit('send_msg', { to: "ALL", msg: $('#iptChat').val() });
-        //"주체", "대상아이디", "메세지"
-        socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
-        $('#iptChat').val('');
+        fnSendMsg();
     }
 });
 
+$("#btnSend").on("click", function() {
+    fnSendMsg();
+});
+
 socket.on('new', function (data) {
-    console.log(data.nickname);
     $('#nickname').val(data.nickname);
+    $('#content').append('<p class="p_system">'+data.yymmdd+'</p>');   
 });
 
 socket.on('broadcast_msg', function (data) {
-    console.log(data);
+    //console.log('broadcast_msg', data);
     var txtChat = '';
+    var $my_speech = $('.my_speech');
+    var len = $my_speech.length;
+    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
 
-    txtChat += '<em class="my_id"><%=userId%></em>';
-    txtChat += '<div class="bubble my_speech"><p>' + data.msg + '</p></div>';
+    // 스크롤 자동 최하단 이동
+    var bubble = document.querySelectorAll(".bubble");
+    if(bubble.length > 1) {
+        bubble[bubble.length-1].scrollIntoView();
+    }
+
+    if(data.sameUser && $chatTimeLast.text() === data.msgtime){
+        $chatTimeLast.css('display', 'none');
+    } 
+
+    if(!data.sameUser){ // 같은 유저면 아이디 반복 표시 필요없음
+        txtChat += '<em class="my_id"><%=userId%></em>';
+    } else if($chatTimeLast.text() !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
+        txtChat += '<em class="my_id"><%=userId%></em>';
+    }
+
+    txtChat += '<div class="bubble my_speech"><p>' + data.msg;
+    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
 
     $('#content').append(txtChat);
 });
 
-socket.on('my_msg', function (data) {
-    console.log(data);
+socket.on('other_msg', function (data) {
+    console.log("my_msg", data);
     var txtChat = '';
+    var $my_speech = $('.my_speech');
+    var len = $my_speech.length;
+    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
 
-    txtChat += '<em class="other_id">other</em>';
+    // 스크롤 자동 최하단 이동
+    var bubble = document.querySelectorAll(".bubble");
+    if(bubble.length > 1) {
+        bubble[bubble.length-1].scrollIntoView();
+    }
+
+    if(data.sameUser && $chatTimeLast.text() === data.msgtime){
+        $chatTimeLast.css('display', 'none');
+    } 
+
+    if(!data.sameUser){ // 같은 유저면 아이디 반복 표시 필요없음
+        txtChat += '<em class="other_id">'+ data.who +'</em>';
+    } else if($chatTimeLast.text() !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
+        txtChat += '<em class="other_id">'+ data.who +'</em>';
+    }
+
     txtChat += '<div class="bubble other_speech"><p>' + data.msg;
-    txtChat += '<span class="chat_time">오전 1:47</span></p></div>';
-    
+    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+
+    $('#content').append(txtChat);
+
+
+    // chatbot, system
     if (data.who==="me") {
 
     } else { // 챗봇, 시스템, 상대방 3가지 who 더 필요
 
     }
 
-    $('#content').append(txtChat);
+});
+
+// 시스템 메세지 
+socket.on('system_msg', function (data) {
+    console.log('system_msg', data);
+    $('#content').append('<p class="p_system">'+data.msg+'</p>');
 });
 
 // 접속 끊겼을 때

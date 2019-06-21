@@ -2,17 +2,25 @@
 // app.io = require("socket.io")({
 //     'pingInterval': 2000,
 //     'pingTimeout': 5000
-//   });
+//   });  
 function eventBinding(app){
-    var count = 0;
-    var rooms = [];   
+    let count = 0;
+    let rooms = [];   
+    let arrData = [];
     // 웹소켓 연결
     app.io.sockets.on("connection", function(socket) {
-      console.log("******** sockets connection ********");
+      console.log("******** [EVENT] sockets connection ********");
     
       socket.on("joinroom", function(data) {
-        var d = new Date();
-        console.log("joinroom :" + data.room + d.getHours() + ":" + d.getMinutes());
+        let d = new Date();
+        let yy = d.getFullYear();
+        let mm = "" + (d.getMonth()+1);
+        let dd = "" + d.getDate();
+        if(mm.length == 1) mm = "0" + mm;
+        if(dd.length == 1) dd = "0" + dd;
+        let yymmdd = yy + "년 " + mm + "월 " + dd + "일";
+
+        console.log("[EVENT] joinroom :" + data.room + d.getHours() + ":" + d.getMinutes());
         socket.join(data.room);
     
         // depracated
@@ -26,7 +34,7 @@ function eventBinding(app){
         socket.nickname = nickname;
     
         // nickname 화면으로 내림
-        socket.emit("new", { nickname: nickname });
+        socket.emit("new", { nickname: nickname, yymmdd: yymmdd });
     
         // Create Room
         if (rooms[room] == undefined) {
@@ -42,7 +50,7 @@ function eventBinding(app){
         console.log("재접속 여부:", data.reconnect)
         if(!data.reconnect) {
             data = { msg: nickname + " 님이 입장하셨습니다." };
-            app.io.sockets.to(room).emit("broadcast_msg", data);
+            app.io.sockets.to(room).emit("system_msg", data);
         }
     
         // broadcast changed user list in the room
@@ -97,28 +105,53 @@ function eventBinding(app){
             console.log("##### try reconnect #####: "+nickname+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds());
             app.io.sockets.to(room).emit("reconnect", {});
         }
-      });
-    
+      }); 
+
       // 메세지 전송시
-      socket.on("send_msg", function(data) {
-        console.log("DH : send_msg");
-    
+      socket.on("send_msg", function(data) {  
         let room = socket.room;
-    
+        let d = new Date();
+        let time = d.getHours();
+        if(time > 12){
+          time = "오후 " + (time - 12);
+        } else {
+          time = "오전 " + time;
+        }
+        let msgtime = time+":"+d.getMinutes();
+        data.msgtime = msgtime;
+
         if (room != undefined && rooms[room] != undefined) {
           let nickname = socket.nickname;
-    
+
+          console.log("[EVENT] send_msg: ", nickname);
+
           if (nickname != undefined) {
             //data.msg = nickname + " : " + data.msg;
-    
             console.dir(data);
-            console.dir(socket.nickname);
-    
+            console.dir();
+
+            let arrUser = Object.keys(rooms[room].socket_ids);
+
+            arrData.push(data);
+
+            let len = arrData.length;
+
+            if(len > 1) {
+              if(arrData[len-1].who === arrData[len-2].who) {
+                data.sameUser = true;
+                console.log("동일 인물 메세지", len, arrData[len-1])
+              } else {
+                data.sameUser = false;
+                console.log("새로운 메세지.", len, arrData[len-1])
+              }
+            }
+
             if(data.who === socket.nickname) { // 보낸 대상이 나
-              socket.broadcast.to(room).emit("my_msg", data);
+              socket.broadcast.to(room).emit("other_msg", data);
             } else { // 보낸 대상이 다른 누군가
               socket.broadcast.to(room).emit("broadcast_msg", data);
             }
+
 
             /*
             if (data.to == "ALL")
@@ -142,6 +175,11 @@ function eventBinding(app){
         }
       });
     
+      // 거래관련 
+      socket.on("trade", function(data) {
+
+      });
+
       // 빼버릴 로직: 이름 바꾸기 안할 
       socket.on("changename", function(data) {
         console.log("DH : changename - " + data.nickname);
