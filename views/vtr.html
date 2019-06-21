@@ -83,8 +83,51 @@ var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안
 socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: false });
 
 function fnSendMsg() {
+    var msgVal = $("#iptChat").val();
+    var sendTxt = "";
+    var arrComand = ["거래시작", "거래안내"];
+    var isCommand = false;
+    var regTradingTxt = /^@마하 /;
+
+    if (regTradingTxt.test(msgVal)) {
+        sendTxt = msgVal.replace('@마하 ', '');
+
+        var i;
+        for (i = 0; i < arrComand.length; i++) {
+          if(arrComand[i] == sendTxt){
+            isCommand = true;
+            break;
+          }
+        }
+
+        if(isCommand) {
+
+          switch (i) {
+            case 0:
+              //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
+              socket.emit("trade", { msg: sendTxt, command: 0});
+              
+              break;
+            case 1:
+              //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
+              socket.emit("trade", { msg: sendTxt, command: 1});
+              
+              break;
+          
+            default:
+              break;
+          }
+
+        } else {
+          //$("#chatLogs").append("<div>"</div>");
+          $('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
+        }
+    }
+
     socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
     $('#iptChat').val('');
+    //$("#iptChat").focus();
+
 }
 
 $("#iptChat").keypress(function (event) {
@@ -103,17 +146,13 @@ socket.on('new', function (data) {
 });
 
 socket.on('broadcast_msg', function (data) {
-    //console.log('broadcast_msg', data);
+    console.log('broadcast_msg', data);
     var txtChat = '';
     var $my_speech = $('.my_speech');
     var len = $my_speech.length;
     var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
 
-    // 스크롤 자동 최하단 이동
-    var bubble = document.querySelectorAll(".bubble");
-    if(bubble.length > 1) {
-        bubble[bubble.length-1].scrollIntoView();
-    }
+
 
     if(data.sameUser && $chatTimeLast.text() === data.msgtime){
         $chatTimeLast.css('display', 'none');
@@ -129,20 +168,23 @@ socket.on('broadcast_msg', function (data) {
     txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
 
     $('#content').append(txtChat);
-});
-
-socket.on('other_msg', function (data) {
-    console.log("my_msg", data);
-    var txtChat = '';
-    var $my_speech = $('.my_speech');
-    var len = $my_speech.length;
-    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
 
     // 스크롤 자동 최하단 이동
     var bubble = document.querySelectorAll(".bubble");
     if(bubble.length > 1) {
-        bubble[bubble.length-1].scrollIntoView();
+        bubble[bubble.length-1].scrollIntoView(false);
+        //var lastY = bubble[bubble.length-1].offsetTop;
+        //document.querySelector(".content").scrollTo(0, lastY);
     }
+});
+
+socket.on('other_msg', function (data) {
+    console.log("other_msg", data);
+    var txtChat = '';
+    var $my_speech = $('.other_speech');
+    var len = $my_speech.length;
+    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
+
 
     if(data.sameUser && $chatTimeLast.text() === data.msgtime){
         $chatTimeLast.css('display', 'none');
@@ -158,6 +200,14 @@ socket.on('other_msg', function (data) {
     txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
 
     $('#content').append(txtChat);
+
+    // 스크롤 자동 최하단 이동
+    var bubble = document.querySelectorAll(".bubble");
+    if(bubble.length > 1) {
+        bubble[bubble.length-1].scrollIntoView(false);
+        //var lastY = bubble[bubble.length-1].offsetTop;
+        //document.querySelector(".content").scrollTo(0, lastY);
+    }
 
 
     // chatbot, system

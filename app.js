@@ -47,7 +47,7 @@ app.use('/socket', socketsRouter);
 // API문서: https://socket.io/docs/server-api/
 // socket
 app.io = require("socket.io")({
-  'pingInterval': 2000,
+  'pingInterval': 10000,
   'pingTimeout': 5000
 });
 

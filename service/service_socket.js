@@ -1,8 +1,5 @@
+const moment = require('moment-timezone'); // 서버시간과 무관하게 한국시간으로 설정 가능
 
-// app.io = require("socket.io")({
-//     'pingInterval': 2000,
-//     'pingTimeout': 5000
-//   });  
 function eventBinding(app){
     let count = 0;
     let rooms = [];   
@@ -10,8 +7,9 @@ function eventBinding(app){
     // 웹소켓 연결
     app.io.sockets.on("connection", function(socket) {
       console.log("******** [EVENT] sockets connection ********");
-    
+      
       socket.on("joinroom", function(data) {
+        /*
         let d = new Date();
         let yy = d.getFullYear();
         let mm = "" + (d.getMonth()+1);
@@ -19,8 +17,12 @@ function eventBinding(app){
         if(mm.length == 1) mm = "0" + mm;
         if(dd.length == 1) dd = "0" + dd;
         let yymmdd = yy + "년 " + mm + "월 " + dd + "일";
-
         console.log("[EVENT] joinroom :" + data.room + d.getHours() + ":" + d.getMinutes());
+        */
+       let seoulTime = moment.tz("Asia/Seoul");
+       let seoulTimeFormat = seoulTime.format('YY년 MM월 DD일 HH:mm:ss');
+       console.log(`[EVENT] joinroom : ${seoulTimeFormat}`);
+
         socket.join(data.room);
     
         // depracated
@@ -34,7 +36,7 @@ function eventBinding(app){
         socket.nickname = nickname;
     
         // nickname 화면으로 내림
-        socket.emit("new", { nickname: nickname, yymmdd: yymmdd });
+        socket.emit("new", { nickname: nickname, yymmdd: seoulTimeFormat });
     
         // Create Room
         if (rooms[room] == undefined) {
@@ -75,8 +77,8 @@ function eventBinding(app){
             case "transport close": // [Client Side] Client stopped sending data
                 console.log("@@@@@@@ transport close @@@@@@@");
                 let data = { who: "computer", msg: nickname + " 님이 나가셨습니다." };
-                app.io.sockets.to(room).emit("broadcast_msg", data);
-                app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
+                app.io.sockets.to(room).emit("system_msg", data);
+                //app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
                 break;
             case "client namespace disconnect": // [Client Side] Got disconnect packet from client
                 console.log("@@@@@@@ client namespace disconnect @@@@@@@");
@@ -113,11 +115,16 @@ function eventBinding(app){
         let d = new Date();
         let time = d.getHours();
         if(time > 12){
-          time = "오후 " + (time - 12);
+          time = "" + (time - 12);
+          if(time.length == 1) time = "0" + time;
+          time = "오후 " + time;
         } else {
+          if(time.length == 1) time = "0" + time;
           time = "오전 " + time;
         }
-        let msgtime = time+":"+d.getMinutes();
+        let second = d.getMinutes();
+        if(second.length == 1) second = "0" + second;
+        let msgtime = time+":"+second;
         data.msgtime = msgtime;
 
         if (room != undefined && rooms[room] != undefined) {
@@ -128,7 +135,6 @@ function eventBinding(app){
           if (nickname != undefined) {
             //data.msg = nickname + " : " + data.msg;
             console.dir(data);
-            console.dir();
 
             let arrUser = Object.keys(rooms[room].socket_ids);
 
@@ -151,7 +157,8 @@ function eventBinding(app){
             } else { // 보낸 대상이 다른 누군가
               socket.broadcast.to(room).emit("broadcast_msg", data);
             }
-
+            //자기자신 전송
+            socket.emit("broadcast_msg", data);
 
             /*
             if (data.to == "ALL")
@@ -167,8 +174,7 @@ function eventBinding(app){
             }
             */
     
-            //자기자신 전송
-            socket.emit("broadcast_msg", data);
+
           }
         } else {
           //Error
@@ -177,6 +183,19 @@ function eventBinding(app){
     
       // 거래관련 
       socket.on("trade", function(data) {
+        let room = socket.room;
+        let btn = {};
+        let err = {
+          className: "server_msg",
+          msg: "명령어가 올바르지 않습니다. 다시 확인하시고 입력해주세요.",
+          status: 0
+        };
+
+        if(data.msg === "거래시작") {
+          socket.broadcast.to(room).emit("trade", btn);
+        } else {
+          socket.broadcast.to(room).emit("trade", err);
+        }
 
       });
 
