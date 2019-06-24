@@ -15,7 +15,10 @@
             <h1>세라핌 클레압 팝니다</h1>
         </header>
         <div class="content" id="content">
-                Name <input type="text" id="nickname" readonly/> 
+                <div>
+                    my Name <input type="text" id="nickname" readonly/><br>
+                    ohher Name <input type="text" id="othername" readonly/> 
+                </div>
             <!--
             <em class="other_id">other</em>
             <div class="bubble other_speech"><p>안녕하세요 &#128513;</p></div>
@@ -74,6 +77,16 @@
 <script>
 // 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
+$("#iptChat").keypress(function (event) {
+    if (event.which == 13) {
+        fnSendMsg();
+    }
+});
+
+$("#btnSend").on("click", function() {
+    fnSendMsg();
+});
+
 var serverURL = 'http://192.168.0.10:4000';
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
@@ -85,7 +98,7 @@ socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: f
 function fnSendMsg() {
     var msgVal = $("#iptChat").val();
     var sendTxt = "";
-    var arrComand = ["거래시작", "거래안내"];
+    var arrComand = ["거래안내", "거래시작"];
     var isCommand = false;
     var regTradingTxt = /^@마하 /;
 
@@ -101,48 +114,77 @@ function fnSendMsg() {
         }
 
         if(isCommand) {
-
+            socket.emit("trade", { msg: sendTxt, command: i});
+        /*
           switch (i) {
             case 0:
-              //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
-              socket.emit("trade", { msg: sendTxt, command: 0});
-              
-              break;
+                //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
+                socket.emit("trade", { msg: sendTxt, command: 1});
+                break;
             case 1:
-              //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
-              socket.emit("trade", { msg: sendTxt, command: 1});
-              
-              break;
+                //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
+                socket.emit("trade", { msg: sendTxt, command: 2});
+                break;
           
             default:
-              break;
+                break;
           }
-
+        */
         } else {
-          //$("#chatLogs").append("<div>"</div>");
-          $('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
+            socket.emit("trade", { msg: sendTxt, command: -1});
+            //$("#chatLogs").append("<div>"</div>");
+            //$('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
         }
+
+    } else {
+        socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
     }
 
-    socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
     $('#iptChat').val('');
     //$("#iptChat").focus();
-
 }
 
-$("#iptChat").keypress(function (event) {
-    if (event.which == 13) {
-        fnSendMsg();
+socket.on('new_user', function (data) {
+    $('#nickname').val(data.nickname);
+    $('#content').append('<p class="p_system">'+data.yymmdd+'</p>');   
+});
+
+socket.on('userlist', function (data) {
+    var userlist = data.users;
+    var myname = $("#nickname").val();
+    if(userlist.length > 1) {
+        userlist.splice(userlist.indexOf(myname), 1);
+        $('#othername').val(userlist[0]);
     }
 });
 
-$("#btnSend").on("click", function() {
-    fnSendMsg();
-});
+socket.on('trade', function (data) {
+    console.log('trade', data);
+    /*
+    var btn = "";
+    if(data.type === "err") {
+        $('#content').append(data.msg);
+    } else if(data.type === "btn"){
 
-socket.on('new', function (data) {
-    $('#nickname').val(data.nickname);
-    $('#content').append('<p class="p_system">'+data.yymmdd+'</p>');   
+        // DOM을 클라이언트에서 생성하면 서버에서 안전하게 저장할 방법이 없네
+        // 서버에서 돔 문자열을 내리는 형태로 만들어야됨
+
+        switch (data.status) {
+            case 1:
+                btn += '<p>상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.</p>'
+                btn += '<button id="' + data.id + '" class="" value="' + data.value + '">' + data.text + '</button>'                
+                break;
+            case 2:
+                btn = '<button id="' + data.id + '" class="" value="' + data.value + '">' + data.text + '</button>'                
+                break;
+        
+            default:
+                break;
+        }
+        $('#content').append(btn);
+    }
+    */
+    $('#content').append(data);
 });
 
 socket.on('broadcast_msg', function (data) {
@@ -152,11 +194,9 @@ socket.on('broadcast_msg', function (data) {
     var len = $my_speech.length;
     var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
 
-
-
     if(data.sameUser && $chatTimeLast.text() === data.msgtime){
         $chatTimeLast.css('display', 'none');
-    } 
+    }
 
     if(!data.sameUser){ // 같은 유저면 아이디 반복 표시 필요없음
         txtChat += '<em class="my_id"><%=userId%></em>';

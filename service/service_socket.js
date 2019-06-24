@@ -36,7 +36,7 @@ function eventBinding(app){
         socket.nickname = nickname;
     
         // nickname 화면으로 내림
-        socket.emit("new", { nickname: nickname, yymmdd: seoulTimeFormat });
+        socket.emit("new_user", { nickname: nickname, yymmdd: seoulTimeFormat });
     
         // Create Room
         if (rooms[room] == undefined) {
@@ -55,9 +55,10 @@ function eventBinding(app){
             app.io.sockets.to(room).emit("system_msg", data);
         }
     
+        let users = Object.keys(rooms[room].socket_ids);
         // broadcast changed user list in the room
-        app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
-    
+        app.io.sockets.to(room).emit("userlist", {users: users});
+
         count++;
       });
     
@@ -69,6 +70,8 @@ function eventBinding(app){
     
         console.log(nickname + " disconnect reason: " + reason);
     
+        // 접속해지시에 userlist에서 지워야할지 놓고 고민할 것
+
         // 각 연결해제된 사유에 따른 분기
         switch (reason) {
             case "ping timeout": // [Client Side] Client stopped responding to pings in the allowed amount of time
@@ -138,6 +141,7 @@ function eventBinding(app){
 
             let arrUser = Object.keys(rooms[room].socket_ids);
 
+            // 배열에 메세지 저장
             arrData.push(data);
 
             let len = arrData.length;
@@ -174,7 +178,6 @@ function eventBinding(app){
             }
             */
     
-
           }
         } else {
           //Error
@@ -184,19 +187,49 @@ function eventBinding(app){
       // 거래관련 
       socket.on("trade", function(data) {
         let room = socket.room;
-        let btn = {};
+        let btn = {
+          type: "btn"
+        };
         let err = {
+          type: "err",
           className: "server_msg",
           msg: "명령어가 올바르지 않습니다. 다시 확인하시고 입력해주세요.",
           status: 0
         };
+        let dom = '<em class="mach_id">chatbot</em><div class="bubble mach_speech">';
+        console.log("[EVENT] data");
+        console.dir(data);
 
-        if(data.msg === "거래시작") {
+        if(data.command === 0) {
+          dom += '<p>거래 안내입니다.</p>';
+          dom += '</div>';
+          socket.broadcast.to(room).emit("trade", dom);
+          //socket.broadcast.to(room).emit("trade", btn);
+        } else if(data.command === 1){
+          /*
+          btn.text = "";
+          btn.status = 1,
+          btn.value = "trd_start";
+          btn.id ="btnTrdStart";
           socket.broadcast.to(room).emit("trade", btn);
-        } else {
-          socket.broadcast.to(room).emit("trade", err);
+          */
+          dom += '<p>상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.';
+          dom += '<button id="btnTrdStart" class="btn_chat trd_start" value="">거래시작</button>';
+          dom += '</p></div>';
+          socket.broadcast.to(room).emit("trade", dom);
+        } else if(data.command === -1) {
+          dom += '<p>@마하 ' + data.msg + '라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>';
+          dom += '</div>';
+          socket.broadcast.to(room).emit("trade", dom);
         }
 
+        // 배열에 메세지 저장
+        arrData.push(dom);
+
+        console.dir(arrData);
+
+        //자기자신 전송
+        socket.emit("trade", '<p>상대방에게 거래 요청을 하였습니다</p>');
       });
 
       // 빼버릴 로직: 이름 바꾸기 안할 
