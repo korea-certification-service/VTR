@@ -55,9 +55,11 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .my_speech > p{margin-right: 15px; margin-left: 60px; background-color: #ededed;}
 .content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 25px 50% no-repeat; background-size: 42px 51.5px; }
 .content .mach_speech > p{margin-right: 15px; background-color: #0074bd; color: #ffffff;}
+.content .mach_speech > p .chat_time{color: #000000;}
 .content .bubble{font-size: 18px;}
 .content .bubble > p{position: relative; margin-top: 8px; display: inline-block; padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px;}
 .content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
+.content .mach_speech .chat_time{right: -50px;}
 .content .other_speech .chat_time{right: -50px;}
 .content .my_speech .chat_time{left: -50px;}
 .content .p_system{text-align: center;}

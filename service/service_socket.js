@@ -4,6 +4,24 @@ function eventBinding(app){
     let count = 0;
     let rooms = [];   
     let arrData = [];
+
+    function getMsgTime() {
+      let d = new Date();
+      let time = d.getHours() + "";
+      if(time > 12){
+        time = "" + (time - 12);
+        if(time.length == 1) time = "0" + time;
+        time = "오후 " + time;
+      } else {
+        if(time.length == 1) time = "0" + time;
+        time = "오전 " + time;
+      }
+      let minute = d.getMinutes() + "";
+      if(minute.length == 1) minute = "0" + minute;
+      let msgtime = time+":"+minute;
+      return msgtime;
+    }
+
     // 웹소켓 연결
     app.io.sockets.on("connection", function(socket) {
       console.log("******** [EVENT] sockets connection ********");
@@ -115,20 +133,7 @@ function eventBinding(app){
       // 메세지 전송시
       socket.on("send_msg", function(data) {  
         let room = socket.room;
-        let d = new Date();
-        let time = d.getHours();
-        if(time > 12){
-          time = "" + (time - 12);
-          if(time.length == 1) time = "0" + time;
-          time = "오후 " + time;
-        } else {
-          if(time.length == 1) time = "0" + time;
-          time = "오전 " + time;
-        }
-        let second = d.getMinutes();
-        if(second.length == 1) second = "0" + second;
-        let msgtime = time+":"+second;
-        data.msgtime = msgtime;
+        data.msgtime = getMsgTime();
 
         if (room != undefined && rooms[room] != undefined) {
           let nickname = socket.nickname;
@@ -186,50 +191,52 @@ function eventBinding(app){
     
       // 거래관련 
       socket.on("trade", function(data) {
+        // { who: 'kjm', to: 'ALL', msg: 'aaaa', msgtime: '오후 06:05' }
         let room = socket.room;
-        let btn = {
-          type: "btn"
-        };
-        let err = {
-          type: "err",
-          className: "server_msg",
-          msg: "명령어가 올바르지 않습니다. 다시 확인하시고 입력해주세요.",
-          status: 0
-        };
-        let dom = '<em class="mach_id">chatbot</em><div class="bubble mach_speech">';
-        console.log("[EVENT] data");
+        data.msgtime = getMsgTime();
+		data.type = "btn";
+		let btn = {};
+		let mymsg = {};
+        //let dom = '<em class="mach_id">chatbot</em><div class="bubble mach_speech">';
+        console.log("[EVENT] trade");
         console.dir(data);
 
         if(data.command === 0) {
-          dom += '<p>거래 안내입니다.</p>';
-          dom += '</div>';
-          socket.broadcast.to(room).emit("trade", dom);
-          //socket.broadcast.to(room).emit("trade", btn);
+			btn.text = "거래 안내";
+			btn.status = 0;
+			btn.class = "trd_info";
+			btn.id ="btnTrdInfo";
+
+			data.content = btn;
+			mymsg.msg = "거래를 안내해드리겠습니다.";
         } else if(data.command === 1){
-          /*
-          btn.text = "";
-          btn.status = 1,
-          btn.value = "trd_start";
-          btn.id ="btnTrdStart";
-          socket.broadcast.to(room).emit("trade", btn);
-          */
-          dom += '<p>상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.';
-          dom += '<button id="btnTrdStart" class="btn_chat trd_start" value="">거래시작</button>';
-          dom += '</p></div>';
-          socket.broadcast.to(room).emit("trade", dom);
+			btn.text = "거래 시작";
+			btn.status = 1;
+			btn.class = "trd_start";
+			btn.id ="btnTrdStart";
+			
+			data.content = btn;
+			mymsg.msg = "상대방에게 거래 시작을 요청하였습니다.";
         } else if(data.command === -1) {
-          dom += '<p>@마하 ' + data.msg + '라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>';
-          dom += '</div>';
-          socket.broadcast.to(room).emit("trade", dom);
+			data.type = "err";
+			let err = {
+				className: "server_msg",
+				msg: data.msg + " 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.",
+				status: -1
+			};		  
+			data.content = err;
+			mymsg.msg = err.msg;
         }
+		// 상대방에게 보내는 메세지
+		socket.broadcast.to(room).emit("trade", data);
+
+		// 자기자신에게 전송 : 중요하지 않은 내용(단순 알림 메세지)
+		socket.emit("trade", {status: btn.status, mymsg: mymsg.msg, msgtime: data.msgtime});
 
         // 배열에 메세지 저장
-        arrData.push(dom);
+        arrData.push(data);
 
         console.dir(arrData);
-
-        //자기자신 전송
-        socket.emit("trade", '<p>상대방에게 거래 요청을 하였습니다</p>');
       });
 
       // 빼버릴 로직: 이름 바꾸기 안할 

@@ -97,6 +97,7 @@ socket.emit('joinroom', { room: '<%=room%>', userId: '<%=userId%>', reconnect: f
 
 function fnSendMsg() {
     var msgVal = $("#iptChat").val();
+    var originMsg = $("#iptChat").val();
     var sendTxt = "";
     var arrComand = ["거래안내", "거래시작"];
     var isCommand = false;
@@ -113,31 +114,31 @@ function fnSendMsg() {
           }
         }
 
-        if(isCommand) {
-            socket.emit("trade", { msg: sendTxt, command: i});
-        /*
-          switch (i) {
-            case 0:
-                //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
-                socket.emit("trade", { msg: sendTxt, command: 1});
-                break;
-            case 1:
-                //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
-                socket.emit("trade", { msg: sendTxt, command: 2});
-                break;
-          
-            default:
-                break;
-          }
-        */
-        } else {
-            socket.emit("trade", { msg: sendTxt, command: -1});
+        if(isCommand) { // 존재하는 명령어
+			socket.emit("trade", { who: "<%=userId%>", to: $('#othername').val(), msg: originMsg, command: i});
+			/*
+            switch (i) {
+                case 0:
+                    //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
+					socket.emit("trade", { who: "<%=userId%>", to: $('#othername').val(), msg: msgVal, command: 0});
+                    break;
+                case 1:
+                    //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
+                    socket.emit("trade", { who: "<%=userId%>", to: $('#othername').val(), msg: msgVal, command: 1});
+                    break;
+                
+                default:
+                    break;
+            }
+			*/
+        } else { // 없는 명령어
+            socket.emit("trade", { who: "<%=userId%>", to: $('#othername').val(), msg: originMsg, command: -1});
             //$("#chatLogs").append("<div>"</div>");
             //$('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
         }
 
     } else {
-        socket.emit('send_msg', { who: "<%=userId%>", to: "ALL", msg: $('#iptChat').val() });
+        socket.emit('send_msg', { who: "<%=userId%>", to: $('#othername').val(), msg: $('#iptChat').val()});
     }
 
     $('#iptChat').val('');
@@ -159,32 +160,36 @@ socket.on('userlist', function (data) {
 });
 
 socket.on('trade', function (data) {
+	var btn = data.content;
+	var dom = '<div class="bubble mach_speech"><p>';
     console.log('trade', data);
-    /*
-    var btn = "";
+
+	// 상대방 화면에 DOM 생성
     if(data.type === "err") {
-        $('#content').append(data.msg);
+        //$('#content').append('<p>'+btn.msg+'</p>');
     } else if(data.type === "btn"){
-
-        // DOM을 클라이언트에서 생성하면 서버에서 안전하게 저장할 방법이 없네
-        // 서버에서 돔 문자열을 내리는 형태로 만들어야됨
-
-        switch (data.status) {
-            case 1:
-                btn += '<p>상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.</p>'
-                btn += '<button id="' + data.id + '" class="" value="' + data.value + '">' + data.text + '</button>'                
+		// 상대방 화면 돔생성
+        switch (data.command) {
+            case 0:
+				dom += '거래안내를 보시려면 @마하 거래안내라고 입력해주세요.';              
+				break;
+			case 1:
+				dom += '상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
                 break;
-            case 2:
-                btn = '<button id="' + data.id + '" class="" value="' + data.value + '">' + data.text + '</button>'                
-                break;
-        
             default:
                 break;
-        }
-        $('#content').append(btn);
-    }
-    */
-    $('#content').append(data);
+		}
+		dom += '</p></div>';
+		$('#content').append(dom);
+	} else {
+		// 내 화면에 돔생성
+		dom += data.mymsg;
+		if(data.status === 0) {dom += '<img src="" alt="안내문"/>'}
+		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+		$('#content').append(dom);
+	}
+	
 });
 
 socket.on('broadcast_msg', function (data) {
