@@ -79,6 +79,16 @@
 <script>
 // 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
+$("#iptChat").keypress(function (event) {
+    if (event.which == 13) {
+        fnSendMsg();
+    }
+});
+
+$("#btnSend").on("click", function() {
+    fnSendMsg();
+});
+
 var serverURL = 'http://192.168.0.10:4000';
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
@@ -91,10 +101,8 @@ var _userId = document.getElementById("userId").value;
 socket.emit('joinroom', { room: _room, userId: _userId, reconnect: false });
 
 function fnSendMsg() {
-    var othername = document.getElementById("othername");
-    var iptChat = document.getElementById("iptChat");
-    var msgVal = iptChat.value;
-    var originMsg = iptChat.value;
+    var msgVal = $("#iptChat").val();
+    var originMsg = $("#iptChat").val();
     var sendTxt = "";
     var arrComand = ["거래안내", "거래시작"];
     var isCommand = false;
@@ -112,16 +120,16 @@ function fnSendMsg() {
         }
 
         if(isCommand) { // 존재하는 명령어
-			socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: i});
+			socket.emit("trade", { who: _userId, to: $('#othername').val(), msg: originMsg, command: i});
 			/*
             switch (i) {
                 case 0:
                     //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
-					socket.emit("trade", { who: _userId, to: othername.value, msg: msgVal, command: 0});
+					socket.emit("trade", { who: _userId, to: $('#othername').val(), msg: msgVal, command: 0});
                     break;
                 case 1:
                     //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
-                    socket.emit("trade", { who: _userId, to: othername.value, msg: msgVal, command: 1});
+                    socket.emit("trade", { who: _userId, to: $('#othername').val(), msg: msgVal, command: 1});
                     break;
                 
                 default:
@@ -129,33 +137,30 @@ function fnSendMsg() {
             }
 			*/
         } else { // 없는 명령어
-            socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: -1});
+            socket.emit("trade", { who: _userId, to: $('#othername').val(), msg: originMsg, command: -1});
             //$("#chatLogs").append("<div>"</div>");
             //$('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
         }
 
     } else {
-        socket.emit('send_msg', { who: _userId, to: othername.value, msg: iptChat.value});
+        socket.emit('send_msg', { who: _userId, to: $('#othername').val(), msg: $('#iptChat').val()});
     }
 
-    iptChat.value = '';
-    //iptChat.focus();
+    $('#iptChat').val('');
+    //$("#iptChat").focus();
 }
 
 socket.on('new_user', function (data) {
-    var p = document.createElement('p');
-    document.getElementById("nickname").value = data.nickname;
-    p.classList.add("p_system");
-    p.innerText = data.yymmdd;
-    document.getElementById("content").appendChild(p);
+    $('#nickname').val(data.nickname);
+    $('#content').append('<p class="p_system">'+data.yymmdd+'</p>');   
 });
 
 socket.on('userlist', function (data) {
     var userlist = data.users;
-    var myname = document.getElementById("nickname").value;
+    var myname = $("#nickname").val();
     if(userlist.length > 1) {
         userlist.splice(userlist.indexOf(myname), 1);
-        document.getElementById("othername").value = userlist[0];
+        $('#othername').val(userlist[0]);
     }
 });
 
@@ -164,7 +169,6 @@ socket.on('trade', function (data) {
 	var dom = '<div class="bubble mach_speech"><p>';
     console.log('trade', data);
 
-    var content = document.getElementById("content");
 	// 상대방 화면에 DOM 생성
     if(data.type === "err") {
         //$('#content').append('<p>'+btn.msg+'</p>');
@@ -182,50 +186,38 @@ socket.on('trade', function (data) {
                 break;
 		}
 		dom += '</p></div>';
-        content.insertAdjacentHTML("beforeend", dom);
+		$('#content').append(dom);
 	} else {
 		// 내 화면에 돔생성
 		dom += data.mymsg;
-		if(data.status === 0) {dom += '<img src="/img/VTR_info.png" alt="안내문"/>'}
+		if(data.status === 0) {dom += '<img src="" alt="안내문"/>'}
 		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
-        content.insertAdjacentHTML("beforeend", dom);
+		$('#content').append(dom);
 	}
 	
 });
 
 socket.on('broadcast_msg', function (data) {
     console.log('broadcast_msg', data);
-    // 같은 유저 반복하지 않고 메세지 생성
     var txtChat = '';
-    
+    var $my_speech = $('.my_speech');
+    var len = $my_speech.length;
+    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
+
+    if(data.sameUser && $chatTimeLast.text() === data.msgtime){
+        $chatTimeLast.css('display', 'none');
+    }
+
     if(!data.sameUser){ // 같은 유저면 아이디 반복 표시 필요없음
-        txtChat += '<em class="my_id">'+_userId+'</em>';
+        txtChat += '<em class="my_id"><%=userId%></em>';
+    } else if($chatTimeLast.text() !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
+        txtChat += '<em class="my_id"><%=userId%></em>';
     }
 
     txtChat += '<div class="bubble my_speech"><p>' + data.msg;
     txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
 
-    var content = document.getElementById("content");
-    content.insertAdjacentHTML("beforeend", txtChat);
-
-    // 메세지에서 반복되는 시간 숨기기
-    var my_speech = document.querySelectorAll('.my_speech');
-    var len = my_speech.length;
-
-    if(len > 1) { // 두번째 메세지 일때
-        var chatTimeLast = my_speech[len-2].querySelector('.chat_time');
-        console.log(chatTimeLast, len)
-    
-        if(data.sameUser && chatTimeLast.innerText === data.msgtime){
-            //$chatTimeLast.css('display', 'none');
-            chatTimeLast.style.display = 'none';
-        }
-        
-        if(chatTimeLast.innerText !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
-            var em = '<em class="my_id">'+_userId+'</em>';
-            my_speech[len-1].insertAdjacentHTML("beforebegin", em);
-        }
-    }
+    $('#content').append(txtChat);
 
     // 스크롤 자동 최하단 이동
     var bubble = document.querySelectorAll(".bubble");
@@ -238,37 +230,26 @@ socket.on('broadcast_msg', function (data) {
 
 socket.on('other_msg', function (data) {
     console.log("other_msg", data);
-    // 같은 유저 반복하지 않고 메세지 생성
     var txtChat = '';
-    
+    var $my_speech = $('.other_speech');
+    var len = $my_speech.length;
+    var $chatTimeLast = $my_speech.eq(len-1).children().children('.chat_time');
+
+
+    if(data.sameUser && $chatTimeLast.text() === data.msgtime){
+        $chatTimeLast.css('display', 'none');
+    } 
+
     if(!data.sameUser){ // 같은 유저면 아이디 반복 표시 필요없음
+        txtChat += '<em class="other_id">'+ data.who +'</em>';
+    } else if($chatTimeLast.text() !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
         txtChat += '<em class="other_id">'+ data.who +'</em>';
     }
 
     txtChat += '<div class="bubble other_speech"><p>' + data.msg;
     txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
 
-    var content = document.getElementById("content");
-    content.insertAdjacentHTML("beforeend", txtChat);
-
-    // 메세지에서 반복되는 시간 숨기기
-    var my_speech = document.querySelectorAll('.other_speech');
-    var len = my_speech.length;
-
-    if(len > 1) { // 두번째 메세지 일때
-        var chatTimeLast = my_speech[len-2].querySelector('.chat_time');
-        console.log(chatTimeLast, len)
-    
-        if(data.sameUser && chatTimeLast.innerText === data.msgtime){
-            //$chatTimeLast.css('display', 'none');
-            chatTimeLast.style.display = 'none';
-        }
-        
-        if(chatTimeLast.innerText !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
-            var em = '<em class="other_id">'+ data.who +'</em>';
-            my_speech[len-1].insertAdjacentHTML("beforebegin", em);
-        }
-    }
+    $('#content').append(txtChat);
 
     // 스크롤 자동 최하단 이동
     var bubble = document.querySelectorAll(".bubble");
@@ -290,11 +271,8 @@ socket.on('other_msg', function (data) {
 
 // 시스템 메세지 
 socket.on('system_msg', function (data) {
-    //console.log('system_msg', data);
-    var p = document.createElement('p');
-    p.classList.add("p_system");
-    p.innerText = data.msg;
-    document.getElementById("content").appendChild(p);
+    console.log('system_msg', data);
+    $('#content').append('<p class="p_system">'+data.msg+'</p>');
 });
 
 // 접속 끊겼을 때
@@ -357,22 +335,7 @@ var chatUI = {
         });        
     },
     sendMsg: function() {
-        document.getElementById("iptChat").addEventListener("keypress", function(ev){
-            if (ev.which == 13) {
-                if (ev.target.value==="") {
-                    alert("메세지를 입력해주세요.");
-                    return;
-                }
-                fnSendMsg();
-            }
-        });
-        document.getElementById("btnSend").addEventListener("click", function(){
-            if (ev.target.value==="") {
-                alert("메세지를 입력해주세요.");
-                return;
-            }
-            fnSendMsg();
-        });
+
     },
     ActBtn: function() {
         var proxyEvent= {
