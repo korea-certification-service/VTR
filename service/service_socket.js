@@ -5,7 +5,6 @@ function eventBinding(app){
     let rooms = [];   
     let arrData = [];
 	let seoulTime = moment.tz("Asia/Seoul");
-	let parisTime = moment.tz("Europe/Paris");
 
     function getMsgTime() {
 		moment.locale(); 
@@ -58,9 +57,7 @@ function eventBinding(app){
         let room = data.room;
         socket.room = room;
     
-        //let nickname = "손님-" + count;
         let nickname = data.userId;
-    
         socket.nickname = nickname;
     
         console.log("재접속 여부:", data.reconnect)
@@ -91,7 +88,7 @@ function eventBinding(app){
     
       // 접속해제시
       socket.on("disconnect", function(reason) {
-        var d = new Date();
+        //var d = new Date();
         let room = socket.room;
         let nickname = socket.nickname;
     
@@ -124,9 +121,8 @@ function eventBinding(app){
         }
     
         if (room != undefined && rooms[room] != undefined) {
-            console.log("##### disconnect #####: "+nickname+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds());
+            console.log("##### disconnect #####: "+nickname);
 
-            // 여기에 방을 나갔다는 메세지를 broad cast 하기
             if (nickname != undefined) {
                 if (rooms[room].socket_ids != undefined &&rooms[room].socket_ids[nickname] != undefined){
                     delete rooms[room].socket_ids[nickname];
@@ -134,7 +130,7 @@ function eventBinding(app){
             }
         } else {
             //Error
-            console.log("##### try reconnect #####: "+nickname+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds());
+            console.log("##### try reconnect #####: "+nickname);
             app.io.sockets.to(room).emit("reconnect", {});
         }
       }); 
@@ -219,13 +215,37 @@ function eventBinding(app){
 			data.content = btn;
 			mymsg.msg = "거래를 안내해드리겠습니다.";
 		} else if (data.command === 1) {
-			btn.text = "거래 시작";
+			btn.text = "거래 요청";
 			btn.status = 1;
-			btn.class = "trd_start";
-			btn.id = "btnTrdStart";
+			btn.class = "btn_t_r";
+			btn.id = "btnTransactionRequest";
 
 			data.content = btn;
-			mymsg.msg = "상대방에게 거래 시작을 요청하였습니다.";
+			mymsg.msg = "상대방에게 거래를 요청하였습니다.";
+		} else if (data.command === 2) {
+			btn.text = "구매 확인";
+			btn.status = 2;
+			btn.class = "btn_p_c";
+			btn.id = "btnPurchaseConfirmation";
+
+			data.content = btn;
+			mymsg.msg = "구매 확인을 하였습니다.";
+		} else if (data.command === 3) {
+			btn.text = "판매 확인";
+			btn.status = 3;
+			btn.class = "btn_s_c";
+			btn.id = "btnSalesComplete";
+
+			data.content = btn;
+			mymsg.msg = "판매 확인을 하였습니다.";
+		} else if (data.command === 4) {
+			btn.text = "거래 완료";
+			btn.status = 4;
+			btn.class = "btn_t_c";
+			btn.id = "btnTransactionComplete";
+
+			data.content = btn;
+			mymsg.msg = "거래가 완료되었습니다.";
 		} else if (data.command === -1) {
 			data.type = "err";
 			let err = {
@@ -259,31 +279,29 @@ function eventBinding(app){
         if (room != undefined && rooms[room] != undefined) {
           let nickname = data.nickname;
     
-          if (nickname != undefined) {
-            let pre_nick = socket.nickname;
-            console.log("pre_nick - " + pre_nick);
-    
-            // if user changes name get previous nickname from nicknames MAP
-            if (pre_nick != undefined) {
-              delete rooms[room].socket_ids[pre_nick];
-            }
-    
-            rooms[room].socket_ids[nickname] = socket.id;
-            socket.nickname = nickname;
-    
-            //바뀐 이름 Broadcast
-            data = {
-              msg: pre_nick + " 님이 " + nickname + "으로 대화명을 변경하셨습니다."
-            };
-            app.io.sockets.to(room).emit("broadcast_msg", data);
-    
-            // send changed user nickname lists to clients
-            app.io.sockets
-              .to(room)
-              .emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
-          } else {
-            //Error
-          }
+			if (nickname != undefined) {
+				let pre_nick = socket.nickname;
+				console.log("pre_nick - " + pre_nick);
+
+				// if user changes name get previous nickname from nicknames MAP
+				if (pre_nick != undefined) {
+					delete rooms[room].socket_ids[pre_nick];
+				}
+
+				rooms[room].socket_ids[nickname] = socket.id;
+				socket.nickname = nickname;
+
+				//바뀐 이름 Broadcast
+				data = {
+					msg: pre_nick + " 님이 " + nickname + "으로 대화명을 변경하셨습니다."
+				};
+				app.io.sockets.to(room).emit("broadcast_msg", data);
+
+				// send changed user nickname lists to clients
+				app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
+			} else {
+			//Error
+			}
         } else {
           //Error
         }

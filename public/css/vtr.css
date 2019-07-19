@@ -53,7 +53,8 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .other_speech > p{margin-right: 60px; margin-left: 15px; border: 1px solid #d9d9d9;}
 .content .my_speech{text-align: right;}
 .content .my_speech > p{margin-right: 15px; margin-left: 60px; background-color: #ededed;}
-.content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 25px 50% no-repeat; background-size: 42px 51.5px; }
+/* .content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 25px 50% no-repeat; background-size: 42px 51.5px; } */
+.content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 15px 50% no-repeat; background-size: 51px 39px; }
 .content .mach_speech > p{margin-right: 15px; background-color: #0074bd; color: #ffffff;}
 .content .mach_speech > p .chat_time{color: #000000;}
 .content .bubble{font-size: 18px;}
@@ -65,12 +66,16 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .p_system{text-align: center;}
 /* 버튼 */
 .btn_chat{margin-top: 5px; width: 50%; max-width: 120px; height: 35px; border-radius: 6px; font-size: 14px;}
-.btn_chat.trd_start{}
+.btn_chat.btn_t_r{}
+.btn_chat.btn_p_c{}
+.btn_chat.btn_s_c{}
+.btn_chat.btn_t_c{}
 
 .footer{height: 70px; position: relative;}
 .footer .btn_sharp{font-size: 28px;}
 .footer .ipt_chat{float: left; margin-top: 5.5px; margin-left: 25px; width: calc(100% - 150px); height: 30px; font-size: 18px; border: none;}
 .footer .btn_send{float: right; margin-right: 20px; width: 60px; height: 38px; font-weight: 600; color: #9c9c9c; border: 1px solid #9c9c9c; border-radius: 5px; font-size: 18px;}
+.footer .btn_send:active{background-color: #eee;}
 .footer .btn_at{float: left; margin-top: 4px; margin-left: 15px; width: 30px; height: 30px;}
 .footer .btn_emoji{font-size: 30px; line-height: 30px;}
 .footer .msg_sec{margin: 0 10px; padding: 7px 0; height: 55px; box-sizing: border-box; font-size: 0; border: 1px solid #d9d9d9; border-radius: 30px;}

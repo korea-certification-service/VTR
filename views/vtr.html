@@ -17,7 +17,7 @@
         <div class="content" id="content">
                 <div>
                     my Name <input type="text" id="nickname" readonly/><br>
-                    ohher Name <input type="text" id="othername" readonly/> 
+                    other Name <input type="text" id="othername" readonly/> 
                 </div>
             <!--
             <em class="other_id">other</em>
@@ -63,13 +63,11 @@
                 <button class="btn_emoji">&#128513;</button>
             </div> -->
             <div class="at_sec" id="atSec">
-                <div class="mach_command machCmd">@마하 거래시작</div>
                 <div class="mach_command machCmd">@마하 거래안내</div>
-                <div class="mach_command machCmd">@마하 거래중단</div>
-                <div class="mach_command machCmd">@마하 거래흥정</div>
-                <div class="mach_command machCmd">@마하 거래시작</div>
-                <div class="mach_command machCmd">@마하 거래안내</div>
-                <div class="mach_command machCmd">@마하 거래중단</div>
+                <div class="mach_command machCmd">@마하 거래요청</div>
+                <div class="mach_command machCmd">@마하 구매확인</div>
+                <div class="mach_command machCmd">@마하 판매완료</div>
+                <div class="mach_command machCmd">@마하 거래완료</div>
                 <div class="mach_command machCmd">@마하 거래흥정</div>
             </div>
         </footer>
@@ -90,13 +88,22 @@ var _userId = document.getElementById("userId").value;
 // 방 입장
 socket.emit('joinroom', { room: _room, userId: _userId, reconnect: false });
 
+function fnScrollLast() {
+    var bubble = document.querySelectorAll(".bubble");
+    if(bubble.length > 1) {
+        bubble[bubble.length-1].scrollIntoView(false);
+        //var lastY = bubble[bubble.length-1].offsetTop;
+        //document.querySelector(".content").scrollTo(0, lastY);
+    }
+}
+
 function fnSendMsg() {
     var othername = document.getElementById("othername");
     var iptChat = document.getElementById("iptChat");
     var msgVal = iptChat.value;
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["거래안내", "거래시작"];
+    var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료"];
     var isCommand = false;
     var regTradingTxt = /^@마하 /;
 
@@ -140,6 +147,7 @@ function fnSendMsg() {
 
     iptChat.value = '';
     //iptChat.focus();
+    fnScrollLast(); // 스크롤 자동 최하단 이동
 }
 
 socket.on('new_user', function (data) {
@@ -175,7 +183,19 @@ socket.on('trade', function (data) {
 				dom += '거래안내를 보시려면 @마하 거래안내라고 입력해주세요.';              
 				break;
 			case 1:
-				dom += '상대방이 거래 시작을 요청하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				dom += '상대방이 거래요청을 하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+                break;
+			case 2:
+				dom += '구매확인을 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+                break;
+			case 3:
+				dom += '판매완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+                break;
+			case 4:
+				dom += '거래완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
 				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
                 break;
             default:
@@ -226,14 +246,8 @@ socket.on('broadcast_msg', function (data) {
             my_speech[len-1].insertAdjacentHTML("beforebegin", em);
         }
     }
-
-    // 스크롤 자동 최하단 이동
-    var bubble = document.querySelectorAll(".bubble");
-    if(bubble.length > 1) {
-        bubble[bubble.length-1].scrollIntoView(false);
-        //var lastY = bubble[bubble.length-1].offsetTop;
-        //document.querySelector(".content").scrollTo(0, lastY);
-    }
+    
+    fnScrollLast(); // 스크롤 자동 최하단 이동
 });
 
 socket.on('other_msg', function (data) {
@@ -345,6 +359,8 @@ var chatUI = {
                 iptChat.value = e.target.innerText;
                 hideDim();
                 // 여기서 메세지 입력되면 됨
+                
+                fnScrollLast(); // 스크롤 자동 최하단 이동
             });
         }
     },
@@ -357,7 +373,8 @@ var chatUI = {
         });        
     },
     sendMsg: function() {
-        document.getElementById("iptChat").addEventListener("keypress", function(ev){
+        var iptChat = document.getElementById("iptChat");
+        iptChat.addEventListener("keypress", function(ev){
             if (ev.which == 13) {
                 if (ev.target.value==="") {
                     alert("메세지를 입력해주세요.");
@@ -366,8 +383,8 @@ var chatUI = {
                 fnSendMsg();
             }
         });
-        document.getElementById("btnSend").addEventListener("click", function(){
-            if (ev.target.value==="") {
+        document.getElementById("btnSend").addEventListener("click", function(ev){
+            if (ev.target.previousSibling.previousSibling.value==="") {
                 alert("메세지를 입력해주세요.");
                 return;
             }
@@ -376,10 +393,19 @@ var chatUI = {
     },
     ActBtn: function() {
         var proxyEvent= {
-            "btnTrdStart": function() {
+            "btnTransactionRequest": function() {
                 console.log("this", this);
                 //alert("거래시작");
-            }
+            },
+            "btnPurchaseConfirmation": function() {
+                alert("구매 확인");
+            },
+            "btnSalesComplete": function() {
+                alert("판매 확인");
+            },
+            "btnTransactionComplete": function() {
+                alert("거래 완료");
+            },
         };
 
         document.addEventListener("click", function(e) {
