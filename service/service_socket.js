@@ -4,22 +4,29 @@ function eventBinding(app){
     let count = 0;
     let rooms = [];   
     let arrData = [];
+	let seoulTime = moment.tz("Asia/Seoul");
+	let parisTime = moment.tz("Europe/Paris");
 
     function getMsgTime() {
-      let d = new Date();
-      let time = d.getHours() + "";
-      if(time > 12){
-        time = "" + (time - 12);
-        if(time.length == 1) time = "0" + time;
-        time = "오후 " + time;
-      } else {
-        if(time.length == 1) time = "0" + time;
-        time = "오전 " + time;
-      }
-      let minute = d.getMinutes() + "";
-      if(minute.length == 1) minute = "0" + minute;
-      let msgtime = time+":"+minute;
-      return msgtime;
+		moment.locale(); 
+		let msgtime = moment().format('LT');
+
+		/* deprecated: 기존 한국 시간 구하는 노가다 소스
+		let d = new Date();
+		let time = d.getHours() + "";
+		if (time > 12) {
+			time = "" + (time - 12);
+		if (time.length == 1) time = "0" + time;
+			time = "오후 " + time;
+		} else {
+		if (time.length == 1) time = "0" + time;
+			time = "오전 " + time;
+		}
+		let minute = d.getMinutes() + "";
+		if (minute.length == 1) minute = "0" + minute;
+		let msgtime = time + ":" + minute;
+		*/
+		return msgtime;
     }
 
     // 웹소켓 연결
@@ -27,7 +34,7 @@ function eventBinding(app){
       console.log("******** [EVENT] sockets connection ********");
       
       socket.on("joinroom", function(data) {
-        /*
+    	/* deprecated: 기존 한국 시간 구하는 노가다 소스
         let d = new Date();
         let yy = d.getFullYear();
         let mm = "" + (d.getMonth()+1);
@@ -37,9 +44,12 @@ function eventBinding(app){
         let yymmdd = yy + "년 " + mm + "월 " + dd + "일";
         console.log("[EVENT] joinroom :" + data.room + d.getHours() + ":" + d.getMinutes());
         */
-       let seoulTime = moment.tz("Asia/Seoul");
-       let seoulTimeFormat = seoulTime.format('YY년 MM월 DD일 HH:mm:ss');
-       console.log(`[EVENT] joinroom : ${seoulTimeFormat}`);
+
+		let seoulTimeFormat = seoulTime.format('YY년 MM월 DD일 HH:mm:ss'); // 한국 시간 한글 포맷
+		moment.locale();
+		let localTimeFormat = moment().format('LLL'); // 그 지역 시간 영어 포맷
+		let timeFormat = seoulTimeFormat;
+    	console.log(`[EVENT] joinroom : ${timeFormat}`);
 
         socket.join(data.room);
     
@@ -56,7 +66,7 @@ function eventBinding(app){
         console.log("재접속 여부:", data.reconnect)
         if(!data.reconnect) {
           // nickname 화면으로 내림
-          socket.emit("new_user", { nickname: nickname, yymmdd: seoulTimeFormat });
+          socket.emit("new_user", { nickname: nickname, yymmdd: timeFormat });
           data = { msg: nickname + " 님이 입장하셨습니다." };
           app.io.sockets.to(room).emit("system_msg", data);
         }
