@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+let call_vtr = require('../util/call_vtr');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -48,6 +48,13 @@ router.post("/loginSuccess", (req, res, next) => {
   }
   //res.redirect("/chat/" + "test_" + session.user.id);
   res.redirect("/socket/vtr/" + "test_" + session.user.id);
+});
+
+router.post("/test/call-backend", (req, res, next) => {
+  let body = req.body; 
+  call_vtr.callVtr(body, function(result) {
+    res.status(200).send(result);
+  });
 });
 
 module.exports = router;
