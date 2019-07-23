@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 // Define Schemes
 const chatSchema = new mongoose.Schema({
-  roomToken: { type: String, required: true },
-  who: { type: String, required: true },
+  //roomToken: { type: String, required: true },
+  who: { type: String, /*required: true*/ },
   to: { type: String},
-  msg: { type: String, required: true },
-  msgtime: { type: String, required: true },
+  msg: { type: String, /*required: true*/ },
+  msgtime: { type: String, /*required: true*/ },
   sameUser: { type: String, default: false },
   room: {type: String, }
 });
