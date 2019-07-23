@@ -16,12 +16,11 @@ router.get("/temp", (req, res, next) => {
 router.get("/seller", (req, res, next) => {
     let session = req.session;
     session.user = {
-        id: "test",
+        id: "tjdudwp02",
         authorized: true
     };    
     session.save();
-    //res.redirect("/chat/" + "test_kjm");
-    res.redirect("/socket/vtr/" + "test_kjm");
+    res.redirect("/socket/vtr/" + "tjdudwp02|testkcs|5d354b76969eb20ac8890f77");
 });
 
 // 구매자 로그인
@@ -46,8 +45,7 @@ router.post("/loginSuccess", (req, res, next) => {
     };
     session.save();
   }
-  //res.redirect("/chat/" + "test_" + session.user.id);
-  res.redirect("/socket/vtr/" + "test_" + session.user.id);
+  res.redirect("/socket/vtr/" + "tjdudwp02|" + session.user.id + "|5d354b76969eb20ac8890f77");
 });
 
 module.exports = router;

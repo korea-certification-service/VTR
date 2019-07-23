@@ -1,4 +1,5 @@
 const express = require('express');
+const Chat = require('../model/chat');
 const router = express.Router();
 
 /* GET users listing. */
@@ -25,6 +26,13 @@ router.get("/vtr/:room", function(req, res) {
   } else {
     res.redirect("/login");
   }
+});
+
+// 채팅 저장
+router.post('/saveChat', (req, res) => {
+  Chat.create(req.body)
+    .then(chat => res.send(chat))
+    .catch(err => res.status(500).send(err));
 });
 
 module.exports = router;

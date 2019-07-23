@@ -1,4 +1,5 @@
 const moment = require('moment-timezone'); // 서버시간과 무관하게 한국시간으로 설정 가능
+const request = require('request');
 
 function eventBinding(app){
     let count = 0;
@@ -150,8 +151,10 @@ function eventBinding(app){
             console.dir(data);
 
             let arrUser = Object.keys(rooms[room].socket_ids);
-
-            // 배열에 메세지 저장
+			// room 저장
+			data.room = socket.room;
+			
+			// 배열에 메세지 저장
             arrData.push(data);
 
             let len = arrData.length;
@@ -267,6 +270,21 @@ function eventBinding(app){
 
         console.dir(arrData);
       });
+
+      // DB 저장
+      socket.on("saveDB", function(data) {
+		const options = {
+			uri:'http://localhost:4000/socket/saveChat', 
+			method: 'POST',
+			body: arrData,
+			json:true
+		}
+		request.post(options, function(err, response, body){
+			console.log(err);
+			//console.log(response);
+			//console.log(body);
+		});
+	  });
 
       // 빼버릴 로직: 이름 바꾸기 안할 
       socket.on("changename", function(data) {
