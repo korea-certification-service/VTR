@@ -29,10 +29,10 @@ router.get("/vtr/:room", function(req, res) {
 });
 
 // 채팅 저장
-router.post('/saveChat', (req, res) => {
+router.post('/setChat', (req, res) => {
 	console.log(req.body);
 
-  Chat.create(req.body)
+  Chat.createandUpdate(req.body)
     .then(chat => {
       res.status(200).send(chat)
     })
@@ -49,6 +49,17 @@ router.post('/saveChat', (req, res) => {
   //     res.status(500).send(result);
   //   }
   // })
+});
+
+// 채팅 가져오기
+router.get('/getChat', (req, res) => {
+  Chat.findAll()
+  .then((chat) => {
+    if (!chat.length) return res.status(404).send({ err: 'chat not found' });
+    //res.status(200).send(`find successfully: ${chat}`);
+    res.status(200).json(chat);
+  })
+  .catch(err => res.status(500).send(err));
 });
 
 module.exports = router;

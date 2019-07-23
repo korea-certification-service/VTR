@@ -273,23 +273,31 @@ function eventBinding(app){
 
       // DB 저장
       socket.on("saveDB", function(data) {
-		//let jsonArr = JSON.stringify(arrData);
-    //console.log(jsonArr)
-    let reqData = {
-      "room": socket.room,
-      "msgs": arrData
-    }
+		let reqData = {
+			"room": socket.room,
+			"msgs": arrData
+		}
     
 		const options = {
-			uri:'http://localhost:4000/socket/saveChat', 
+			uri:'http://localhost:4000/socket/setChat', 
 			method: 'POST',
 			body: reqData,
 			json:true
 		}
+		
 		request.post(options, function(err, response, body){
-			console.log(err);
-			//console.log(response);
-			//console.log(body);
+			if(err !== null) {
+
+			}
+		});
+	  });
+
+      // DB 불러오기
+      socket.on("loadDB", function(data) {  
+		request.get({uri:'http://localhost:4000/socket/getChat'}, function(err, response, body){
+			if(err !== null) {
+				console.log(response)
+			}
 		});
 	  });
 

@@ -13,19 +13,32 @@ const chatSchema = new mongoose.Schema({
   msgs: Mixed
 });
 
-// Create new todo document
-chatSchema.statics.create = function (payload) {
-  console.log("payload", payload);
+// Create 
+chatSchema.statics.create = function (obj) {
   // this === Model
-  const todo = new this(payload);
-  // return Promise
-  return todo.save();
+  const chat = new this(obj);
+
+  return chat.save();
 };
+
+// Create and Update
+chatSchema.statics.createandUpdate = function (obj) {
+  console.log("obj", obj.room, obj.msgs[0]);
+  // this === Model
+
+  return this.findOneAndUpdate(
+    {room: obj.room}, // 원하는 값
+    {$push: {msgs: obj.msgs[0]}},
+    { upsert: true } 
+  )
+
+  //db.getCollection('chats').findOneAndUpdate({room: "tjdudwp02|testkcs|5d354b76969eb20ac8890f77"}, {$push: {msgs: {who: "testkcs", to: "tjdudwp02", msg: "asdfg", msgtime: "3:35 PM"}}})
+};
+
 
 // Find All
 chatSchema.statics.findAll = function () {
   // return promise
-  // V4부터 exec() 필요없음
   return this.find({});
 };
 
