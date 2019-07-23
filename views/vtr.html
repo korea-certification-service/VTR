@@ -319,6 +319,7 @@ socket.on('reconnect', function (data) {
 
 var chatUI = {
     isDim: false,
+    room: document.getElementById("room").value,
     init: function() {
         this.fnAt();
         this.orientationchange();
@@ -392,12 +393,46 @@ var chatUI = {
         });
     },
     ActBtn: function() {
+        var that = this;
         var proxyEvent= {
             "btnTransactionRequest": function() {
-                console.log("this", this);
-                //alert("거래시작");
+                var thisDom = this;
+
+                if(that.room !== "") {
+                    var arrInfo = that.room.split("|");
+                }
+                var bodyParam = {};
+                bodyParam.itemId = arrInfo[2];
+                bodyParam.stepValue = "1";
+                bodyParam.reqValue = {
+            		buyerTag: arrInfo[0],
+                    sellerTag: arrInfo[1]
+                };
+
+                $.ajax({
+                    url: "/test/call-backend",
+                    data: JSON.stringify(bodyParam),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    thisDom.setAttribute("disabled", "disabled");
+                    alert("구매 요청 되었습니다.");
+                })
+                .fail(function(xhr, status, error) {
+                    console.log(error);
+                    alert("구매 요청 중 에러가 발생하였습니다.");
+                })                
             },
             "btnPurchaseConfirmation": function() {
+                var thisDom = this;
+                
+                if(that.room !== "") {
+                    var arrInfo = that.room.split("|");
+                }
+                var bodyParam = {};
                 alert("구매 확인");
             },
             "btnSalesComplete": function() {
@@ -418,12 +453,12 @@ var chatUI = {
 }    
 chatUI.init();
 
-function getDB() {
+function getChatInDB() {
     $.ajax({
-        url: "http://localhost:4000/socket/getchat", // 클라이언트가 요청을 보낼 서버의 URL 주소
-        data: {},                // HTTP 요청과 함께 서버로 보낼 데이터
-        type: "GET",                             // HTTP 요청 방식(GET, POST)
-        dataType: "json"                         // 서버에서 보내줄 데이터의 타입
+        url: "http://localhost:4000/socket/getchat",
+        data: {},
+        type: "GET",
+        dataType: "json"
     })
     .done(function(json) {
         console.log(json[0].msgs);

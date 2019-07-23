@@ -48,11 +48,48 @@ router.post("/loginSuccess", (req, res, next) => {
   res.redirect("/socket/vtr/" + "tjdudwp02|" + session.user.id + "|5d354b76969eb20ac8890f77");
 });
 
+// API call Test
 router.post("/test/call-backend", (req, res, next) => {
   let body = req.body; 
+  console.log(body);
   call_vtr.callVtr(body, function(result) {
     res.status(200).send(result);
   });
 });
+
+
+/*
+0:
+{
+	"itemId":"5d35996aed37d44390e31f9a",
+	"stepValue": "1",
+	"reqValue":{
+		"sellerTag":"skypentum",
+		"buyerTag":"sellposion"
+	}
+}
+
+1:
+{
+	"itemId":"5d35996aed37d44390e31f9a",
+	"stepValue": "1",
+	"reqValue":{
+	    "sellerTag": "skypentum",
+	    "buyerTag": "sellposion",
+	    "cryptoCurrencyCode":"MACH",
+	    "price": 2,
+	    "country": "KR"
+	}
+}
+
+5:
+{
+	"itemId":"5d35996aed37d44390e31f9a",
+	"stepValue": "5",
+	"reqValue":{
+		"reqUserTag":"sellposion"
+	}
+}
+*/
 
 module.exports = router;
