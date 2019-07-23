@@ -273,6 +273,8 @@ function eventBinding(app){
 
       // DB 저장
       socket.on("saveDB", function(data) {
+		//let jsonArr = JSON.stringify(arrData);
+		//console.log(jsonArr)
 		const options = {
 			uri:'http://localhost:4000/socket/saveChat', 
 			method: 'POST',

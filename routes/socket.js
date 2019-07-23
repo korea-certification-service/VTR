@@ -30,11 +30,17 @@ router.get("/vtr/:room", function(req, res) {
 
 // 채팅 저장
 router.post('/saveChat', (req, res) => {
-  Chat.create(req.body)
+	console.log(req.body[0]);
+
+  Chat.create(req.body[0])
     .then(chat => {
       res.send(chat)
     })
-    .catch(err => res.status(500).send(err));
+    .catch(err => {
+      console.log(err)
+      res.status(500).send(err)
+    });
+
 });
 
 module.exports = router;

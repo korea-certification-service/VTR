@@ -13,6 +13,7 @@ const chatSchema = new mongoose.Schema({
 
 // Create new todo document
 chatSchema.statics.create = function (payload) {
+  console.log("payload", payload);
   // this === Model
   const todo = new this(payload);
   // return Promise
