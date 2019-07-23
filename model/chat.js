@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
-
+let Mixed = mongoose.Schema.Types.Mixed;
 // Define Schemes
 const chatSchema = new mongoose.Schema({
   //roomToken: { type: String, required: true },
-  who: { type: String, /*required: true*/ },
-  to: { type: String},
-  msg: { type: String, /*required: true*/ },
-  msgtime: { type: String, /*required: true*/ },
-  sameUser: { type: String, default: false },
-  room: {type: String, }
+  // who: { type: String, /*required: true*/ },
+  // to: { type: String},
+  // msg: { type: String, /*required: true*/ },
+  // msgtime: { type: String, /*required: true*/ },
+  // sameUser: { type: String, default: false },
+  // room: {type: String, }
+  room: { type: String, required: true },
+  msgs: Mixed
 });
 
 // Create new todo document
