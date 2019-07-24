@@ -15,8 +15,15 @@ router.get("/chat/:room", function(req, res) {
   res.render("room", { room: req.params.room, userId: session.user.id });
 });
 
-// VTR
-router.get("/vtr/:room", function(req, res) {
+// VTR wating
+router.post("/waiting", function(req, res) {
+  res.render("waiting", req.body);
+});
+
+// VTR Room
+router.post("/room/:room", function(req, res) {
+  res.render("vtr", { room: req.body.room, userId: req.body.userId });
+  /*
   let session = req.session;
   console.log("현재 세션 정보", session.user);
   console.log("room name is :" + req.params.room);
@@ -26,6 +33,7 @@ router.get("/vtr/:room", function(req, res) {
   } else {
     res.redirect("/login");
   }
+  */
 });
 
 // 채팅 저장

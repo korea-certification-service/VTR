@@ -20,7 +20,7 @@ router.get("/seller", (req, res, next) => {
         authorized: true
     };    
     session.save();
-    res.redirect("/socket/vtr/" + "tjdudwp02|testkcs|5d354b76969eb20ac8890f77");
+    res.redirect("/vtr/room/" + "tjdudwp02|testkcs|5d354b76969eb20ac8890f77");
 });
 
 // 구매자 로그인
@@ -45,7 +45,7 @@ router.post("/loginSuccess", (req, res, next) => {
     };
     session.save();
   }
-  res.redirect("/socket/vtr/" + "tjdudwp02|" + session.user.id + "|5d354b76969eb20ac8890f77");
+  res.redirect("/vtr/room/" + "tjdudwp02|" + session.user.id + "|5d354b76969eb20ac8890f77");
 });
 
 // API call Test

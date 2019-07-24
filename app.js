@@ -9,7 +9,6 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 // require router
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const socketsRouter = require('./routes/socket');
 const cors = require('cors');
 
@@ -56,8 +55,7 @@ app.use(
 
 // router
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/socket', socketsRouter);
+app.use('/vtr', socketsRouter);
 
 // API문서: https://socket.io/docs/server-api/
 // socket
