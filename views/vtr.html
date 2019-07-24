@@ -12,44 +12,18 @@
 <body>
     <div class="chat_wrap" id="chatWrap">
         <header class="header">
-            <h1>세라핌 클레압 팝니다</h1>
+            <h1 class="cf">
+                <div class="vtr_category" id="vtrategory"><%=category%></div>
+                <div class="vtr_title ellipse"><%=title%></div>
+                <div class="vtr_price"><%=price%> <%=cryptoCurrencyCode%></div>
+            </h1>
         </header>
         <div class="content" id="content">
-                <div>
-                    my Name <input type="text" id="nickname" readonly/><br>
-                    other Name <input type="text" id="othername" readonly/> 
-                </div>
-            <!--
-            <em class="other_id">other</em>
-            <div class="bubble other_speech"><p>안녕하세요 &#128513;</p></div>
-            <div class="bubble other_speech">
-                <p>
-                    거래 요청 드립니다
-                    <span class="chat_time">오전 1:47</span>
-                </p>
+            <div>
+                my Name <input type="text" id="nickname" readonly/><br>
+                other Name <input type="text" id="othername" readonly/> 
             </div>
-            <em class="my_id">imymemine</em>
-            <div class="bubble my_speech"><p>넹 &#128513;</p></div>
-            <div class="bubble my_speech">
-                <p>
-                    말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.말씀하세요.
-                    <span class="chat_time">오후 11:07</span>
-                </p>
-            </div>
-            <div class="ymd">2019년 6월 14일</div>
-            <em class="mach_id">chatbot</em>
-            <div class="bubble mach_speech"><p>거래 진행은 판매자만 가능합니다.거래 진행은 판매자만 가능합니다.거래 진행은 판매자만 가능합니다.거래 진행은 판매자만 가능합니다.</p></div>
-            <div class="chat_dim" id="chatDim"></div>
-            <em class="other_id">other</em>
-            <div class="bubble other_speech"><p>안녕하세요 &#128513;</p></div>
-            <div class="bubble other_speech"><p>거래 요청 드립니다</p></div>
-            <em class="my_id">imymemine</em>
-            <div class="bubble my_speech"><p>넹 &#128513;</p></div>
-            <div class="bubble my_speech"><p>말씀하세요</p></div>
-            <div class="ymd">2019년 6월 14일</div>
-            <em class="mach_id">chatbot</em>
-            <div class="bubble mach_speech"><p>거래 진행은 판매자만 가능합니다.</p></div>
-            -->
+ 
             <div class="chat_dim" id="chatDim"></div>
         </div>
         <footer class="footer cf">
@@ -71,8 +45,11 @@
                 <div class="mach_command machCmd">@마하 거래흥정</div>
             </div>
         </footer>
-        <input type="hidden" id="room" name="" value="<%=room%>" />
-        <input type="hidden" id="userId" name="" value="<%=userId%>" />
+        <input type="hidden" id="room" value="<%=room%>" />
+        <input type="hidden" id="userId" value="<%=userId%>" />
+        <input type="hidden" id="buyerTag" value="<%=buyerTag%>" >
+        <input type="hidden" id="sellerTag" value="<%=sellerTag%>" >
+        <input type="hidden" id="country" value="<%=country%>" >
     </div>
 <script>
 // 로직 전부다 vanilla JS로 변경
@@ -118,8 +95,12 @@ function fnSendMsg() {
           }
         }
 
+        var userId = document.getElementById("userId").value;
+        var buyerTag = document.getElementById("buyerTag").value;
+        var sellerTag = document.getElementById("sellerTag").value;
+
         if(isCommand) { // 존재하는 명령어
-			socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: i});
+			socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: i, userId: userId, buyerTag: buyerTag, sellerTag: sellerTag });
 			/*
             switch (i) {
                 case 0:
@@ -320,6 +301,7 @@ socket.on('reconnect', function (data) {
 var chatUI = {
     isDim: false,
     room: document.getElementById("room").value,
+    country: document.getElementById("country").value,
     init: function() {
         this.fnAt();
         this.orientationchange();
@@ -406,9 +388,11 @@ var chatUI = {
                 bodyParam.stepValue = "1";
                 bodyParam.reqValue = {
             		buyerTag: arrInfo[0],
-                    sellerTag: arrInfo[1]
+                    sellerTag: arrInfo[1],
+                    cryptoCurrencyCode: "MACH",
+                    price: "", // 흥정한 가격을 넣기
+                    country: that.country,
                 };
-
                 $.ajax({
                     url: "/test/call-backend",
                     data: JSON.stringify(bodyParam),

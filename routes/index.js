@@ -51,7 +51,7 @@ router.post("/loginSuccess", (req, res, next) => {
 // API call Test
 router.post("/test/call-backend", (req, res, next) => {
   let body = req.body; 
-  console.log(body);
+
   call_vtr.callVtr(body, function(result) {
     res.status(200).send(result);
   });
@@ -62,7 +62,7 @@ router.post("/test/call-backend", (req, res, next) => {
 0:
 {
 	"itemId":"5d35996aed37d44390e31f9a",
-	"stepValue": "1",
+	"stepValue": "0",
 	"reqValue":{
 		"sellerTag":"skypentum",
 		"buyerTag":"sellposion"

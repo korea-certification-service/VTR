@@ -1,5 +1,6 @@
 const express = require('express');
 const Chat = require('../model/chat');
+const config = require('../config/config');
 const router = express.Router();
 
 /* GET users listing. */
@@ -17,12 +18,16 @@ router.get("/chat/:room", function(req, res) {
 
 // VTR wating
 router.post("/waiting", function(req, res) {
-  res.render("waiting", req.body);
+  let reqBody = req.body;
+  reqBody['token'] = config.APIToken;
+  res.render("waiting", reqBody);
 });
 
 // VTR Room
 router.post("/room/:room", function(req, res) {
-  res.render("vtr", { room: req.body.room, userId: req.body.userId });
+  let reqBody = req.body;
+  //res.render("vtr", { room: req.body.room, userId: req.body.userId });
+  res.render("vtr", req.body);
   /*
   let session = req.session;
   console.log("현재 세션 정보", session.user);

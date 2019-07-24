@@ -19,7 +19,7 @@ function callVtr(body, callback) {
 
     //채팅 서버에서 API 서버로 내부 call요청한다.
     request(reqs, function (error, response, body) {  
-        console.log(error, response, body);
+        //console.log(error, response, body);
         if (!error && response.statusCode == 200) {
             let result = body.data;
             if(typeof(body) == "string") {
