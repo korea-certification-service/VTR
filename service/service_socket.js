@@ -206,108 +206,97 @@ function eventBinding(app){
 
     // 거래관련
     socket.on("trade", function(data) {
-      // { who: 'kjm', to: 'ALL', msg: 'aaaa', msgtime: '오후 06:05' }
       let room = socket.room;
       data.msgtime = getMsgTime();
-      data.type = "btn";
-      let btn = {};
+      let flagNum = 0;
       let mymsg = {};
-      //let dom = '<em class="mach_id">chatbot</em><div class="bubble mach_speech">';
       console.log("[EVENT] trade");
       console.dir(data);
 
       switch (data.command) {
         case 0:
-          btn.text = "거래 안내";
-          btn.status = 0;
-          btn.class = "trd_info";
-          btn.id = "btnTrdInfo";
-          data.content = btn;
-          mymsg.msg = "거래를 안내해드리겠습니다.";          
+          // data.type = "info";
+          // mymsg.msg = "거래를 안내해드리겠습니다.";          
           break;
 
         case -1:
-          data.type = "err";
-          let err = {
-            className: "server_msg",
-            msg:
-              data.msg +
-              " 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.",
-            status: -1
-          };
-          data.content = err;
-          mymsg.msg = err.msg;          
+          //data.type = "err";
+          //mymsg.msg = data.msg +" 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.";          
           break;
       
         default:
-          if (data.userId === data.sellerTag) { // 판매자
+          data.type = "other";
+          if (data.who === data.sellerTag) { // 판매자
             if (data.command === 1) {
-              btn.text = "거래 요청";
-              btn.status = 1;
-              btn.class = "btn_t_r";
-              btn.id = "btnTransactionRequest";
-              data.content = btn;
-              mymsg.msg = "상대방에게 거래를 요청하였습니다.";
+              flagNum = 1;
+              //mymsg.msg = "상대방에게 거래를 요청하였습니다.";
             } else if (data.command === 3) {
-              btn.text = "판매 확인";
-              btn.status = 3;
-              btn.class = "btn_s_c";
-              btn.id = "btnSalesComplete";
-              data.content = btn;
-              mymsg.msg = "판매 확인을 하였습니다.";
+              flagNum = 3;
+              //mymsg.msg = "판매 확인을 하였습니다.";
             } else {
-              data.type = "err";
-              let err = {
-                className: "server_msg",
-                msg:
-                  data.msg +
-                  "는 판매자가 실행할 수 없는 명령어 입니다.",
-                status: -1
-              };
-              data.content = err;
-              mymsg.msg = err.msg;
+              mymsg.msg = data.msg + "는 판매자가 실행할 수 없는 명령어 입니다.";
             }
-          } else if (data.userId === data.buyerTag){ // 구매자
+          } else if (data.who === data.buyerTag){ // 구매자
             if (data.command === 2) {
-              btn.text = "구매 확인";
-              btn.status = 2;
-              btn.class = "btn_p_c";
-              btn.id = "btnPurchaseConfirmation";
-              data.content = btn;
-              mymsg.msg = "구매 확인을 하였습니다.";
+              flagNum = 2;
+              //mymsg.msg = "구매 확인을 하였습니다.";
             } else if (data.command === 4) {
-              btn.text = "거래 완료";
-              btn.status = 4;
-              btn.class = "btn_t_c";
-              btn.id = "btnTransactionComplete";
-              data.content = btn;
-              mymsg.msg = "거래가 완료되었습니다.";
+              flagNum = 4;
+              //mymsg.msg = "거래가 완료되었습니다.";
             } else {
               data.type = "err";
-              let err = {
-                className: "server_msg",
-                msg:
-                  data.msg +
-                  "는 구매자가 실행할 수 없는 명령어 입니다.",
-                status: -1
-              };
-              data.content = err;
-              mymsg.msg = err.msg;
+              mymsg.msg = data.msg + "는 구매자가 실행할 수 없는 명령어 입니다.";
             }
           }
           break;
       }
 
       // 상대방에게 보내는 메세지
-      socket.broadcast.to(room).emit("trade", data);
-
+      if(data.command !== 0 || data.command !== -1) socket.broadcast.to(room).emit("trade", data);
       // 자기자신에게 전송 : 중요하지 않은 내용(단순 알림 메세지)
-      socket.emit("trade", {status: btn.status, mymsg: mymsg.msg, msgtime: data.msgtime});
+      socket.emit("trade", {flagNum: flagNum, mymsg: mymsg.msg, msgtime: data.msgtime});
 
       // 배열에 메세지 저장
       arrData.push(data);
 
       console.dir(arrData);
+    });
+
+    // 거래관련 상세 프로세스
+    socket.on("tradeProcess", function(data) {
+      let room = socket.room;
+      data.msgtime = getMsgTime();
+      let flagNum = 0;
+      let mymsg = {};
+      data.type = "other";
+      console.log("tradeProcess", data);
+
+      if (data.who === data.sellerTag) { // 판매자
+
+      } else if (data.who === data.buyerTag){ // 구매자
+        switch (data.command) {
+          case 1.1:
+            // data.buyerPrice
+            // 상대방한테 받은 가격 화면으로 내려서 맞는지 확인
+            // 나한테는 가격 내린거 맞는지 확인하기
+            mymsg.msg = data.buyerPrice + " 가격으로 거래를 요청하였습니다."
+
+            break;
+          case 1.2:
+            
+            break;
+        
+          default:
+            break;
+        }
+      }
+
+      // 상대방에게 보내는 메세지
+      socket.broadcast.to(room).emit("tradeProcess", data);
+
+      // 자기자신에게 전송 : 중요하지 않은 내용(단순 알림 메세지)
+      socket.emit("tradeProcess", {flagNum: flagNum, mymsg: mymsg.msg, msgtime: data.msgtime});
+
     });
 
     // DB 저장

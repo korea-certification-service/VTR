@@ -50,10 +50,12 @@
         <input type="hidden" id="buyerTag" value="<%=buyerTag%>" >
         <input type="hidden" id="sellerTag" value="<%=sellerTag%>" >
         <input type="hidden" id="country" value="<%=country%>" >
+        <input type="hidden" id="tradePrice" value="" >
     </div>
 <script>
 // 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
+// 관리자 도구 여는거 막는 코드 추가(f12, 마우스 오른쪽, command+option+i)
 var serverURL = 'http://localhost:4000';
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
@@ -83,6 +85,12 @@ function fnSendMsg() {
     var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료"];
     var isCommand = false;
     var regTradingTxt = /^@마하 /;
+    var userId = document.getElementById("userId").value;
+    var buyerTag = document.getElementById("buyerTag").value;
+    var sellerTag = document.getElementById("sellerTag").value;
+
+	var dom = '<div class="bubble mach_speech"><p>';
+    var content = document.getElementById("content");
 
     if (regTradingTxt.test(msgVal)) {
         sendTxt = msgVal.replace('@마하 ', '');
@@ -95,31 +103,24 @@ function fnSendMsg() {
           }
         }
 
-        var userId = document.getElementById("userId").value;
-        var buyerTag = document.getElementById("buyerTag").value;
-        var sellerTag = document.getElementById("sellerTag").value;
-
         if(isCommand) { // 존재하는 명령어
-			socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: i, userId: userId, buyerTag: buyerTag, sellerTag: sellerTag });
-			/*
+			
             switch (i) {
                 case 0:
-                    //$("#chatLogs").append("<div style='color:red'>거래를 시작하고 싶으시면 <em>@마하 거래시작</em> 라고 입력해주세요<br>궁금한게 있으시면 <em>@마하 거래안내</em> 라고 입력해주세요</div>");
-					socket.emit("trade", { who: _userId, to: othername.value, msg: msgVal, command: 0});
-                    break;
-                case 1:
-                    //$("#chatLogs").append("<div>상대방에게 거래요청을 하였습니다. 상대방이 거래요청을 누르면 진행됩니다.</div>");
-                    socket.emit("trade", { who: _userId, to: othername.value, msg: msgVal, command: 1});
-                    break;
-                
+                    dom += '거래 프로세스에 대해서 안내해드릴께요.<br>';
+                    dom += '<img src="/img/VTR_info.png" alt="안내문"/>'              
+                    content.insertAdjacentHTML("beforeend", dom);    
+                    break;               
                 default:
+                    socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: i, userId: userId, buyerTag: buyerTag, sellerTag: sellerTag });
                     break;
             }
-			*/
+
         } else { // 없는 명령어
-            socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: -1});
-            //$("#chatLogs").append("<div>"</div>");
-            //$('#content').append('<p class="p_system">'+msgVal+' 라는 명령어는 올바르지 않습니다. 다시 확인하시고 입력해주세요.</p>');
+            //socket.emit("trade", { who: _userId, to: othername.value, msg: originMsg, command: -1});
+            dom += originMsg +" 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.";      
+            dom += '</p></div>';
+            content.insertAdjacentHTML("beforeend", dom);
         }
 
     } else {
@@ -149,49 +150,103 @@ socket.on('userlist', function (data) {
 });
 
 socket.on('trade', function (data) {
-	var btn = data.content;
 	var dom = '<div class="bubble mach_speech"><p>';
+    var content = document.getElementById("content");
+    
     console.log('trade', data);
 
-    var content = document.getElementById("content");
-	// 상대방 화면에 DOM 생성
-    if(data.type === "err") {
-        //$('#content').append('<p>'+btn.msg+'</p>');
-    } else if(data.type === "btn"){
+    if(data.type === "info") {
+        dom += data.mymsg;
+        if(data.status === 0) {dom += '<img src="/img/VTR_info.png" alt="안내문"/>'}
+        dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
+        dom += '</p></div>';
+        content.insertAdjacentHTML("beforeend", dom);
+    } else if(data.type === "other"){
 		// 상대방 화면 돔생성
         switch (data.command) {
             case 0:
-				dom += '거래안내를 보시려면 @마하 거래안내라고 입력해주세요.';              
+				// dom += '상대방이 거래안내를 보는 중입니다.<br>거래 안내를 보시려면 @마하 거래안내라고 입력해주세요.';              
 				break;
-			case 1:
-				dom += '상대방이 거래요청을 하였습니다.<br>거래를 시작하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
-				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+            case 1:       
+                dom += '판매자가 거래요청중입니다.<br>잠시만 기다려주세요.';      
                 break;
 			case 2:
 				dom += '구매확인을 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
-				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+                dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';         
                 break;
 			case 3:
-				dom += '판매완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
-				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+				//dom += '판매완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				//dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">판매 완료</button>';                
                 break;
 			case 4:
-				dom += '거래완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
-				dom += '<button id="' + btn.id + '" class="btn_chat '+btn.class +'">' + btn.text + '</button>';                
+				//dom += '거래완료를 하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				//dom += '<button id="btnTransactionComplete" class="btn_chat btn_t_c">거래 완료</button>';                
                 break;
             default:
                 break;
-		}
+        }
+
 		dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);
 	} else {
 		// 내 화면에 돔생성
-		dom += data.mymsg;
-		if(data.status === 0) {dom += '<img src="/img/VTR_info.png" alt="안내문"/>'}
-		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
-        content.insertAdjacentHTML("beforeend", dom);
-	}
+        switch (data.flagNum) {
+            case 1:           
+				dom += '상대방이 거래요청을 하였습니다.<br>거래 가격을 입력해주세요.<br><span class="chat_time">' + data.msgtime + '</span>';             
+				dom += '<input type="text" id="iptPrice" class="ipt_price" placeholder="가격"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';                
+                break;
+            case 2:
+				dom += '구매자의 구매 확인을 기다리는 중입니다.<br>잠시만 기다려주세요.';
+                break;
+            default:
+                dom += data.mymsg;
+                if(data.status === 0) {dom += '<img src="/img/VTR_info.png" alt="안내문"/>'}
+		        dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';                
+                break;
+        }
+		dom += '</p></div>';
+        content.insertAdjacentHTML("beforeend", dom);        
+    }
 	
+});
+
+// 안쓰고 있으면 지우기
+socket.on("tradeProcess", function(data) {
+    console.log("tradeProcess", data);
+    var btn = data.content;
+	var dom = '<div class="bubble mach_speech"><p>';
+    var content = document.getElementById("content");    
+    
+    if(data.type === "other") {
+		// 상대방 화면 돔생성
+        switch (data.command) {
+			case 1.1:
+                //document.getElementById("tradePrice").value = data.buyerPrice;  
+                //dom += '상대방이' + data.buyerPrice +' 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 아래 버튼을 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
+				//dom += '<button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';                
+                break;
+            case 1.2:
+				dom += '';              
+				break;                
+            default:
+                break;
+        }
+        dom += '</p></div>';
+        content.insertAdjacentHTML("beforeend", dom);
+    } else {
+		// 내 화면에 돔생성
+        switch (data.flagNum) {
+            case 1:           
+				dom += '';
+                break;
+
+            default:
+                dom += '';
+                break;
+        }
+		dom += '</p></div>';
+        content.insertAdjacentHTML("beforeend", dom);
+    }
 });
 
 socket.on('broadcast_msg', function (data) {
@@ -376,9 +431,12 @@ var chatUI = {
     },
     ActBtn: function() {
         var that = this;
+        var buyerTag = document.getElementById("buyerTag").value;
+        var sellerTag = document.getElementById("sellerTag").value;
         var proxyEvent= {
             "btnTransactionRequest": function() {
                 var thisDom = this;
+                var tradePrice = document.getElementById("iptPrice").value;
 
                 if(that.room !== "") {
                     var arrInfo = that.room.split("|");
@@ -390,9 +448,10 @@ var chatUI = {
             		buyerTag: arrInfo[0],
                     sellerTag: arrInfo[1],
                     cryptoCurrencyCode: "MACH",
-                    price: "", // 흥정한 가격을 넣기
-                    country: that.country,
+                    price: parseFloat(tradePrice),
+                    //country: that.country,
                 };
+
                 $.ajax({
                     url: "/test/call-backend",
                     data: JSON.stringify(bodyParam),
@@ -403,13 +462,14 @@ var chatUI = {
                 .done(function(json) {
                     console.log(json);
                     thisDom.setAttribute("disabled", "disabled");
-                    alert("구매 요청 되었습니다.");
+                    //alert("구매 요청 되었습니다.");
+                    socket.emit("trade", { who: _userId, to: othername.value, command: 2, buyerTag: buyerTag, sellerTag: sellerTag });
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
                     alert("구매 요청 중 에러가 발생하였습니다.");
                 })                
-            },
+            },        
             "btnPurchaseConfirmation": function() {
                 var thisDom = this;
                 
@@ -417,7 +477,31 @@ var chatUI = {
                     var arrInfo = that.room.split("|");
                 }
                 var bodyParam = {};
-                alert("구매 확인");
+                bodyParam.itemId = arrInfo[2];
+                bodyParam.stepValue = "2";
+
+                $.ajax({
+                    url: "/test/call-backend",
+                    data: JSON.stringify(bodyParam),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    if(json.successYn === undefined) {
+                        thisDom.setAttribute("disabled", "disabled");
+                        alert("구매 확인");
+                        //socket.emit("trade", { who: _userId, to: othername.value, command: 2, buyerTag: buyerTag, sellerTag: sellerTag });
+                    } else {
+                        alert(json.msg);
+                    }
+
+                })
+                .fail(function(xhr, status, error) {
+                    console.log(error);
+                    alert("구매 확인 중 에러가 발생하였습니다.");
+                }) 
             },
             "btnSalesComplete": function() {
                 alert("판매 확인");
