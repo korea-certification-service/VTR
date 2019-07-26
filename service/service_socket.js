@@ -209,94 +209,36 @@ function eventBinding(app){
       let room = socket.room;
       data.msgtime = getMsgTime();
       let flagNum = 0;
-      let mymsg = {};
+      // let mymsg = {};
       console.log("[EVENT] trade");
       console.dir(data);
 
-      switch (data.command) {
-        case 0:
-          // data.type = "info";
-          // mymsg.msg = "거래를 안내해드리겠습니다.";          
-          break;
-
-        case -1:
-          //data.type = "err";
-          //mymsg.msg = data.msg +" 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.";          
-          break;
-      
-        default:
-          data.type = "other";
-          if (data.who === data.sellerTag) { // 판매자
-            if (data.command === 1) {
-              flagNum = 1;
-              //mymsg.msg = "상대방에게 거래를 요청하였습니다.";
-            } else if (data.command === 3) {
-              flagNum = 3;
-              //mymsg.msg = "판매 확인을 하였습니다.";
-            } else {
-              mymsg.msg = data.msg + "는 판매자가 실행할 수 없는 명령어 입니다.";
-            }
-          } else if (data.who === data.buyerTag){ // 구매자
-            if (data.command === 2) {
-              flagNum = 2;
-              //mymsg.msg = "구매 확인을 하였습니다.";
-            } else if (data.command === 4) {
-              flagNum = 4;
-              //mymsg.msg = "거래가 완료되었습니다.";
-            } else {
-              data.type = "err";
-              mymsg.msg = data.msg + "는 구매자가 실행할 수 없는 명령어 입니다.";
-            }
-          }
-          break;
-      }
-
-      // 상대방에게 보내는 메세지
-      if(data.command !== 0 || data.command !== -1) socket.broadcast.to(room).emit("trade", data);
-      // 자기자신에게 전송 : 중요하지 않은 내용(단순 알림 메세지)
-      socket.emit("trade", {flagNum: flagNum, mymsg: mymsg.msg, msgtime: data.msgtime});
-
-      // 배열에 메세지 저장
-      arrData.push(data);
-
-      console.dir(arrData);
-    });
-
-    // 거래관련 상세 프로세스
-    socket.on("tradeProcess", function(data) {
-      let room = socket.room;
-      data.msgtime = getMsgTime();
-      let flagNum = 0;
-      let mymsg = {};
-      data.type = "other";
-      console.log("tradeProcess", data);
-
-      if (data.who === data.sellerTag) { // 판매자
-
-      } else if (data.who === data.buyerTag){ // 구매자
-        switch (data.command) {
-          case 1.1:
-            // data.buyerPrice
-            // 상대방한테 받은 가격 화면으로 내려서 맞는지 확인
-            // 나한테는 가격 내린거 맞는지 확인하기
-            mymsg.msg = data.buyerPrice + " 가격으로 거래를 요청하였습니다."
-
-            break;
-          case 1.2:
-            
-            break;
-        
-          default:
-            break;
+      data.type = "basic";
+      if (data.who === data.sellerTag) { 
+        data.target = "seller"; // 판매자
+        if (data.command === 1 || data.command === 1.1 || data.command === 3) {
+          socket.broadcast.to(room).emit("trade_seller", data);
+          data.flagNum = data.command;
+        } else {
+          data.type = "err";
         }
+        socket.emit("trade_seller", data);
+
+      } else if (data.who === data.buyerTag){ 
+        data.target = "buyer"; // 구매자
+        if (data.command === 2 || data.command === 4) {
+          socket.broadcast.to(room).emit("trade_buyer", data);
+          data.flagNum = data.command;
+        } else {
+          data.type = "err";
+        }
+        socket.emit("trade_buyer", data);
+
       }
 
-      // 상대방에게 보내는 메세지
-      socket.broadcast.to(room).emit("tradeProcess", data);
-
-      // 자기자신에게 전송 : 중요하지 않은 내용(단순 알림 메세지)
-      socket.emit("tradeProcess", {flagNum: flagNum, mymsg: mymsg.msg, msgtime: data.msgtime});
-
+      // 거래관련 정보도 배열에 메세지 저장 해야할지??
+      //arrData.push(data);
+      //console.dir(arrData);
     });
 
     // DB 저장
