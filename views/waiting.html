@@ -17,6 +17,7 @@
         <input type="hidden" name="category" id="category" value="" >
         <input type="hidden" name="title" id="title" value="" >
         <input type="hidden" name="price" id="price" value="" >
+        <input type="hidden" name="itemId" id="itemId" value="" >
         <input type="hidden" name="cryptoCurrencyCode" id="cryptoCurrencyCode" value="" >
     </form>
 <script>
@@ -50,7 +51,6 @@
         frmVtr.setAttribute("action", url);
 
         $.ajax({
-            //url: "http://13.209.227.60:3000/v1/items/" + itemId,
             url: "http://13.209.227.60:3200/v2/items/" + itemId,
             headers: {"token": "<%=token%>"},
             type: "GET",
@@ -64,9 +64,12 @@
             document.getElementById("title").value = item.title;
             document.getElementById("price").value = item.price;
             document.getElementById("cryptoCurrencyCode").value = item.cryptoCurrencyCode;
-            
+            document.getElementById("itemId").value = item._id
             frmVtr.submit();
-        });     
+        })
+        .fail(function(xhr, status, error) {
+            console.log("채팅방 정보를 가져오는 중에 에러 발생", error);
+        });
 
     })
     .fail(function(xhr, status, error) {

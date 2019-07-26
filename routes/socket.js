@@ -26,6 +26,7 @@ router.post("/waiting", function(req, res) {
 // VTR Room
 router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
+  reqBody['token'] = config.APIToken;
   //res.render("vtr", { room: req.body.room, userId: req.body.userId });
   res.render("vtr", req.body);
   /*

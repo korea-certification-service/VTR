@@ -15,7 +15,7 @@
             <h1 class="cf">
                 <div class="vtr_category" id="vtrategory"><%=category%></div>
                 <div class="vtr_title ellipse"><%=title%></div>
-                <div class="vtr_price"><%=price%> <%=cryptoCurrencyCode%></div>
+                <div class="vtr_price"><span id="vtrPriceNum"><%=price%></span> <%=cryptoCurrencyCode%></div>
             </h1>
         </header>
         <div class="content" id="content">
@@ -42,7 +42,7 @@
                 <div class="mach_command machCmd">@마하 구매확인</div>
                 <div class="mach_command machCmd">@마하 판매완료</div>
                 <div class="mach_command machCmd">@마하 거래완료</div>
-                <div class="mach_command machCmd">@마하 거래흥정</div>
+                <div class="mach_command machCmd">@마하 거래취소</div>
             </div>
         </footer>
         <input type="hidden" id="room" value="<%=room%>" />
@@ -50,7 +50,10 @@
         <input type="hidden" id="buyerTag" value="<%=buyerTag%>" >
         <input type="hidden" id="sellerTag" value="<%=sellerTag%>" >
         <input type="hidden" id="country" value="<%=country%>" >
+        <input type="hidden" id="tk" value="<%=token%>" >
+        <input type="hidden" id="itemId" value="<%=itemId%>" >
         <input type="hidden" id="tradePrice" value="" >
+        <input type="hidden" id="tradeStatus" value="" >
     </div>
 <script>
 // 로직 전부다 vanilla JS로 변경
@@ -82,7 +85,7 @@ function fnSendMsg() {
     var msgVal = iptChat.value;
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료"];
+    var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료", "거래취소"];
     var isCommand = false;
     var regTradingTxt = /^@마하 /;
     var userId = document.getElementById("userId").value;
@@ -319,16 +322,26 @@ socket.on("trade_seller", function(data) {
         dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);
     } else if(data.type === "basic"){
+        var tradePrice = document.getElementById("tradePrice").value;   
+        var tradeStatus = document.getElementById("tradeStatus").value;
 
         if(data.flagNum === undefined) {
             switch (data.command) { // 구매자
-                case 1:           
-                    dom += '판매자가 거래요청중입니다.<br>잠시만 기다려주세요.';   
+                case 1:     
+                    if(tradeStatus === "50") {
+                        dom += '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
+                    } else {    
+                        return;  
+                    }
                     break;
                 case 1.1:
-                    dom += '판매자가 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요<span class="chat_time">' + data.msgtime + '</span>';
+                    chatUI.setTradeInfo();
+                    dom += '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요<span class="chat_time">' + data.msgtime + '</span>';
                     break;
                 case 3:           
+                    dom += '';   
+                    break;
+                case 5:           
                     dom += '';   
                     break;
                 default:
@@ -337,16 +350,29 @@ socket.on("trade_seller", function(data) {
             }
         } else {
             switch (data.command) { // 판매자
-                case 1:           
-                    dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br><span class="chat_time">' + data.msgtime + '</span>';             
-                    dom += '<input type="text" id="iptPrice" class="ipt_price" placeholder="가격"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';    
+                case 1:    
+                    if(tradeStatus === "50" && socket.isTradeStep1 === undefined) {
+                        dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br><span class="chat_time">' + data.msgtime + '</span>';             
+                        dom += '<input type="text" id="iptPrice" class="ipt_price" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
+                        socket.isTradeStep1 = true;
+                    }else if(tradeStatus === "1") {
+                        dom += '이미 거래요청 상태입니다.';             
+                    } else if(socket.isTradeStep1 ){
+                        dom += '거래 가격을 입력하고 거래요청을 눌러주세요.';
+                    } else {
+
+                    }
                     break;
-                case 1.1:           
+                case 1.1:    
+                    chatUI.setTradeInfo();       
                     dom += '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
                     break;
                 case 3:
                     dom += '';
                     break;
+                case 5:           
+                    dom += '';   
+                    break;                    
                 default:
                     dom += '';
                     break;
@@ -372,7 +398,7 @@ socket.on("trade_buyer", function(data) {
         if(data.flagNum === undefined) {
             switch (data.command) { // 판매자
                 case 2:           
-                    dom += '';      
+                    dom += '구매자의 구매확인을 기다리는 중입니다.<br>잠시만 기다려주세요.';     
                     break;
                 case 4:           
                     dom += '';
@@ -382,7 +408,7 @@ socket.on("trade_buyer", function(data) {
                     break;
             }
         } else {
-            switch (data.command) {
+            switch (data.command) { // 구매자
                 case 2:        
                     dom += '물건을 잘 받으셨나요?<br>구매를 확정 하시려면 구매확인을 눌러주세요.<br>거래취소를 원하시면 거래취소를 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
                     dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';    
@@ -412,11 +438,13 @@ var chatUI = {
     isDim: false,
     room: document.getElementById("room").value,
     country: document.getElementById("country").value,
+    itemId: document.getElementById("itemId").value,
     init: function() {
         this.fnAt();
         this.orientationchange();
         this.sendMsg();
         this.ActBtn();
+        this.setTradeInfo();
     },
     fnAt: function() {
         var that = this;
@@ -484,28 +512,62 @@ var chatUI = {
             fnSendMsg();
         });
     },
+    setTradeInfo: function() {
+        var itemId = this.itemId;
+        $.ajax({
+            url: "http://13.209.227.60:3200/v2/items/" + itemId,
+            headers: {"token": document.getElementById("tk").value},
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+        })
+        .done(function(result) {
+            var item = result.data;
+            console.log(item);
+            document.getElementById("tradePrice").value = item.price;
+            document.getElementById("tradeStatus").value = item.status;
+            document.getElementById("vtrPriceNum").innerText = item.price;
+            
+            switch (item.category) {
+                case "etc":
+                    document.getElementById("vtrategory").innerText = "자산거래";
+                    break;
+                case "game":
+                    document.getElementById("vtrategory").innerText = "게임아이템";
+                    break;
+                case "otc":
+                    document.getElementById("vtrategory").innerText = "OTC거래";
+                    break;
+            }
+        })
+        .fail(function(xhr, status, error) {
+            console.log("채팅방 정보를 가져오는 중에 에러 발생", error);
+        });
+    },
     ActBtn: function() {
         var that = this;
         var buyerTag = document.getElementById("buyerTag").value;
         var sellerTag = document.getElementById("sellerTag").value;
         var dom = '<div class="bubble mach_speech"><p>';
         var content = document.getElementById("content");
+        var itemId = this.itemId;
         var proxyEvent= {
             "btnTransactionRequest": function() {
                 var thisDom = this;
-                var tradePrice = document.getElementById("iptPrice").value;
-
-                if(that.room !== "") {
-                    var arrInfo = that.room.split("|");
+                var tradePrice = parseFloat(document.getElementById("iptPrice").value);
+                var ccCode = "MACH";
+                if(tradePrice === 0 || isNaN(tradePrice)) {
+                    alert("가격을 입력해주세요.");
+                    return;
                 }
+
                 var bodyParam = {};
-                bodyParam.itemId = arrInfo[2];
+                bodyParam.itemId = itemId;
                 bodyParam.stepValue = "1";
                 bodyParam.reqValue = {
-            		buyerTag: arrInfo[0],
-                    sellerTag: arrInfo[1],
-                    cryptoCurrencyCode: "MACH",
-                    price: parseFloat(tradePrice),
+            		buyerTag: buyerTag,
+                    sellerTag: sellerTag,
+                    cryptoCurrencyCode: ccCode,
+                    price: tradePrice,
                     //country: that.country,
                 };
 
@@ -518,8 +580,9 @@ var chatUI = {
                 })
                 .done(function(json) {
                     console.log(json);
+
                     thisDom.setAttribute("disabled", "disabled");
-                    socket.emit("trade", { who: _userId, to: othername.value, command: 1.1, buyerTag: buyerTag, sellerTag: sellerTag });
+                    socket.emit("trade", { who: _userId, to: othername.value, command: 1.1, price: tradePrice, ccCode:ccCode, buyerTag: buyerTag, sellerTag: sellerTag });
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
@@ -528,12 +591,9 @@ var chatUI = {
             },        
             "btnPurchaseConfirmation": function() {
                 var thisDom = this;
-                
-                if(that.room !== "") {
-                    var arrInfo = that.room.split("|");
-                }
+
                 var bodyParam = {};
-                bodyParam.itemId = arrInfo[2];
+                bodyParam.itemId = itemId;
                 bodyParam.stepValue = "2";
 
                 $.ajax({
@@ -556,7 +616,7 @@ var chatUI = {
                 .fail(function(xhr, status, error) {
                     console.log(error);
                     alert("구매 확인 중 에러가 발생하였습니다.");
-                }) 
+                });
             },
             "btnSalesComplete": function() {
                 alert("판매 확인");
@@ -565,7 +625,32 @@ var chatUI = {
                 alert("거래 완료");
             },
             "btnCancelTransaction": function() {
-                alert("거래 취소");
+                var thisDom = this;
+
+                var bodyParam = {};
+                bodyParam.itemId = itemId;
+                bodyParam.stepValue = "5";
+
+                $.ajax({
+                    url: "/test/call-backend",
+                    data: JSON.stringify(bodyParam),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    if(json.successYn === undefined) {
+                        thisDom.setAttribute("disabled", "disabled");
+                        alert("거래 취소");
+                    } else {
+                        alert(json.msg);
+                    }
+
+                })
+                .fail(function(xhr, status, error) {
+                    console.log(error);
+                    alert("거래 취소 중 에러가 발생하였습니다.");
+                });
             },
         };
 

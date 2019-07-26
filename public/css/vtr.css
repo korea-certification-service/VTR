@@ -44,10 +44,10 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
 .header{height: 80px; border-bottom: 1px solid #d9d9d9; box-sizing: border-box;}
-.header h1{padding: 0 20px; line-height: 80px; font-size: 18px; font-weight: 400;}
+.header h1{padding: 0 20px; line-height: 80px; font-size: 16px; font-weight: 400;}
 .header h1 > div{float: left;}
-.header h1 .vtr_category{width: 50px;}
-.header h1 .vtr_title{width: calc(100% - 200px); text-align: center;}
+.header h1 .vtr_category{width: 80px;}
+.header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}
 .header h1 .vtr_price{float: right; width: 150px; text-align: right;}
 .content{height: calc(100% - 150px); overflow: scroll;}
 .content > em{display: block; font-weight: 400;}
@@ -75,6 +75,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .btn_chat.btn_p_c{}
 .btn_chat.btn_s_c{}
 .btn_chat.btn_t_c{}
+.ipt_price{width: 150px; height: 30px; font-size: 14px;}
 
 .footer{height: 70px; position: relative;}
 .footer .btn_sharp{font-size: 28px;}
