@@ -13,9 +13,9 @@
     <div class="chat_wrap" id="chatWrap">
         <header class="header">
             <h1 class="cf">
-                <div class="vtr_category" id="vtrategory"><%=category%></div>
+                <div class="vtr_category" id="vtrCategory"><%=category%></div>
                 <div class="vtr_title ellipse"><%=title%></div>
-                <div class="vtr_price"><span id="vtrPriceNum"><%=price%></span> <%=cryptoCurrencyCode%></div>
+                <div class="vtr_price" id="vtrPrice"><span id="vtrPriceNum"><%=price%></span> <%=cryptoCurrencyCode%></div>
             </h1>
         </header>
         <div class="content" id="content">
@@ -315,16 +315,15 @@ socket.on("trade_seller", function(data) {
     console.log("trade_seller", data);
 	var dom = '<div class="bubble mach_speech"><p>';
     var content = document.getElementById("content");    
-    
+    var tradePrice = document.getElementById("tradePrice").value;   
+    var tradeStatus = document.getElementById("tradeStatus").value;
+
     if(data.type === "err") {
         dom += "<em>" + data.msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
         dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);
     } else if(data.type === "basic"){
-        var tradePrice = document.getElementById("tradePrice").value;   
-        var tradeStatus = document.getElementById("tradeStatus").value;
-
         if(data.flagNum === undefined) {
             switch (data.command) { // 구매자
                 case 1:     
@@ -336,13 +335,22 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 1.1:
                     chatUI.setTradeInfo();
-                    dom += '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요<span class="chat_time">' + data.msgtime + '</span>';
+                    dom += '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
                     break;
                 case 3:           
-                    dom += '';   
+                    //dom += '';
+                    return;
                     break;
-                case 5:           
-                    dom += '';   
+                case 3.1:    
+                    chatUI.setTradeInfo();        
+                    dom += '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
+                    break;
+                case 5:    
+                    if(tradeStatus == "50") {
+                        return;  
+                    } else if(tradeStatus !== "3" || tradeStatus !== "4") {            
+                        dom += '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
+                    }
                     break;
                 default:
                     dom += '';
@@ -352,7 +360,7 @@ socket.on("trade_seller", function(data) {
             switch (data.command) { // 판매자
                 case 1:    
                     if(tradeStatus === "50" && socket.isTradeStep1 === undefined) {
-                        dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br><span class="chat_time">' + data.msgtime + '</span>';             
+                        dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
                         dom += '<input type="text" id="iptPrice" class="ipt_price" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
                         socket.isTradeStep1 = true;
                     }else if(tradeStatus === "1") {
@@ -368,10 +376,24 @@ socket.on("trade_seller", function(data) {
                     dom += '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
                     break;
                 case 3:
-                    dom += '';
+                    dom += '판매완료를 하시려면 판매완료를 눌러주세요.';  
+                    dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">판매완료</button>';  
                     break;
-                case 5:           
-                    dom += '';   
+                case 3.1:           
+                    chatUI.setTradeInfo(); 
+                    return;
+                    break;                    
+                case 5:
+                    if(tradeStatus == "50") {
+                        dom += '취소할 거래가 아직 진행 되지 않았습니다.';  
+                    } else if(tradeStatus === "3") {       
+                        dom += '판매완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                    }else if(tradeStatus === "4") {               
+                        dom += '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                    } else {
+                        dom += '거래를 취소를 원하시면 아래 버튼을 눌러주세요.';   
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
+                    }
                     break;                    
                 default:
                     dom += '';
@@ -379,7 +401,7 @@ socket.on("trade_seller", function(data) {
             }
         }
 
-		dom += '</p></div>';
+		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
         content.insertAdjacentHTML("beforeend", dom);
     }
 });
@@ -387,7 +409,9 @@ socket.on("trade_seller", function(data) {
 socket.on("trade_buyer", function(data) {
     console.log("trade_buyer", data);
 	var dom = '<div class="bubble mach_speech"><p>';
-    var content = document.getElementById("content"); 
+    var content = document.getElementById("content");
+    var tradeStatus = document.getElementById("tradeStatus").value;
+    var vtrPrice = document.getElementById("vtrPrice").innerText;   
 
     if(data.type === "err") {
         dom += "<em>" + data.msg + "</em> 명령어는 구매자가 실행할 수 없습니다.";
@@ -397,33 +421,73 @@ socket.on("trade_buyer", function(data) {
     } else if(data.type === "basic"){
         if(data.flagNum === undefined) {
             switch (data.command) { // 판매자
-                case 2:           
-                    dom += '구매자의 구매확인을 기다리는 중입니다.<br>잠시만 기다려주세요.';     
+                case 2:   
+                    if(tradeStatus == "1") {         
+                        dom += '구매자의 구매확인을 기다리는 중입니다.<br>잠시만 기다려주세요.';     
+                    }
+                    break;
+                case 2.1:
+                    chatUI.setTradeInfo();              
+                    dom += '구매자가 구매확인을 하였습니다.<br>물건을 구매자에게 송달 하셨다면 <em>@마하 판매완료</em>을 입력해주세요';     
                     break;
                 case 4:           
-                    dom += '';
+                    dom += '구매자의 거래완료를 기다리는 중입니다.';
                     break;
+                case 4.1:           
+                    dom += '구매자가 거래가 완료를 눌렀습니다.<br>앞으로도 마켓마하와 함께 안전한 거래하세요.';
+                    break;
+                case 5:    
+                    if(tradeStatus == "50") {
+                        return;  
+                    } else if(tradeStatus !== "3" || tradeStatus !== "4") {    
+                        dom += '구매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';
+                    }
+                    break;                    
                 default:
                     dom += '';
                     break;
             }
         } else {
             switch (data.command) { // 구매자
-                case 2:        
-                    dom += '물건을 잘 받으셨나요?<br>구매를 확정 하시려면 구매확인을 눌러주세요.<br>거래취소를 원하시면 거래취소를 눌러주세요.<span class="chat_time">' + data.msgtime + '</span>';
-                    dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';    
-                    dom += '<button id="btnCancelTransaction" class="btn_chat btn_">거래취소</button>';    
+                case 2:     
+                    if(tradeStatus == "1") {   
+                        dom += '판매가격을 확인 해주세요.<br>' + vtrPrice + ' 가격으로 구매를 확정 하시려면 구매확인을 눌러주세요.<br>거래취소를 원하시면 거래취소를 눌러주세요.';
+                        dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_">거래취소</button>';    
+                    } else {
+                        dom += '구매 확인을 할 수 있는 거래상태가 아닙니다.';
+                    }
+                    break;
+                case 2.1:    
+                    chatUI.setTradeInfo();       
+                    dom += '구매확인이 정상적으로 완료되었습니다.<br>판매자의 판매완료를 기다리는 중입니다.';   
                     break;
                 case 4:           
-                    dom += '';
+                    dom += '물건은 잘 받으셨나요?<br>정상적으로 거래가 완료되었다면 거래완료를 눌러주세요.';
+                    dom += '<button id="btnTransactionComplete" class="btn_chat btn_t_c">거래완료</button>';   
                     break;
+                case 4.1:           
+                    dom += '거래가 완료 되었습니다.<br>앞으로도 마켓마하와 함께 안전한 거래하세요.';
+                    break;                    
+                case 5:    
+                    if(tradeStatus == "50") {
+                        dom += '취소할 거래가 아직 진행 되지 않았습니다.';      
+                    }else if(tradeStatus === "3") {       
+                        dom += '판매완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                    }else if(tradeStatus === "4") {         
+                        dom += '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                    } else {
+                        dom += '거래를 취소를 원하시면 아래 버튼을 눌러주세요.';   
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
+                    }
+                    break;                    
                 default:
                     dom += '';
                     break;
             }
         }
        
-		dom += '</p></div>';
+		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
         content.insertAdjacentHTML("beforeend", dom); 
     }    
 });
@@ -529,13 +593,13 @@ var chatUI = {
             
             switch (item.category) {
                 case "etc":
-                    document.getElementById("vtrategory").innerText = "자산거래";
+                    document.getElementById("vtrCategory").innerText = "자산거래";
                     break;
                 case "game":
-                    document.getElementById("vtrategory").innerText = "게임아이템";
+                    document.getElementById("vtrCategory").innerText = "게임아이템";
                     break;
                 case "otc":
-                    document.getElementById("vtrategory").innerText = "OTC거래";
+                    document.getElementById("vtrCategory").innerText = "OTC거래";
                     break;
             }
         })
@@ -607,7 +671,8 @@ var chatUI = {
                     console.log(json);
                     if(json.successYn === undefined) {
                         thisDom.setAttribute("disabled", "disabled");
-                        alert("구매 확인");
+                        thisDom.nextSibling.setAttribute("disabled", "disabled");
+                        socket.emit("trade", { who: _userId, to: othername.value, command: 2.1, buyerTag: buyerTag, sellerTag: sellerTag });
                     } else {
                         alert(json.msg);
                     }
@@ -619,17 +684,11 @@ var chatUI = {
                 });
             },
             "btnSalesComplete": function() {
-                alert("판매 확인");
-            },
-            "btnTransactionComplete": function() {
-                alert("거래 완료");
-            },
-            "btnCancelTransaction": function() {
                 var thisDom = this;
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
-                bodyParam.stepValue = "5";
+                bodyParam.stepValue = "3";
 
                 $.ajax({
                     url: "/test/call-backend",
@@ -639,6 +698,70 @@ var chatUI = {
                     dataType: "json"
                 })
                 .done(function(json) {
+                    console.log(json);
+                    if(json.successYn === undefined) {
+                        thisDom.setAttribute("disabled", "disabled");
+                        socket.emit("trade", { who: _userId, to: othername.value, command: 3.1, buyerTag: buyerTag, sellerTag: sellerTag });
+                    } else {
+                        alert(json.msg);
+                    }
+
+                })
+                .fail(function(xhr, status, error) {
+                    console.log(error);
+                    alert("판매 확인 중 에러가 발생하였습니다.");
+                });               
+            },
+            "btnTransactionComplete": function() {
+                var thisDom = this;
+
+                var bodyParam = {};
+                bodyParam.itemId = itemId;
+                bodyParam.stepValue = "4";
+
+                $.ajax({
+                    url: "/test/call-backend",
+                    data: JSON.stringify(bodyParam),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    if(json.successYn === undefined) {
+                        thisDom.setAttribute("disabled", "disabled");
+                        socket.emit("trade", { who: _userId, to: othername.value, command: 4.1, buyerTag: buyerTag, sellerTag: sellerTag });
+                    } else {
+                        alert(json.msg);
+                    }
+
+                })
+                .fail(function(xhr, status, error) {
+                    console.log(error);
+                    alert("거래 완료 중 에러가 발생하였습니다.");
+                });
+
+            },
+            "btnCancelTransaction": function() {
+                var thisDom = this;
+
+                var bodyParam = {};
+                bodyParam.itemId = itemId;
+                bodyParam.stepValue = "5";
+                bodyParam.reqValue = {
+                    reqUserTag: document.getElementById("nickname").value
+                }
+
+                $.ajax({
+                    url: "/test/call-backend",
+                    data: JSON.stringify(bodyParam),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    chatUI.setTradeInfo();
                     if(json.successYn === undefined) {
                         thisDom.setAttribute("disabled", "disabled");
                         alert("거래 취소");

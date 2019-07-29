@@ -28,7 +28,7 @@ router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
   reqBody['token'] = config.APIToken;
   //res.render("vtr", { room: req.body.room, userId: req.body.userId });
-  res.render("vtr", req.body);
+  res.render("vtr", reqBody);
   /*
   let session = req.session;
   console.log("현재 세션 정보", session.user);
