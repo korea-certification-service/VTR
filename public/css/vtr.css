@@ -62,6 +62,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 15px 50% no-repeat; background-size: 51px 39px; }
 .content .mach_speech > p{margin-right: 15px; background-color: #0074bd; color: #ffffff;}
 .content .mach_speech > p .chat_time{color: #000000;}
+.content .mach_speech button:nth-of-type(1){margin-right: 15px;}
 .content .bubble{font-size: 18px;}
 .content .bubble > p{position: relative; margin-top: 8px; display: inline-block; max-width: 80%; padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px;}
 .content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
