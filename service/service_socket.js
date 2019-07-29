@@ -208,8 +208,6 @@ function eventBinding(app){
     socket.on("trade", function(data) {
       let room = socket.room;
       data.msgtime = getMsgTime();
-      let flagNum = 0;
-      // let mymsg = {};
       console.log("[EVENT] trade");
       console.dir(data);
 
