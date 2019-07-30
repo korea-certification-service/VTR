@@ -1,6 +1,6 @@
 const express = require('express');
 const Chat = require('../model/chat');
-const config = require('../model/config');
+const config = require('../config/config');
 const router = express.Router();
 
 /* GET users listing. */
