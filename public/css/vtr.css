@@ -97,5 +97,5 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .footer .ft_r_sec button{width: 30px; height: 40px; font-size: 12px;}
 
 .footer .at_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;}
-.footer .at_sec .mach_command{display: inline-block; margin: 0 0 15px 12px; padding: 0 15px; height: 45px; line-height: 45px; font-size: 15px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
+.footer .at_sec .mach_command{display: inline-block; margin: 0 0 15px 10px; padding: 0 12px; height: 45px; line-height: 45px; font-size: 14px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
 .chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
