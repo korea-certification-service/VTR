@@ -28,8 +28,8 @@ router.post("/waiting", function(req, res) {
 router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
   reqBody['token'] = config.APIToken;
+  reqBody['APIServer'] = config.APIServer;
   reqBody['VTRURL'] = config.VTRURL;
-  //res.render("vtr", { room: req.body.room, userId: req.body.userId });
   res.render("vtr", reqBody);
   /*
   let session = req.session;

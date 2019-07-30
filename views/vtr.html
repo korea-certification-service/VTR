@@ -12,6 +12,7 @@
 <body>
     <div class="chat_wrap" id="chatWrap">
         <header class="header">
+            <p class="status_text"><span id="statusText"></span> 상태</p>
             <h1 class="cf">
                 <div class="vtr_category" id="vtrCategory"><%=category%></div>
                 <div class="vtr_title ellipse"><%=title%></div>
@@ -55,12 +56,32 @@
         <input type="hidden" id="tradePrice" value="" >
         <input type="hidden" id="tradeStatus" value="" >
         <input type="hidden" id="serverURL" value="<%=VTRURL%>" >
+        <input type="hidden" id="APIServer" value="<%=APIServer%>" >
     </div>
 <script>
 // 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
-// 관리자 도구 여는거 막는 코드 추가(f12, 마우스 오른쪽, command+option+i)
-// var serverURL = 'http://192.168.0.10:4000';
+function disableShowCode() {
+    var isCtrl = false;
+    var isAlt = false;
+    document.addEventListener("keydown", function(e) {
+        if(e.which == 17) isCtrl = true;
+        if(e.which == 18) isCtrl = true;
+
+        if(e.which == 73 && isCtrl == true && isAlt) { // command+option+i
+            e.preventDefault();
+            e.returnValue = false;
+            return false;  
+        }  
+        if(e.keyCode === 123){ // f12
+            e.preventDefault();
+            e.returnValue = false;
+        }
+    });
+
+    document.oncontextmenu=function(){return false;} //마우스 오른쪽
+}
+// disableShowCode();
 </script>    
 <script src="/js/socket.js"></script>
 <script src="/js/chatUI.js"></script>

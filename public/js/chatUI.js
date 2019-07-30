@@ -98,30 +98,54 @@ var chatUI = {
     },
     setTradeInfo: function() {
         var itemId = this.itemId;
+        var APIServer = document.getElementById("APIServer").value;
         $.ajax({
-            url: "http://13.209.227.60:3200/v2/items/" + itemId,
+            url: APIServer + "/v2/items/" + itemId,
             headers: {"token": document.getElementById("tk").value},
             type: "GET",
             contentType: "application/json; charset=utf-8",
         })
         .done(function(result) {
             var item = result.data;
-            //console.log(item);
+            var statusText = "";
+            var categoryText = "";
+            
+            console.log(item.status);
             document.getElementById("tradePrice").value = item.price;
             document.getElementById("tradeStatus").value = item.status;
             document.getElementById("vtrPriceNum").innerText = item.price;
-            
-            switch (item.category) {
-                case "etc":
-                    document.getElementById("vtrCategory").innerText = "자산거래";
+
+            switch (item.status) {
+                case 1:
+                    statusText = "거래요청";
                     break;
-                case "game":
-                    document.getElementById("vtrCategory").innerText = "게임아이템";
+                case 2:
+                    statusText = "구매확인";
                     break;
-                case "otc":
-                    document.getElementById("vtrCategory").innerText = "OTC거래";
+                case 3:
+                    statusText = "판매완료";
+                    break;
+                case 4:
+                    statusText = "거래완료";                    
+                    break;
+                default:
+                    statusText = "대화중";
                     break;
             }
+            document.getElementById("statusText").innerText = statusText;
+    
+            switch (item.category) {
+                case "etc":
+                    categoryText = "자산거래";
+                    break;
+                case "game":
+                    categoryText = "게임아이템";
+                    break;
+                case "otc":
+                    categoryText = "OTC거래";
+                    break;
+            }
+            document.getElementById("vtrCategory").innerText = categoryText;
 
         })
         .fail(function(xhr, status, error) {
@@ -130,9 +154,10 @@ var chatUI = {
     },
     loadLastStatus: function() {
         var itemId = this.itemId;
+        var APIServer = document.getElementById("APIServer").value;
         var that = this;
         $.ajax({
-            url: "http://13.209.227.60:3200/v2/items/" + itemId,
+            url: APIServer + "/v2/items/" + itemId,
             headers: {"token": document.getElementById("tk").value},
             type: "GET",
             contentType: "application/json; charset=utf-8",
@@ -140,31 +165,27 @@ var chatUI = {
         .done(function(result) {
             var item = result.data;
             var objOpt = { who: _userId, to: that.otherId, buyerTag: that.buyerTag, sellerTag: that.sellerTag };
-            //console.log(item.status, _userId === that.buyerTag)
+            console.log(item);
             
             switch (item.status) {
-                case 1:
-                    // 구매자가 구매확인
+                case 1: // 구매자가 구매확인
                     if(_userId === that.buyerTag) {
                         objOpt.command = 2;
                         socket.emit("trade", objOpt);
                     }
                     break;
-                case 2:
-                    // 판매자가 판매완료
+                case 2: // 판매자가 판매완료
                     if(_userId === that.sellerTag) {
                         objOpt.command = 3;
                         socket.emit("trade", objOpt);
                     }
                     break;
-                case 3:
-                    // 구매자가 거래완료
+                case 3: // 구매자가 거래완료
                     if(_userId === that.buyerTag) {
                         objOpt.command = 4;
                         socket.emit("trade", objOpt);
                     }        
                     break;
-            
                 default:
                     break;
             }
@@ -275,6 +296,7 @@ var chatUI = {
                     console.log(json);
                     if(json.successYn === undefined) {
                         thisDom.setAttribute("disabled", "disabled");
+                        thisDom.nextSibling.setAttribute("disabled", "disabled");
                         //socket.emit("trade", { who: _userId, to: otherId, command: 3.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
                         objOpt.command = 3.1;
                         socket.emit("trade", objOpt);
@@ -327,7 +349,7 @@ var chatUI = {
                 bodyParam.itemId = itemId;
                 bodyParam.stepValue = "5";
                 bodyParam.reqValue = {
-                    reqUserTag: document.getElementById("nickname").value
+                    reqUserTag: _userId
                 }
 
                 $.ajax({
@@ -345,7 +367,7 @@ var chatUI = {
                         //socket.emit("trade", { who: _userId, to: otherId, command: 5.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
                         objOpt.command = 5.1;
                         socket.emit("trade", objOpt);
-                        document.getElementById("tradeStatus").value = "50";
+                        // document.getElementById("tradeStatus").value = "50";
                     } else {
                         alert(json.msg);
                     }

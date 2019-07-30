@@ -1,5 +1,4 @@
 var serverURL = document.getElementById("serverURL").value;
-
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 
@@ -48,6 +47,7 @@ function fnSendMsg() {
 			
             switch (i) {
                 case 0:
+                    dom = '<div class="bubble mach_speech"><p class="max_p">';
                     dom += '거래 프로세스에 대해서 안내해드릴께요.<br>';
                     dom += '<img src="/img/VTR_info.png" alt="안내문"/>'              
                     content.insertAdjacentHTML("beforeend", dom);    
@@ -223,12 +223,12 @@ socket.on("trade_seller", function(data) {
                         dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
                         dom += '<input type="text" class="ipt_price" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
                         socket.isTradeStep1 = true;
+                    } else if(tradeStatus === "50" && socket.isTradeStep1) {
+                        dom += '거래요청을 하시고 잠시만 기다려주세요.';
                     } else if(tradeStatus !== "50") {
                         dom += '이미 거래요청 상태입니다.';             
-                    } else if(socket.isTradeStep1 ){
-                        dom += '거래 가격을 입력하고 거래요청을 눌러주세요.';
                     } else {
-
+                        return;
                     }
                     break;
                 case 1.1:    
@@ -237,8 +237,10 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3:
                     if(tradeStatus == "2") {
-                        dom += '판매완료를 하시려면 판매완료를 눌러주세요.';  
-                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">판매완료</button>';  
+                        dom += '반드시 물건을 보내신 후 판매완료를 눌러주세요.<br>택배로 보내셨다면 송장번호를 구매자에게 알려주세요.<br>';  
+                        dom += '거래 취소를 원하시면 거래취소를 눌러주세요.';  
+                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">판매완료</button>';
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';  
                     } else {
                         dom += '판매완료를 할 수 있는 거래상태가 아닙니다.';
                     }
@@ -280,8 +282,7 @@ socket.on("trade_buyer", function(data) {
 	var dom = '<div class="bubble mach_speech"><p>';
     var content = document.getElementById("content");
     var tradeStatus = document.getElementById("tradeStatus").value;
-    var vtrPrice = document.getElementById("vtrPrice").innerText;   
-    var status50 = document.getElementById("tradeStatus").value = "50";
+    var vtrPrice = document.getElementById("vtrPrice").innerText;
 
     if(data.type === "err") {
         dom += "<em>" + data.msg + "</em> 명령어는 구매자가 실행할 수 없습니다.";
@@ -323,7 +324,6 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    status50;
                     dom += '구매자가 거래취소를 하였습니다.';
                     break;                                        
                 default:
@@ -372,7 +372,6 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo();
                     socket.isTradeStep1 = undefined;
-                    status50;
                     dom += '거래 취소가 완료되었습니다.';
                     break;                                      
                 default:

@@ -44,7 +44,8 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
 .header{height: 80px; border-bottom: 1px solid #d9d9d9; box-sizing: border-box;}
-.header h1{padding: 0 20px; line-height: 80px; font-size: 16px; font-weight: 400;}
+.header .status_text{margin: 10px 0; padding: 0 20px;}
+.header h1{padding: 0 20px; font-size: 16px; font-weight: 400;}
 .header h1 > div{float: left;}
 .header h1 .vtr_category{width: 80px;}
 .header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}
@@ -65,6 +66,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .mach_speech button:nth-of-type(1){margin-right: 15px;}
 .content .bubble{font-size: 18px;}
 .content .bubble > p{position: relative; margin-top: 8px; display: inline-block; max-width: 80%; padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px;}
+.content .bubble > .max_p{max-width: 100%; padding: 10px;}
 .content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
 .content .mach_speech .chat_time{right: -50px;}
 .content .other_speech .chat_time{right: -50px;}

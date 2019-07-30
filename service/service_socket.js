@@ -8,25 +8,25 @@ function eventBinding(app){
 	let seoulTime = moment.tz("Asia/Seoul");
 
 	function getMsgTime() {
-	moment.locale(); 
-	let msgtime = moment().format('LT');
+    moment.locale(); 
+    let msgtime = moment().format('LT');
 
-	/* deprecated: 기존 한국 시간 구하는 노가다 소스
-	let d = new Date();
-	let time = d.getHours() + "";
-	if (time > 12) {
-	  time = "" + (time - 12);
-	if (time.length == 1) time = "0" + time;
-	  time = "오후 " + time;
-	} else {
-	if (time.length == 1) time = "0" + time;
-	  time = "오전 " + time;
-	}
-	let minute = d.getMinutes() + "";
-	if (minute.length == 1) minute = "0" + minute;
-	let msgtime = time + ":" + minute;
-	*/
-	return msgtime;
+    /* deprecated: 기존 한국 시간 구하는 노가다 소스
+    let d = new Date();
+    let time = d.getHours() + "";
+    if (time > 12) {
+      time = "" + (time - 12);
+    if (time.length == 1) time = "0" + time;
+      time = "오후 " + time;
+    } else {
+    if (time.length == 1) time = "0" + time;
+      time = "오전 " + time;
+    }
+    let minute = d.getMinutes() + "";
+    if (minute.length == 1) minute = "0" + minute;
+    let msgtime = time + ":" + minute;
+    */
+    return msgtime;
 	}
 
 	// 웹소켓 연결
