@@ -51,14 +51,14 @@
         frmVtr.setAttribute("action", url);
 
         $.ajax({
-            url: "http://13.209.227.60:3200/v2/items/" + itemId,
+            url: "<%=APIServer%>/v2/items/" + itemId,
             headers: {"token": "<%=token%>"},
             type: "GET",
             contentType: "application/json; charset=utf-8",
         })
         .done(function(result) {
             var item = result.data;
-            //console.log(item);
+            console.log(item);
 
             document.getElementById("category").value = item.category;
             document.getElementById("title").value = item.title;

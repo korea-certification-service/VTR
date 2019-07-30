@@ -28,6 +28,7 @@ router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
   reqBody['token'] = config.APIToken;
   reqBody['chatbotURL'] = config.chatbotURL;
+  reqBody['APIServer'] = config.APIServer;
   //res.render("vtr", { room: req.body.room, userId: req.body.userId });
   res.render("vtr", reqBody);
   /*
