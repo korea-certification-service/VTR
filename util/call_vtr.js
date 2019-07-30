@@ -1,5 +1,5 @@
 let request = require('request');
-let config = require('../config/config');
+let config = require('../model/config');
 
 function callVtr(body, callback) {
     let url = config.APIServer + "/v2/vtrs/" + body.itemId + "/step/" + body.stepValue;

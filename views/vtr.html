@@ -54,13 +54,14 @@
         <input type="hidden" id="itemId" value="<%=itemId%>" >
         <input type="hidden" id="tradePrice" value="" >
         <input type="hidden" id="tradeStatus" value="" >
+        <input type="hidden" id="serverURL" value="<%=chatbotURL%>" >
     </div>
 <script>
 // 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
 // 관리자 도구 여는거 막는 코드 추가(f12, 마우스 오른쪽, command+option+i)
-// var serverURL = 'http://localhost:4000';
-var serverURL = 'http://192.168.0.10:4000';
+// var serverURL = 'http://192.168.0.10:4000';
+var serverURL = document.getElementById("serverURL").value;
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함

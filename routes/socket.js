@@ -1,6 +1,6 @@
 const express = require('express');
 const Chat = require('../model/chat');
-const config = require('../config/config');
+const config = require('../model/config');
 const router = express.Router();
 
 /* GET users listing. */
@@ -27,6 +27,7 @@ router.post("/waiting", function(req, res) {
 router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
   reqBody['token'] = config.APIToken;
+
   //res.render("vtr", { room: req.body.room, userId: req.body.userId });
   res.render("vtr", reqBody);
   /*
