@@ -27,7 +27,7 @@ router.post("/waiting", function(req, res) {
 router.post("/room/:room", function(req, res) {
   let reqBody = req.body;
   reqBody['token'] = config.APIToken;
-
+  reqBody['chatbotURL'] = config.chatbotURL;
   //res.render("vtr", { room: req.body.room, userId: req.body.userId });
   res.render("vtr", reqBody);
   /*
