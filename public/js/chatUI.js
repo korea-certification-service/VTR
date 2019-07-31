@@ -123,7 +123,6 @@ var chatUI = {
             console.log(item);
             document.getElementById("tradePrice").value = item.price;
             document.getElementById("tradeStatus").value = item.status;
-            document.getElementById("vtrPriceNum").innerText = item.price;
 
             switch (item.status) {
                 case 1:
@@ -156,6 +155,8 @@ var chatUI = {
                     break;
             }
             document.getElementById("vtrCategory").innerText = categoryText;
+            document.getElementById("vtrTitle").innerText = item.title;
+            document.getElementById("vtrPriceNum").innerText = item.price;
 
         })
         .fail(function(xhr, status, error) {
@@ -213,18 +214,16 @@ var chatUI = {
         var proxyEvent= {
             "btnTransactionRequest": function() {
                 var thisDom = this;
-
                 var ipt_price = document.querySelectorAll(".ipt_price");
                 var tradePrice = parseFloat(ipt_price[ipt_price.length-1].value);
-
                 var ccCode = "MACH";
                 if(tradePrice === 0 || isNaN(tradePrice)) {
                     alert("가격을 입력해주세요.");
                     ipt_price[ipt_price.length-1].focus();
                     return;
-                } else if(thisDom.getAttribute("disabled") === "disabled") {
-                    return; // IE에서 disabled여도 클릭이 되는 이슈 존재
-                }
+                } 
+                // IE에서 disabled여도 클릭이 되는 이슈
+                if(thisDom.getAttribute("disabled") === "disabled") return;
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
@@ -263,6 +262,8 @@ var chatUI = {
             },        
             "btnPurchaseConfirmation": function() {
                 var thisDom = this;
+                // IE에서 disabled여도 클릭이 되는 이슈
+                if(thisDom.getAttribute("disabled") === "disabled") return;
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
@@ -295,6 +296,8 @@ var chatUI = {
             },
             "btnSalesComplete": function() {
                 var thisDom = this;
+                // IE에서 disabled여도 클릭이 되는 이슈
+                if(thisDom.getAttribute("disabled") === "disabled") return; 
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
@@ -327,6 +330,8 @@ var chatUI = {
             },
             "btnTransactionComplete": function() {
                 var thisDom = this;
+                // IE에서 disabled여도 클릭이 되는 이슈
+                if(thisDom.getAttribute("disabled") === "disabled") return; 
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
@@ -360,8 +365,9 @@ var chatUI = {
             "btnCancelTransaction": function() {
                 var thisDom = this;
                 var prevDom = thisDom.previousSibling;
-                console.log(prevDom.tagName)
                 if(prevDom.tagName !== undefined && prevDom.tagName.toLowerCase() === "button") prevDom.setAttribute("disabled", "disabled");
+                // IE에서 disabled여도 클릭이 되는 이슈
+                if(thisDom.getAttribute("disabled") === "disabled") return; 
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;

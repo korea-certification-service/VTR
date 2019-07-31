@@ -205,6 +205,8 @@ socket.on("trade_seller", function(data) {
                         return;  
                     } else if(tradeStatus !== "4") {            
                         dom += '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
+                    } else {
+                        return;
                     }
                     break;
                 case 5.1:
@@ -221,7 +223,7 @@ socket.on("trade_seller", function(data) {
                 case 1:    
                     if(tradeStatus === "50" && socket.isTradeStep1 === undefined) {
                         dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
-                        dom += '<input type="text" class="ipt_price" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
+                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
                         dom += '거래요청을 하시고 잠시만 기다려주세요.';
@@ -247,7 +249,7 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3.1:           
                     chatUI.setTradeInfo(); 
-                    return;
+                    dom += '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
                     break;         
                 case 5:
                     if(tradeStatus == "50") {
@@ -255,7 +257,7 @@ socket.on("trade_seller", function(data) {
                     }else if(tradeStatus === "4") {               
                         dom += '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
                     } else {
-                        dom += '거래를 취소를 원하시면 아래 버튼을 눌러주세요.';   
+                        dom += '거래취소를 원하시면 아래 버튼을 눌러주세요.';   
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
                     }
                     break;
@@ -316,11 +318,8 @@ socket.on("trade_buyer", function(data) {
                     break;
                 case 5:    
                     if(tradeStatus == "2") {
-                        dom += '구매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';
-                    // } else if(tradeStatus === "3") {       
-                    //     return;
-                    // } else if(tradeStatus === "4") {         
-                    //     return; 
+                        // dom += '구매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';
+                        return; // 구매확인 단계에서도 구매취소 못하게 막음
                     } else {    
                         return;  
                     }
@@ -364,6 +363,8 @@ socket.on("trade_buyer", function(data) {
                 case 5:    
                     if(tradeStatus == "50") {
                         dom += '취소할 거래가 아직 진행 되지 않았습니다.';      
+                    } else if(tradeStatus === "2") {       
+                        dom += '구매자는 구매완료 상태에서는 거래를 취소할 수 없습니다.'; 
                     } else if(tradeStatus === "3") {       
                         dom += '구매자는 판매완료 상태에서는 거래를 취소할 수 없습니다.'; 
                     } else if(tradeStatus === "4") {         

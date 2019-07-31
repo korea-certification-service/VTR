@@ -43,7 +43,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .cf:after{display: block; content: ''; clear: both;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
-.header{height: 80px; border-bottom: 1px solid #d9d9d9; box-sizing: border-box;}
+.header{height: 80px; box-sizing: border-box; border-style: solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 1px; border-top: none; border-left: none; border-right: none;}
 .header .status_text{margin: 10px 0; padding: 0 20px;}
 .header h1{padding: 0 20px; font-size: 16px; font-weight: 400;}
 .header h1 > div{float: left;}
