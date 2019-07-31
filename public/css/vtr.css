@@ -51,6 +51,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}
 .header h1 .vtr_price{float: right; width: 150px; text-align: right;}
 .content{height: calc(100% - 150px); overflow: scroll;}
+.content img[alt="안내문"]{width: 100%;} 
 .content > em{display: block; font-weight: 400;}
 .content .ymd{text-align: center;}
 .content .other_id{margin-left: 15px;}

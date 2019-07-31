@@ -59,31 +59,35 @@
         <input type="hidden" id="APIServer" value="<%=APIServer%>" >
     </div>
 <script>
-// 로직 전부다 vanilla JS로 변경
 // 완성 후 babel 써서 압축된 파일로 외부JS로 빼서 dist로 실행시키기(보안)
 function disableShowCode() {
     var isCtrl = false;
     var isAlt = false;
     document.addEventListener("keydown", function(e) {
-        if(e.which == 17) isCtrl = true;
-        if(e.which == 18) isCtrl = true;
+        if(e.keyCode == 17 || e.keyCode == 91 || e.keyCode == 93) isCtrl = true;
+        if(e.keyCode == 18) isAlt = true;
 
-        if(e.which == 73 && isCtrl == true && isAlt) { // command+option+i
+        if(isCtrl == true && isAlt && e.keyCode == 73) { // command+option+i
             e.preventDefault();
             e.returnValue = false;
-            return false;  
-        }  
+        }
         if(e.keyCode === 123){ // f12
             e.preventDefault();
             e.returnValue = false;
         }
     });
 
-    document.oncontextmenu=function(){return false;} //마우스 오른쪽
+    document.oncontextmenu=function(){return false;} // 마우스 오른쪽
 }
 // disableShowCode();
+document.querySelector("body").addEventListener("keydown", function(e) {
+    // 직접 키 눌러서 키코드 알아보기
+    //console.log(e.keyCode)
+});
+
+$.ajaxSetup({cache:false});
 </script>    
-<script src="/js/socket.js"></script>
+<script src="/js/websocket.js"></script>
 <script src="/js/chatUI.js"></script>
 </body>
 </html>

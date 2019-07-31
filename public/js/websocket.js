@@ -49,7 +49,7 @@ function fnSendMsg() {
                 case 0:
                     dom = '<div class="bubble mach_speech"><p class="max_p">';
                     dom += '거래 프로세스에 대해서 안내해드릴께요.<br>';
-                    dom += '<img src="/img/VTR_info.png" alt="안내문"/>'              
+                    dom += '<img src="/img/VTR_info.jpg" alt="안내문"/>'              
                     content.insertAdjacentHTML("beforeend", dom);    
                     break;               
                 default:
@@ -317,6 +317,10 @@ socket.on("trade_buyer", function(data) {
                 case 5:    
                     if(tradeStatus == "2") {
                         dom += '구매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';
+                    // } else if(tradeStatus === "3") {       
+                    //     return;
+                    // } else if(tradeStatus === "4") {         
+                    //     return; 
                     } else {    
                         return;  
                     }

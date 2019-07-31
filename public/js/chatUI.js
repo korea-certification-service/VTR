@@ -1,11 +1,14 @@
+
+
 var chatUI = {
     isDim: false,
     country: document.getElementById("country").value,
     itemId: document.getElementById("itemId").value,
     buyerTag: document.getElementById("buyerTag").value,
     sellerTag: document.getElementById("sellerTag").value,
-    otherId: document.getElementById("othername").value,
+    otherId: "",
     init: function() {
+        this.setOtherId();
         this.showCmdBtn();
         this.fnAt();
         this.orientationchange();
@@ -13,6 +16,13 @@ var chatUI = {
         this.ActBtn();
         this.setTradeInfo();
         this.loadLastStatus();
+    },
+    setOtherId: function (){
+        if(document.getElementById("userId").value == document.getElementById("buyerTag").value){
+            this.otherId = document.getElementById("sellerTag").value;
+        } else {
+            this.otherId = document.getElementById("buyerTag").value
+        }
     },
     showCmdBtn: function() {
         var parentEl = document.getElementById("atSec");
@@ -110,7 +120,7 @@ var chatUI = {
             var statusText = "";
             var categoryText = "";
             
-            console.log(item.status);
+            console.log(item);
             document.getElementById("tradePrice").value = item.price;
             document.getElementById("tradeStatus").value = item.status;
             document.getElementById("vtrPriceNum").innerText = item.price;
@@ -210,7 +220,10 @@ var chatUI = {
                 var ccCode = "MACH";
                 if(tradePrice === 0 || isNaN(tradePrice)) {
                     alert("가격을 입력해주세요.");
+                    ipt_price[ipt_price.length-1].focus();
                     return;
+                } else if(thisDom.getAttribute("disabled") === "disabled") {
+                    return; // IE에서 disabled여도 클릭이 되는 이슈 존재
                 }
 
                 var bodyParam = {};
@@ -232,13 +245,15 @@ var chatUI = {
                     dataType: "json"
                 })
                 .done(function(json) {
-                    console.log(json);
+                    //console.log(json);
 
                     thisDom.setAttribute("disabled", "disabled");
                     //socket.emit("trade", { who: _userId, to: otherId, command: 1.1, price: tradePrice, ccCode:ccCode, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
                     objOpt.command = 1.1;
                     objOpt.price = tradePrice;
                     objOpt.ccCode=ccCode;
+
+                    console.log(objOpt);
                     socket.emit("trade", objOpt);
                 })
                 .fail(function(xhr, status, error) {
@@ -344,6 +359,9 @@ var chatUI = {
             },
             "btnCancelTransaction": function() {
                 var thisDom = this;
+                var prevDom = thisDom.previousSibling;
+                console.log(prevDom.tagName)
+                if(prevDom.tagName !== undefined && prevDom.tagName.toLowerCase() === "button") prevDom.setAttribute("disabled", "disabled");
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
