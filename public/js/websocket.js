@@ -28,9 +28,15 @@ function fnSendMsg() {
     var userId = document.getElementById("userId").value;
     var buyerTag = document.getElementById("buyerTag").value;
     var sellerTag = document.getElementById("sellerTag").value;
-    var otherId = document.getElementById("othername").value;
+    var otherId = "";
 	var dom = '<div class="bubble mach_speech"><p>';
     var content = document.getElementById("content");
+
+    if(userId == buyerTag){
+        otherId = sellerTag;
+    } else {
+        otherId = buyerTag;
+    }
 
     if (regTradingTxt.test(msgVal)) {
         sendTxt = msgVal.replace('@마하 ', '');

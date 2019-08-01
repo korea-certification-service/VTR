@@ -5,7 +5,8 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.redirect("/login");
+  // res.redirect("/waiting");
+  res.end('존재하지 않는 경로입니다.');
 });
 
 // 채팅방: depracated
@@ -14,6 +15,17 @@ router.get("/chat/:room", function(req, res) {
   console.log("현재 세션 정보", session.user);
   console.log("room name is :" + req.params.room);
   res.render("room", { room: req.params.room, userId: session.user.id });
+  /*
+  let session = req.session;
+  console.log("현재 세션 정보", session.user);
+  console.log("room name is :" + req.params.room);
+
+  if (session.user !== undefined) {
+    res.render("vtr", { room: req.params.room, userId: session.user.id });
+  } else {
+    res.redirect("/login");
+  }
+  */  
 });
 
 // VTR wating
@@ -31,17 +43,6 @@ router.post("/room/:room", function(req, res) {
   reqBody['APIServer'] = config.APIServer;
   reqBody['VTRURL'] = config.VTRURL;
   res.render("vtr", reqBody);
-  /*
-  let session = req.session;
-  console.log("현재 세션 정보", session.user);
-  console.log("room name is :" + req.params.room);
-
-  if (session.user !== undefined) {
-    res.render("vtr", { room: req.params.room, userId: session.user.id });
-  } else {
-    res.redirect("/login");
-  }
-  */
 });
 
 // 채팅 저장
@@ -49,13 +50,13 @@ router.post('/setChat', (req, res) => {
 	console.log(req.body);
 
   Chat.createandUpdate(req.body)
-    .then(chat => {
-      res.status(200).send(chat)
-    })
-    .catch(err => {
-      console.log(err)
-      res.status(500).send(err)
-    });
+  .then(chat => {
+    res.status(200).send(chat)
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).send(err)
+  });
   // let data = req.body;
   // let chat = new Chat(data);
   // chat.save(function(err, result){
@@ -69,10 +70,9 @@ router.post('/setChat', (req, res) => {
 
 // 채팅 가져오기
 router.get('/getChat', (req, res) => {
-  Chat.findAll()
+  let room = req.query;
+  Chat.findOneByRoom(room)
   .then((chat) => {
-    if (!chat.length) return res.status(404).send({ err: 'chat not found' });
-    //res.status(200).send(`find successfully: ${chat}`);
     res.status(200).json(chat);
   })
   .catch(err => res.status(500).send(err));

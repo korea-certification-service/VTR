@@ -35,14 +35,18 @@ chatSchema.statics.createandUpdate = function (obj) {
   //db.getCollection('chats').findOneAndUpdate({room: "tjdudwp02|testkcs|5d354b76969eb20ac8890f77"}, {$push: {msgs: {who: "testkcs", to: "tjdudwp02", msg: "asdfg", msgtime: "3:35 PM"}}})
 };
 
-
-// Find All
+// Select All
 chatSchema.statics.findAll = function () {
-  // return promise
-  return this.find({});
+  return this.find();
 };
 
-// Update는 다시 생각해보기
+// Select where
+chatSchema.statics.findOneByRoom = function (obj) {
+  console.log("obj.room ", obj.room)
+  return this.findOne({room: obj.room});
+};
+
+// Update는 다시 생각해보고 로직 짜기
 chatSchema.statics.updateByTodoid = function (todoid, payload) {
   // { new: true }: return the modified document rather than the original. defaults to false
   return this.findOneAndUpdate({ todoid }, payload, { new: true });

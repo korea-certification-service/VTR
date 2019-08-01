@@ -150,12 +150,9 @@ function eventBinding(app){
       if (room != undefined && rooms[room] != undefined) {
         let nickname = socket.nickname;
 
-        console.log("[EVENT] send_msg: ", nickname);
+        //console.log("[EVENT] send_msg: ", data);
 
         if (nickname != undefined) {
-          //data.msg = nickname + " : " + data.msg;
-          console.dir(data);
-
           let arrUser = Object.keys(rooms[room].socket_ids);
           // room 저장
           data.room = socket.room;
@@ -186,21 +183,44 @@ function eventBinding(app){
           socket.emit("broadcast_msg", data);
 
           /*
-			if (data.to == "ALL")
-			  socket.broadcast.to(room).emit("broadcast_msg", data);
-			// 자신을 제외하고 다른 클라이언트에게 보냄
-			else {
-			  // 귓속말
-			  socket_id = rooms[room].socket_ids[data.to];
-			  if (socket_id != undefined) {
-				data.msg = "귓속말 :" + data.msg;
-				app.io.sockets.to(socket_id).emit("broadcast_msg", data);
-			  }
-			}
-			*/
+          if (data.to == "ALL") {
+            socket.broadcast.to(room).emit("broadcast_msg", data);
+            // 자신을 제외하고 다른 클라이언트에게 보냄
+          } else {
+            // 귓속말
+            socket_id = rooms[room].socket_ids[data.to];
+            if (socket_id != undefined) {
+              data.msg = "귓속말 :" + data.msg;
+              app.io.sockets.to(socket_id).emit("broadcast_msg", data);
+            }
+          }
+          */
+
+          // 배열 형태로 보내야 저장되게 되있는 구조
+          let arrMsgs = new Array(1);
+          arrMsgs[0] = data;
+          let reqData = {
+            room: socket.room,
+            msgs: arrMsgs
+          };
+
+          const options = {
+            uri: "http://192.168.0.10:4000/vtr/setChat", // 로컬에 저장
+            method: "POST",
+            body: reqData,
+            json: true
+          };
+
+          // 로직 완성될때까지 메세지 디비 저장 막기
+          /*
+          request.post(options, function(err, response, body) {
+            if (err !== null) {
+            }
+          });
+          */          
         }
       } else {
-        //Error
+        console.log("[Error] room이나 rooms[room]이 undefined");
       }
     });
 
@@ -239,15 +259,15 @@ function eventBinding(app){
       //console.dir(arrData);
     });
 
-    // DB 저장
+    // Deprecated: 메세지 DB 저장 API 호출 방식
     socket.on("saveDB", function(data) {
       let reqData = {
         room: socket.room,
-        msgs: arrData
+        msgs: arrData // msgs담는 방식 실시간으로 바꿔야함
       };
 
       const options = {
-        uri: "http://localhost:4000/socket/setChat",
+        uri: "http://localhost:4000/vtr/setChat",
         method: "POST",
         body: reqData,
         json: true
@@ -259,9 +279,9 @@ function eventBinding(app){
       });
     });
 
-    // DB 불러오기
+    // 메세지 DB 불러오기 API 호출 방식
     socket.on("loadDB", function(data) {
-      request.get({ uri: "http://localhost:4000/socket/getChat" }, function(
+      request.get({ uri: "http://localhost:4000/vtr/getChat" }, function(
         err,
         response,
         body

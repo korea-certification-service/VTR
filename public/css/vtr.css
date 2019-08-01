@@ -40,12 +40,15 @@ input:-webkit-autofill:active { transition: background-color 5000s ease-in-out 0
 input::placeholder {font-size: 18px;}
 button{border: none; cursor: pointer; background-color: #fff;}
 *{outline: none;}
+.hidden{visibility: hidden;}
 .cf:after{display: block; content: ''; clear: both;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
 .header{height: 80px; box-sizing: border-box; border-style: solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 1px; border-top: none; border-left: none; border-right: none;}
-.header .status_text{margin: 10px 0; padding: 0 20px;}
-.header h1{padding: 0 20px; font-size: 16px; font-weight: 400;}
+.header .hdr_menu{margin: 10px 0; padding: 0 20px;}
+.header .hdr_menu .status_text{float: left;}
+.header .hdr_menu .btn_trans{float: right; padding: 2px 10px; color: #333; border: 1px solid #0074bd; border-radius: 8px; font-size: 12px;}
+.header h1{padding: 0 20px; font-size: 16px; font-weight: 500;}
 .header h1 > div{float: left;}
 .header h1 .vtr_category{width: 80px;}
 .header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}

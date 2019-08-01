@@ -120,9 +120,10 @@ var chatUI = {
             var statusText = "";
             var categoryText = "";
             
-            console.log(item);
+            // console.log(item);
             document.getElementById("tradePrice").value = item.price;
             document.getElementById("tradeStatus").value = item.status;
+            document.getElementById("ccCode").value = item.cryptoCurrencyCode;
 
             switch (item.status) {
                 case 1:
@@ -166,44 +167,117 @@ var chatUI = {
     loadLastStatus: function() {
         var itemId = this.itemId;
         var APIServer = document.getElementById("APIServer").value;
+        var room = document.getElementById("room").value;
         var that = this;
-        $.ajax({
-            url: APIServer + "/v2/items/" + itemId,
-            headers: {"token": document.getElementById("tk").value},
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-        })
-        .done(function(result) {
-            var item = result.data;
-            var objOpt = { who: _userId, to: that.otherId, buyerTag: that.buyerTag, sellerTag: that.sellerTag };
-            console.log(item);
-            
-            switch (item.status) {
-                case 1: // 구매자가 구매확인
-                    if(_userId === that.buyerTag) {
-                        objOpt.command = 2;
-                        socket.emit("trade", objOpt);
+
+        function getChatList() {
+            $.ajax({
+                url: "http://192.168.0.10:4000/vtr/getChat",
+                type: "GET",
+                data: {"room": room},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            })
+            .done(function(result) {
+                console.log("msgs", result);
+                var userId = document.getElementById("userId").value;
+                var msgs = result.msgs;
+                var domMsg = "";
+
+                for (var i = 0; i < msgs.length; i++) {
+                    
+                    if (msgs[i].who === userId) { // 내가 쓴글
+                        if(msgs[i].sameUser) { // 또 쓴 글
+                            domMsg += '<div class="bubble my_speech">';
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display: none;">'
+                            domMsg += msgs[i].msgtime+'</span></p></div>';
+                        } else {
+                            domMsg += '<em class="my_id">'+msgs[i].who+'</em>';
+                            domMsg += '<div class="bubble my_speech">';
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time">'
+                            domMsg += msgs[i].msgtime+'</span></p></div>';
+                        }
+                        
+                    } else if (msgs[i].who !== userId){ // 상대방이 쓴 글
+                        if(msgs[i].sameUser) { // 또 쓴 글
+                            domMsg += "";
+                        } else {
+                    
+                        }
                     }
-                    break;
-                case 2: // 판매자가 판매완료
-                    if(_userId === that.sellerTag) {
-                        objOpt.command = 3;
-                        socket.emit("trade", objOpt);
-                    }
-                    break;
-                case 3: // 구매자가 거래완료
-                    if(_userId === that.buyerTag) {
-                        objOpt.command = 4;
-                        socket.emit("trade", objOpt);
-                    }        
-                    break;
-                default:
-                    break;
-            }
-        })
-        .fail(function(xhr, status, error) {
-            console.log("초기 정보를 가져오는 중에 에러 발생", error);
-        });
+                    
+                }
+
+                /*
+                <em class="my_id">testkcs</em>
+                <div class="bubble my_speech">
+                <p>111돔복구<span class="chat_time" style="display: none;">3:54 PM</span></p>
+                </div>
+                <div class="bubble my_speech">
+                <p>222같은아이디<span class="chat_time">3:54 PM</span></p>
+                </div><em class="other_id">tjdudwp02</em>
+                <div class="bubble other_speech">
+                <p>333다른아이디<span class="chat_time">3:54 PM</span></p>
+                </div><em class="my_id">testkcs</em>
+                <div class="bubble my_speech">
+                <p>444다른아이디<span class="chat_time" style="display: none;">3:54 PM</span></p>
+                </div>
+                <div class="bubble my_speech">
+                <p>555같은아이디<span class="chat_time">3:54 PM</span></p>
+                </div>
+                */
+
+                emitTradeProcess();
+            })
+            .fail(function(xhr, status, error) {
+                console.log("채팅 내용를 가져오는 중에 에러 발생", error);
+                emitTradeProcess();
+            });
+        }
+        // 완성할 때까지 막기
+        // getChatList();
+
+        emitTradeProcess(); // dom 그리는 로직 완성되면 여기 호출부 삭제
+
+        function emitTradeProcess() {
+            $.ajax({
+                url: APIServer + "/v2/items/" + itemId,
+                headers: {"token": document.getElementById("tk").value},
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+            })
+            .done(function(result) {
+                var item = result.data;
+                var objOpt = { who: _userId, to: that.otherId, buyerTag: that.buyerTag, sellerTag: that.sellerTag };
+                // console.log(item);
+                
+                switch (item.status) {
+                    case 1: // 구매자가 구매확인
+                        if(_userId === that.buyerTag) {
+                            objOpt.command = 2;
+                            socket.emit("trade", objOpt);
+                        }
+                        break;
+                    case 2: // 판매자가 판매완료
+                        if(_userId === that.sellerTag) {
+                            objOpt.command = 3;
+                            socket.emit("trade", objOpt);
+                        }
+                        break;
+                    case 3: // 구매자가 거래완료
+                        if(_userId === that.buyerTag) {
+                            objOpt.command = 4;
+                            socket.emit("trade", objOpt);
+                        }        
+                        break;
+                    default:
+                        break;
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.log("초기 정보를 가져오는 중에 에러 발생", error);
+            });
+        }
     },
     ActBtn: function() {
         var that = this;
@@ -216,14 +290,14 @@ var chatUI = {
                 var thisDom = this;
                 var ipt_price = document.querySelectorAll(".ipt_price");
                 var tradePrice = parseFloat(ipt_price[ipt_price.length-1].value);
-                var ccCode = "MACH";
-                if(tradePrice === 0 || isNaN(tradePrice)) {
-                    alert("가격을 입력해주세요.");
-                    ipt_price[ipt_price.length-1].focus();
-                    return;
-                } 
+                var ccCode = document.getElementById("ccCode").value;
                 // IE에서 disabled여도 클릭이 되는 이슈
                 if(thisDom.getAttribute("disabled") === "disabled") return;
+                if(tradePrice === 0 || tradePrice < 0 || isNaN(tradePrice)) {
+                    alert("가격을 숫자로 입력해주세요.");
+                    ipt_price[ipt_price.length-1].focus();
+                    return;
+                }
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
@@ -233,7 +307,7 @@ var chatUI = {
                     sellerTag: that.sellerTag,
                     cryptoCurrencyCode: ccCode,
                     price: tradePrice,
-                    //country: that.country,
+                    country: that.country,
                 };
 
                 $.ajax({
@@ -268,7 +342,7 @@ var chatUI = {
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
                 bodyParam.stepValue = "2";
-
+                bodyParam.reqValue = {country: that.country};
                 $.ajax({
                     url: "/test/call-backend",
                     data: JSON.stringify(bodyParam),
@@ -302,6 +376,7 @@ var chatUI = {
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
                 bodyParam.stepValue = "3";
+                bodyParam.reqValue = {country: that.country};
 
                 $.ajax({
                     url: "/test/call-backend",
@@ -336,6 +411,7 @@ var chatUI = {
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
                 bodyParam.stepValue = "4";
+                bodyParam.reqValue = {country: that.country};
 
                 $.ajax({
                     url: "/test/call-backend",
@@ -373,8 +449,9 @@ var chatUI = {
                 bodyParam.itemId = itemId;
                 bodyParam.stepValue = "5";
                 bodyParam.reqValue = {
-                    reqUserTag: _userId
-                }
+                    reqUserTag: _userId,
+                    country: that.country
+                };
 
                 $.ajax({
                     url: "/test/call-backend",

@@ -12,7 +12,10 @@
 <body>
     <div class="chat_wrap" id="chatWrap">
         <header class="header">
-            <p class="status_text"><span id="statusText"></span> 상태</p>
+            <div class="hdr_menu cf">
+                <p class="status_text"><em id="statusText"></em> 상태</p>
+                <a class="btn_trans" href="https://translate.google.com/" target="_blank">번역</a>
+            </div>
             <h1 class="cf">
                 <div class="vtr_category" id="vtrCategory"><%=category%></div>
                 <div class="vtr_title ellipse" id="vtrTitle"><%=title%></div>
@@ -20,11 +23,12 @@
             </h1>
         </header>
         <div class="content" id="content">
-            <div>
+            <div class="hidden">
                 My ID: <input type="text" id="nickname" readonly/><br>
-                Partner: <input type="text" id="othername" readonly/> 
+                Partner: <input type="text" id="othername" readonly/><br>
             </div>
- 
+            <div class="bubble mach_speech"><p>VTR 거래가 처음이신가요?<br>채팅 입력란에 <em>@마하 거래안내</em>를 입력하고 enter를 눌러보세요.</p></div>
+            <br>
             <div class="chat_dim" id="chatDim"></div>
         </div>
         <footer class="footer cf">
@@ -54,6 +58,7 @@
         <input type="hidden" id="tk" value="<%=token%>" >
         <input type="hidden" id="itemId" value="<%=itemId%>" >
         <input type="hidden" id="tradePrice" value="" >
+        <input type="hidden" id="ccCode" value="" >
         <input type="hidden" id="tradeStatus" value="" >
         <input type="hidden" id="serverURL" value="<%=VTRURL%>" >
         <input type="hidden" id="APIServer" value="<%=APIServer%>" >
