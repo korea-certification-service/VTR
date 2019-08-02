@@ -170,6 +170,7 @@ socket.on('system_msg', function (data) {
     p.classList.add("p_system");
     p.innerText = data.msg;
     document.getElementById("content").appendChild(p);
+    p.scrollIntoView(false);
 });
 
 socket.on("trade_seller", function(data) {
@@ -188,7 +189,7 @@ socket.on("trade_seller", function(data) {
         if(data.flagNum === undefined) { // 구매자
             switch (data.command) {
                 case 1:     
-                    if(tradeStatus === "50") {
+                    if(tradeStatus === "0") {
                         dom += '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
                     } else {    
                         return;  
@@ -207,7 +208,7 @@ socket.on("trade_seller", function(data) {
                     dom += '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
                     break;
                 case 5:    
-                    if(tradeStatus == "50") {
+                    if(tradeStatus == "0") {
                         return;  
                     } else if(tradeStatus !== "4") {            
                         dom += '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
@@ -227,13 +228,13 @@ socket.on("trade_seller", function(data) {
         } else { // 판매자
             switch (data.command) {
                 case 1:    
-                    if(tradeStatus === "50" && socket.isTradeStep1 === undefined) {
+                    if(tradeStatus === "0" && socket.isTradeStep1 === undefined) {
                         dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
                         dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
                         socket.isTradeStep1 = true;
-                    } else if(tradeStatus === "50" && socket.isTradeStep1) {
+                    } else if(tradeStatus === "0" && socket.isTradeStep1) {
                         dom += '거래요청을 하시고 잠시만 기다려주세요.';
-                    } else if(tradeStatus !== "50") {
+                    } else if(tradeStatus !== "0") {
                         dom += '이미 거래요청 상태입니다.';             
                     } else {
                         return;
@@ -258,7 +259,7 @@ socket.on("trade_seller", function(data) {
                     dom += '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
                     break;         
                 case 5:
-                    if(tradeStatus == "50") {
+                    if(tradeStatus == "0") {
                         dom += '취소할 거래가 아직 진행 되지 않았습니다.';  
                     }else if(tradeStatus === "4") {               
                         dom += '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
@@ -367,7 +368,7 @@ socket.on("trade_buyer", function(data) {
                     dom += '거래가 완료 되었습니다.<br>앞으로도 마켓마하와 함께 안전한 거래하세요.';
                     break;                    
                 case 5:    
-                    if(tradeStatus == "50") {
+                    if(tradeStatus == "0") {
                         dom += '취소할 거래가 아직 진행 되지 않았습니다.';      
                     } else if(tradeStatus === "2") {       
                         dom += '구매자는 구매완료 상태에서는 거래를 취소할 수 없습니다.'; 

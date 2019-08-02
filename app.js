@@ -60,8 +60,8 @@ app.use('/vtr', socketsRouter);
 // API문서: https://socket.io/docs/server-api/
 // socket
 app.io = require("socket.io")({
-  'pingInterval': 10000,
-  'pingTimeout': 5000
+  'pingInterval': 100000,
+  'pingTimeout': 50000
 });
 
 var count = 0;

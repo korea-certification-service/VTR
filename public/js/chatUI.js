@@ -468,7 +468,6 @@ var chatUI = {
                         //socket.emit("trade", { who: _userId, to: otherId, command: 5.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
                         objOpt.command = 5.1;
                         socket.emit("trade", objOpt);
-                        // document.getElementById("tradeStatus").value = "50";
                     } else {
                         alert(json.msg);
                     }
