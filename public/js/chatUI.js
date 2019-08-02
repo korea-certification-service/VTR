@@ -447,7 +447,7 @@ var chatUI = {
 
                 var bodyParam = {};
                 bodyParam.itemId = itemId;
-                bodyParam.stepValue = "15";
+                bodyParam.stepValue = "5";
                 bodyParam.reqValue = {
                     reqUserTag: _userId,
                     country: that.country
@@ -465,9 +465,10 @@ var chatUI = {
                     chatUI.setTradeInfo();
                     if(json.successYn === "Y") {
                         thisDom.setAttribute("disabled", "disabled");
-                        //socket.emit("trade", { who: _userId, to: otherId, command: 15.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
-                        objOpt.command = 15.1;
+                        //socket.emit("trade", { who: _userId, to: otherId, command: 5.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
+                        objOpt.command = 5.1;
                         socket.emit("trade", objOpt);
+                        // document.getElementById("tradeStatus").value = "50";
                     } else {
                         alert(json.msg);
                     }
