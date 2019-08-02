@@ -234,7 +234,7 @@ function eventBinding(app){
       data.type = "basic";
       if (data.who === data.sellerTag) { 
         data.target = "seller"; // 판매자
-        if (data.command === 1 || data.command === 1.1 || data.command === 3 || data.command === 3.1 || data.command === 5 || data.command === 5.1) {
+        if (data.command === 1 || data.command === 1.1 || data.command === 3 || data.command === 3.1 || data.command === 15 || data.command === 15.1) {
           socket.broadcast.to(room).emit("trade_seller", data);
           data.flagNum = data.command;
         } else {
@@ -244,7 +244,7 @@ function eventBinding(app){
 
       } else if (data.who === data.buyerTag){ 
         data.target = "buyer"; // 구매자
-        if (data.command === 2 || data.command === 2.1|| data.command === 4 || data.command === 4.1 || data.command === 5 || data.command === 5.1) {
+        if (data.command === 2 || data.command === 2.1|| data.command === 4 || data.command === 4.1 || data.command === 15 || data.command === 15.1) {
           socket.broadcast.to(room).emit("trade_buyer", data);
           data.flagNum = data.command;
         } else {

@@ -207,7 +207,7 @@ socket.on("trade_seller", function(data) {
                     chatUI.setTradeInfo();        
                     dom += '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
                     break;
-                case 5:    
+                case 15:    
                     if(tradeStatus == "0") {
                         return;  
                     } else if(tradeStatus !== "4") {            
@@ -216,7 +216,7 @@ socket.on("trade_seller", function(data) {
                         return;
                     }
                     break;
-                case 5.1:
+                case 15.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
                     dom += '판매자가 거래취소를 하였습니다.';
@@ -258,7 +258,7 @@ socket.on("trade_seller", function(data) {
                     chatUI.setTradeInfo(); 
                     dom += '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
                     break;         
-                case 5:
+                case 15:
                     if(tradeStatus == "0") {
                         dom += '취소할 거래가 아직 진행 되지 않았습니다.';  
                     }else if(tradeStatus === "4") {               
@@ -268,7 +268,7 @@ socket.on("trade_seller", function(data) {
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
                     }
                     break;
-                case 5.1:
+                case 15.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
                     dom += '거래 취소가 완료되었습니다.';
@@ -323,7 +323,7 @@ socket.on("trade_buyer", function(data) {
                     chatUI.setTradeInfo();          
                     dom += '구매자가 거래완료를 눌렀습니다.<br>앞으로도 마켓마하와 함께 안전한 거래하세요.';
                     break;
-                case 5:    
+                case 15:    
                     if(tradeStatus == "2") {
                         // dom += '구매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';
                         return; // 구매확인 단계에서도 구매취소 못하게 막음
@@ -331,7 +331,7 @@ socket.on("trade_buyer", function(data) {
                         return;  
                     }
                     break; 
-                case 5.1:
+                case 15.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
                     dom += '구매자가 거래취소를 하였습니다.';
@@ -367,7 +367,7 @@ socket.on("trade_buyer", function(data) {
                     chatUI.setTradeInfo();       
                     dom += '거래가 완료 되었습니다.<br>앞으로도 마켓마하와 함께 안전한 거래하세요.';
                     break;                    
-                case 5:    
+                case 15:    
                     if(tradeStatus == "0") {
                         dom += '취소할 거래가 아직 진행 되지 않았습니다.';      
                     } else if(tradeStatus === "2") {       
@@ -381,7 +381,7 @@ socket.on("trade_buyer", function(data) {
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
                     }
                     break;
-                case 5.1:
+                case 15.1:
                     chatUI.setTradeInfo();
                     socket.isTradeStep1 = undefined;
                     dom += '거래 취소가 완료되었습니다.';
