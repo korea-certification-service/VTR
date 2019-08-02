@@ -25,14 +25,16 @@ var chatUI = {
             reqUserTag: _userId,
             country: this.country
         };
-        
-        $.ajax({
-            url: "/test/call-backend",
-            data: JSON.stringify(bodyParam),
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        })
+
+        if(document.getElementById("tradeStatus").value === "50"){
+            $.ajax({
+                url: "/test/call-backend",
+                data: JSON.stringify(bodyParam),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            })
+        }
 
     },
     setOtherId: function (){
