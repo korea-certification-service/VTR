@@ -1,5 +1,3 @@
-
-
 var chatUI = {
     isDim: false,
     country: document.getElementById("country").value,
@@ -16,6 +14,26 @@ var chatUI = {
         this.ActBtn();
         this.setTradeInfo();
         this.loadLastStatus();
+    },
+    closeWindow: function() {
+        var itemId = this.itemId;
+        
+        var bodyParam = {};
+        bodyParam.itemId = itemId;
+        bodyParam.stepValue = "15";
+        bodyParam.reqValue = {
+            reqUserTag: _userId,
+            country: this.country
+        };
+        
+        $.ajax({
+            url: "/test/call-backend",
+            data: JSON.stringify(bodyParam),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        })
+
     },
     setOtherId: function (){
         if(document.getElementById("userId").value == document.getElementById("buyerTag").value){
