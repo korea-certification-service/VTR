@@ -236,7 +236,7 @@ socket.on("trade_seller", function(data) {
         } else { // 판매자
             switch (data.command) {
                 case 1:    
-                    if(tradeStatus === "50" && socket.isTradeStep1 === undefined) {
+                    if((tradeStatus === "0" && socket.isTradeStep1 === undefined) || (tradeStatus === "50" && socket.isTradeStep1 === undefined)) {
                         dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
                         dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
                         socket.isTradeStep1 = true;

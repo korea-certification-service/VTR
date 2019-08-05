@@ -202,19 +202,19 @@ function eventBinding(app){
           };
 
           const options = {
-            uri: "http://192.168.0.10:4000/vtr/setChat", // 로컬에 저장
+            uri: process.env.CHAT_DB, // 현재 로컬에 저장
             method: "POST",
             body: reqData,
             json: true
           };
-
-          // 로직 완성될때까지 메세지 디비 저장 막기
+          
           /*
+          // 로직 완성될때까지 메세지 디비 저장 막기
           request.post(options, function(err, response, body) {
             if (err !== null) {
             }
           });
-          */          
+          */
         }
       } else {
         console.log("[Error] room이나 rooms[room]이 undefined");
