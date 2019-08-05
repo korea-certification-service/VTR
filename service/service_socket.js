@@ -65,7 +65,7 @@ function eventBinding(app){
       if (!data.reconnect) {
         // nickname 화면으로 내림
         socket.emit("new_user", { nickname: nickname, yymmdd: timeFormat });
-        data = { msg: nickname + " 님이 입장하셨습니다." };
+        data = {who: nickname, inout: "in"}
         app.io.sockets.to(room).emit("system_msg", data);
       }
 
@@ -104,10 +104,7 @@ function eventBinding(app){
           break;
         case "transport close": // [Client Side] Client stopped sending data
           console.log("@@@@@@@ transport close @@@@@@@");
-          let data = {
-            who: "computer",
-            msg: nickname + " 님이 나가셨습니다."
-          };
+          let data = {who: nickname, inout: "out"}
           app.io.sockets.to(room).emit("system_msg", data);
           //app.io.sockets.to(room).emit("userlist", { users: Object.keys(rooms[room].socket_ids) });
           break;

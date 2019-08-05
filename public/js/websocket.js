@@ -168,7 +168,15 @@ socket.on('system_msg', function (data) {
     //console.log('system_msg', data);
     var p = document.createElement('p');
     p.classList.add("p_system");
-    p.innerText = data.msg;
+    var msg = "";
+    if(data.inout) {
+        if (data.inout === "in") {
+            msg = data.who + " 님이 입장하셨습니다.";
+        } else if (data.inout === "out") {
+            msg = data.who + " 님이 퇴장하셨습니다.";
+        }
+    }
+    p.innerText = msg;
     document.getElementById("content").appendChild(p);
     p.scrollIntoView(false);
 });
