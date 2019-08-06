@@ -42,7 +42,11 @@ router.post("/room/:room", function(req, res) {
   reqBody['token'] = config.APIToken;
   reqBody['APIServer'] = config.APIServer;
   reqBody['VTRURL'] = config.VTRURL;
-  res.render("vtr", reqBody);
+  if(reqBody.country == "KR") {
+    res.render("vtr", reqBody);
+  } else {
+    res.render("en_vtr", reqBody);
+  }
 });
 
 // 채팅 저장
