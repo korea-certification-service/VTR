@@ -213,7 +213,7 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3.1:    
                     chatUI.setTradeInfo();        
-                    dom += 'The seller has completed the sale.<br>If the transaction is completed, click on the <em>@MACH Deliver.</em>';
+                    dom += 'The seller has completed the sale.<br>If the transaction is completed, click on the <em>@MACH Completed.</em>';
                     break;
                 case 5:    
                     if(tradeStatus == "50") {
@@ -365,8 +365,8 @@ socket.on("trade_buyer", function(data) {
                     break;
                 case 4:
                     if(tradeStatus == "3") {             
-                        dom += 'Did you receive the goods well? <br> If the transaction is completed, click on the <em>@MACH Deliver</em>.';
-                        dom += '<button id="btnTransactionComplete" class="btn_chat btn_t_c">Deliver</button>';   
+                        dom += 'Did you receive the goods well? <br> If the transaction is completed, click on the <em>@MACH Completed</em>.';
+                        dom += '<button id="btnTransactionComplete" class="btn_chat btn_t_c">Completed</button>';   
                     } else {
                         dom += 'It is not a condition to complete the transaction.';
                     }
