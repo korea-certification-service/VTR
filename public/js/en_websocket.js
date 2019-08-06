@@ -22,7 +22,7 @@ function fnSendMsg() {
     var msgVal = iptChat.value;
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["Transaction guide", "Start", "Pay(Escrow)", "Sales Complete", "Deliver", "Cancel Transaction"];
+    var arrComand = ["Transaction guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel Transaction"];
     var isCommand = false;
     var regTradingTxt = /^@MACH /;
     var userId = document.getElementById("userId").value;
