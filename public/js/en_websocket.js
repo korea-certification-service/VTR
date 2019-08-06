@@ -22,7 +22,7 @@ function fnSendMsg() {
     var msgVal = iptChat.value;
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["Transaction guide", "Start", "Pay(Escrow)", "Sales Complete", "Deliver", "Cancel Transaction"];
+    var arrComand = ["Transaction guide", "Start", "Pay(Escrow)", "Sales Complete", "Deliver", "Cancel"];
     var isCommand = false;
     var regTradingTxt = /^@MACH /;
     var userId = document.getElementById("userId").value;
@@ -64,7 +64,7 @@ function fnSendMsg() {
             }
 
         } else { // 없는 명령어
-            dom += originMsg +"The command does not exist. Please check again and enter.";      
+            dom += originMsg +" The command does not exist. Please check again and enter.";      
             dom += '</p></div>';
             content.insertAdjacentHTML("beforeend", dom);
         }
@@ -255,9 +255,9 @@ socket.on("trade_seller", function(data) {
                 case 3:
                     if(tradeStatus == "2") {
                         dom += 'Be sure to send the item and press Sales Complete. <br> If you sent it by courier, please inform the buyer of the invoice number.<br>';  
-                        dom += 'If you want to cancel the transaction, please click Cancel transaction.';  
+                        dom += 'If you want to cancel the transaction, please click Cancel.';  
                         dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">Sales Complete</button>';
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel transaction</button>';  
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';  
                     } else {
                         dom += 'You are not in a transaction that can be completed.';
                     }
@@ -273,7 +273,7 @@ socket.on("trade_seller", function(data) {
                         dom += 'You can not cancel a transaction while it\'s closed.'; 
                     } else {
                         dom += 'Press the button below to cancel the transaction.';   
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel Transaction</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     }
                     break;
                 case 5.1:
@@ -352,9 +352,9 @@ socket.on("trade_buyer", function(data) {
             switch (data.command) {
                 case 2:
                     if(tradeStatus == "1") {   
-                        dom += 'Please confirm the transaction price.<br>The <em>' + vtrPrice + '</em> confirm the purchase at the price, press Confirm Purchase. <br> If you want to cancel the transaction, click Cancel Transaction.';
-                        dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';    
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_">거래취소</button>';    
+                        dom += 'Please confirm the transaction price.<br>The <em>' + vtrPrice + '</em> confirm the purchase at the price, press Confirm Purchase. <br> If you want to cancel the transaction, click Cancel.';
+                        dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">Pay(Escrow)</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_">Cancel</button>';    
                     } else {
                         dom += 'This is not a transactional state where you can confirm your purchase.';
                     }
@@ -386,7 +386,7 @@ socket.on("trade_buyer", function(data) {
                         dom += 'You can not cancel a transaction while it is closed.'; 
                     } else {
                         dom += 'If you want to cancel the transaction, please press the button below.';   
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel Transaction</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     }
                     break;
                 case 5.1:
