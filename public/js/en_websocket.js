@@ -254,9 +254,9 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3:
                     if(tradeStatus == "2") {
-                        dom += 'Be sure to send the item and press Sales Complete. <br> If you sent it by courier, please inform the buyer of the invoice number.<br>';  
+                        dom += 'Be sure to send the item and press Deliver. <br> If you sent it by courier, please inform the buyer of the invoice number.<br>';  
                         dom += 'If you want to cancel the transaction, please click Cancel.';  
-                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">Sales Complete</button>';
+                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">Deliver</button>';
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';  
                     } else {
                         dom += 'You are not in a transaction that can be completed.';
