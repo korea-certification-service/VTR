@@ -55,7 +55,7 @@ function fnSendMsg() {
                 case 0:
                     dom = '<div class="bubble mach_speech"><p class="max_p">';
                     dom += 'Let me tell you about the transaction process.<br>';
-                    dom += '<img src="/img/VTR_info.jpg" alt="안내문"/>'              
+                    dom += '<img src="/img/VTR_info_en.jpg" alt="안내문"/>'              
                     content.insertAdjacentHTML("beforeend", dom);    
                     break;               
                 default:
