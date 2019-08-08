@@ -31,6 +31,7 @@ function fnSendMsg() {
     var otherId = "";
 	var dom = '<div class="bubble mach_speech"><p>';
     var content = document.getElementById("content");
+    var btnSend = document.getElementById("btnSend");
 
     if(userId == buyerTag){
         otherId = sellerTag;
@@ -74,6 +75,7 @@ function fnSendMsg() {
     }
 
     iptChat.value = '';
+    btnSend.classList.remove("on");
     //iptChat.focus();
     fnScrollLast(); // 스크롤 자동 최하단 이동
 }
