@@ -109,6 +109,7 @@ var chatUI = {
     },
     sendMsg: function() {
         var iptChat = document.getElementById("iptChat");
+        var btnSend = document.getElementById("btnSend");
         iptChat.addEventListener("keypress", function(ev){
             if (ev.which == 13) {
                 if (ev.target.value==="") {
@@ -118,7 +119,11 @@ var chatUI = {
                 fnSendMsg();
             }
         });
-        document.getElementById("btnSend").addEventListener("click", function(ev){
+        iptChat.addEventListener("input", function(ev){
+            if(iptChat.value === "") btnSend.classList.remove("on");
+            else btnSend.classList.add("on");
+        });
+        btnSend.addEventListener("click", function(ev){
             if (ev.target.previousSibling.previousSibling.value==="") {
                 alert("메세지를 입력해주세요.");
                 return;

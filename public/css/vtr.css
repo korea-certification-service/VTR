@@ -89,6 +89,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .footer .ipt_chat{float: left; margin-top: 5.5px; margin-left: 25px; width: calc(100% - 150px); height: 30px; font-size: 18px; border: none;}
 .footer .btn_send{float: right; margin-right: 20px; width: 60px; height: 38px; font-weight: 600; color: #9c9c9c; border: 1px solid #9c9c9c; border-radius: 5px; font-size: 18px;}
 .footer .btn_send:active{background-color: #eee;}
+.footer .btn_send.on{border-style: solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 1px; font-weight: bold;}
 .footer .btn_at{float: left; margin-top: 4px; margin-left: 15px; width: 30px; height: 30px;}
 .footer .btn_emoji{font-size: 30px; line-height: 30px;}
 .footer .msg_sec{margin: 0 10px; padding: 7px 0; height: 55px; box-sizing: border-box; font-size: 0; border: 1px solid #d9d9d9; border-radius: 30px;}

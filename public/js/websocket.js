@@ -19,7 +19,7 @@ function fnScrollLast() {
 
 function fnSendMsg() {
     var iptChat = document.getElementById("iptChat");
-    var msgVal = iptChat.value;
+    var msgVal = iptChat.value.trim();
     var originMsg = iptChat.value;
     var sendTxt = "";
     var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료", "거래취소"];
@@ -31,6 +31,7 @@ function fnSendMsg() {
     var otherId = "";
 	var dom = '<div class="bubble mach_speech"><p>';
     var content = document.getElementById("content");
+    var btnSend = document.getElementById("btnSend");
 
     if(userId == buyerTag){
         otherId = sellerTag;
@@ -74,6 +75,7 @@ function fnSendMsg() {
     }
 
     iptChat.value = '';
+    btnSend.classList.remove("on");
     //iptChat.focus();
     fnScrollLast(); // 스크롤 자동 최하단 이동
 }
