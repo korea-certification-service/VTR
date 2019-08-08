@@ -44,8 +44,8 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .cf:after{display: block; content: ''; clear: both;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
-.header{height: 80px; box-sizing: border-box; border-style: solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 1px; border-top: none; border-left: none; border-right: none;}
-.header .hdr_menu{margin: 10px 0; padding: 0 20px;}
+.header{position: relative; padding-left: 80px; height: 80px; box-sizing: border-box;border-bottom: 1px solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 0 0 1px 0;}
+.header .hdr_menu{padding: 10px 20px;}
 .header .hdr_menu .status_text{float: left;}
 .header .hdr_menu .btn_trans{float: right; padding: 2px 10px; color: #333; border: 1px solid #0074bd; border-radius: 8px; font-size: 12px;}
 .header h1{padding: 0 20px; font-size: 16px; font-weight: 500;}
@@ -53,6 +53,8 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .header h1 .vtr_category{width: 80px;}
 .header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}
 .header h1 .vtr_price{float: right; width: 150px; text-align: right;}
+.header .btn_out{position: absolute; top: 0; left: 0; width: 80px; height: 79px;}
+.header .btn_out img{width: 40px;}
 .content{height: calc(100% - 150px); overflow: scroll;}
 .content img[alt="안내문"]{width: 100%;} 
 .content > em{display: block; font-weight: 400;}
@@ -106,3 +108,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .footer .at_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;}
 .footer .at_sec .mach_command{display: inline-block; margin: 0 0 15px 10px; padding: 0 12px; height: 45px; line-height: 45px; font-size: 14px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
 .chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
+@media (min-width: 400px){
+    .header{padding-left: 0;}
+    .header .btn_out{display: none;}
+}

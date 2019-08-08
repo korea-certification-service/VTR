@@ -14,6 +14,7 @@ var chatUI = {
         this.ActBtn();
         this.setTradeInfo();
         this.loadLastStatus();
+        this.tempCloseMethod();
     },
     closeWindow: function() {
         var itemId = this.itemId;
@@ -33,6 +34,8 @@ var chatUI = {
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
+            }).always(function(){
+                window.close();
             })
         }
 
@@ -510,6 +513,13 @@ var chatUI = {
                 proxyEvent[target.id].call(target);
             }
         });  
+    },
+    tempCloseMethod : function() {
+        document.getElementById("btnOut").addEventListener("click", function(){
+            if(confirm("채팅방을 나가시겠습니까?")){
+                chatUI.closeWindow();
+            }
+        });     
     }
 }    
 chatUI.init();

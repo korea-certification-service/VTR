@@ -14,6 +14,7 @@ var chatUI = {
         this.ActBtn();
         this.setTradeInfo();
         this.loadLastStatus();
+        this.tempCloseMethod();
     },
     closeWindow: function() {
         var itemId = this.itemId;
@@ -511,6 +512,13 @@ var chatUI = {
                 proxyEvent[target.id].call(target);
             }
         });  
+    },
+    tempCloseMethod : function() {
+        document.getElementById("btnOut").addEventListener("click", function(){
+            if(confirm("Do you want to out?")){
+                chatUI.closeWindow();
+            }
+        });     
     }
 }    
 chatUI.init();
