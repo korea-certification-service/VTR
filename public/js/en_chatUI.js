@@ -34,7 +34,11 @@ var chatUI = {
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
+            }).always(function(){
+                window.close();
             })
+        } else {
+            window.close();
         }
 
     },

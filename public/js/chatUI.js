@@ -37,6 +37,8 @@ var chatUI = {
             }).always(function(){
                 window.close();
             })
+        } else {
+            window.close();
         }
 
     },
