@@ -110,5 +110,4 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
 @media (min-width: 415px){
     .header{padding-left: 0;}
-    .header .btn_out{display: none;}
 }
