@@ -490,11 +490,15 @@ var chatUI = {
                     dataType: "json"
                 })
                 .done(function(json) {
-                    console.log(json);
+                    // console.log(json);
                     chatUI.setTradeInfo();
                     if(json.successYn === "Y") {
-                        thisDom.setAttribute("disabled", "disabled");
+                        // thisDom.setAttribute("disabled", "disabled");
                         //socket.emit("trade", { who: _userId, to: otherId, command: 5.1, buyerTag: that.buyerTag, sellerTag: that.sellerTag });
+                        var btnChat = document.querySelectorAll(".btn_chat");
+                        for (var i = 0; i < btnChat.length; i++) {
+                            btnChat[i].setAttribute("disabled", "disabled");
+                        }
                         objOpt.command = 5.1;
                         socket.emit("trade", objOpt);
                         // document.getElementById("tradeStatus").value = "50";

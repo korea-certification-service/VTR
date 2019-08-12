@@ -358,7 +358,7 @@ socket.on("trade_buyer", function(data) {
                     if(tradeStatus == "1") {   
                         dom += '거래가격을 확인 해주세요.<br><em>' + vtrPrice + '</em> 가격으로 구매를 확정 하시려면 구매확인을 눌러주세요.<br>거래취소를 원하시면 거래취소를 눌러주세요.';
                         dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">구매확인</button>';    
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_">거래취소</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
                     } else {
                         dom += '구매확인을 할 수 있는 거래상태가 아닙니다.';
                     }

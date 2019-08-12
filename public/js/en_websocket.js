@@ -356,7 +356,7 @@ socket.on("trade_buyer", function(data) {
                     if(tradeStatus == "1") {   
                         dom += 'Please confirm the transaction price.<br>The <em>' + vtrPrice + '</em> confirm the purchase at the price, press Confirm Purchase. <br> If you want to cancel the transaction, click Cancel.';
                         dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">Pay(Escrow)</button>';    
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_">Cancel</button>';    
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     } else {
                         dom += 'This is not a transactional state where you can confirm your purchase.';
                     }
