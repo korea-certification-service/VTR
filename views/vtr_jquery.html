@@ -89,7 +89,7 @@ $("#btnSend").on("click", function() {
     fnSendMsg();
 });
 
-var serverURL = 'http://192.168.0.10:4000';
+var serverURL = 'http://192.168.0.100:4000';
 
 //var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함

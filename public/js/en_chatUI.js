@@ -202,7 +202,7 @@ var chatUI = {
 
         function getChatList() {
             $.ajax({
-                url: "http://192.168.0.10:4000/vtr/getChat",
+                url: "http://192.168.0.100:4000/vtr/getChat",
                 type: "GET",
                 data: {"room": room},
                 contentType: "application/json; charset=utf-8",
