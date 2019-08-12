@@ -281,7 +281,8 @@ socket.on("trade_seller", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += '거래 취소가 완료되었습니다.';
+                    dom += '거래 취소가 완료되었습니다.<br>';
+                    dom += '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
                     break;                                     
                 default:
                     dom += '';
@@ -344,7 +345,8 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += '구매자가 거래취소를 하였습니다.';
+                    dom += '구매자가 거래취소를 하였습니다.<br>';
+                    dom += '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
                     break;                                        
                 default:
                     dom += '';
