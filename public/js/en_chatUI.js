@@ -128,7 +128,7 @@ var chatUI = {
             if(iptChat.value === "") btnSend.classList.remove("on");
             else btnSend.classList.add("on");
         });
-        document.getElementById("btnSend").addEventListener("click", function(ev){
+        btnSend.addEventListener("click", function(ev){
             if (ev.target.previousSibling.previousSibling.value==="") {
                 alert("Please input the message.");
                 return;
@@ -212,55 +212,54 @@ var chatUI = {
                 console.log("msgs", result);
                 var userId = document.getElementById("userId").value;
                 var msgs = result.msgs;
+                var content = document.getElementById("content");
                 var domMsg = "";
+                var arrIdx = [];
 
                 for (var i = 0; i < msgs.length; i++) {
                     
                     if (msgs[i].who === userId) { // 내가 쓴글
                         if(msgs[i].sameUser) { // 또 쓴 글
                             domMsg += '<div class="bubble my_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display: none;">'
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
                             domMsg += msgs[i].msgtime+'</span></p></div>';
                         } else {
                             domMsg += '<em class="my_id">'+msgs[i].who+'</em>';
                             domMsg += '<div class="bubble my_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time">'
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
                             domMsg += msgs[i].msgtime+'</span></p></div>';
+                            arrIdx.push(i);
                         }
-                        
+
                     } else if (msgs[i].who !== userId){ // 상대방이 쓴 글
                         if(msgs[i].sameUser) { // 또 쓴 글
-                            domMsg += "";
+                            domMsg += '<div class="bubble other_speech">';
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            domMsg += msgs[i].msgtime+'</span></p></div>';
                         } else {
-                    
+                            domMsg += '<em class="other_id">'+msgs[i].who+'</em>';
+                            domMsg += '<div class="bubble other_speech">';
+                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            domMsg += msgs[i].msgtime+'</span></p></div>';
+                            arrIdx.push(i);
                         }
                     }
                     
                 }
 
-                /*
-                <em class="my_id">testkcs</em>
-                <div class="bubble my_speech">
-                <p>111돔복구<span class="chat_time" style="display: none;">3:54 PM</span></p>
-                </div>
-                <div class="bubble my_speech">
-                <p>222같은아이디<span class="chat_time">3:54 PM</span></p>
-                </div><em class="other_id">tjdudwp02</em>
-                <div class="bubble other_speech">
-                <p>333다른아이디<span class="chat_time">3:54 PM</span></p>
-                </div><em class="my_id">testkcs</em>
-                <div class="bubble my_speech">
-                <p>444다른아이디<span class="chat_time" style="display: none;">3:54 PM</span></p>
-                </div>
-                <div class="bubble my_speech">
-                <p>555같은아이디<span class="chat_time">3:54 PM</span></p>
-                </div>
-                */
+                content.insertAdjacentHTML("beforeend", domMsg);
+
+                var bubble = document.querySelectorAll(".bubble");
+                for (let j = 1; j < arrIdx.length; j++) { // 현재 0이 거래안내 메세지
+                    var tgtIdx = arrIdx[j];
+                    bubble[tgtIdx].querySelector(".chat_time").style.display="inline";
+                }
+                bubble[bubble.length-1].querySelector(".chat_time").style.display="inline";
 
                 emitTradeProcess();
             })
             .fail(function(xhr, status, error) {
-                console.log("It is occured a error during chating messages.", error);
+                console.log("채팅 내용를 가져오는 중에 에러 발생", error);
                 emitTradeProcess();
             });
         }
