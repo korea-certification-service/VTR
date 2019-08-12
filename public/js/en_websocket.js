@@ -55,7 +55,7 @@ function fnSendMsg() {
             switch (i) {
                 case 0:
                     dom = '<div class="bubble mach_speech"><p class="max_p">';
-                    dom += 'Let me tell you about the transaction process.<br>';
+                    dom += 'Let me tell you about trading process.<br>';
                     dom += '<img src="/img/VTR_info_en.jpg" alt="안내문"/>'              
                     content.insertAdjacentHTML("beforeend", dom);    
                     break;               
@@ -207,7 +207,7 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 1.1:
                     chatUI.setTradeInfo();
-                    dom += 'The seller requested a transaction with a price of <em>' + data.price + data.ccCode + '</em>.<br>Click on the <em>@Mach Pay(Escrow)</em> to proceed with the transaction.';
+                    dom += 'The seller requested trading with a price of <em>' + data.price + data.ccCode + '</em>.<br>Click on the <em>@Mach Pay(Escrow)</em> to proceed with trading.';
                     break;
                 case 3:           
                     //dom += '';
@@ -215,7 +215,7 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3.1:    
                     chatUI.setTradeInfo();        
-                    dom += 'The seller has completed the sale.<br>If the transaction is completed, click on the <em>@MACH Completed.</em>';
+                    dom += 'The seller has completed the sale.<br>If trading is completed, click on the <em>@MACH Completed.</em>';
                     break;
                 case 5:    
                     if(tradeStatus == "50") {
@@ -229,7 +229,7 @@ socket.on("trade_seller", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += 'The seller has canceled the transaction.';
+                    dom += 'The seller has canceled trading.';
                     break;                      
                 default:
                     dom += '';
@@ -239,11 +239,11 @@ socket.on("trade_seller", function(data) {
             switch (data.command) {
                 case 1:    
                     if((tradeStatus === "0" && socket.isTradeStep1 === undefined) || (tradeStatus === "50" && socket.isTradeStep1 === undefined)) {
-                        dom += 'You will start the transaction. <br> Please enter the transaction price first.<br>';             
+                        dom += 'You will start trading. <br> Please enter trading price first.<br>';             
                         dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">Start</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
-                        dom += 'Please request a transaction and wait a moment.';
+                        dom += 'Please request trading and wait a moment.';
                     } else if(tradeStatus !== "50") {
                         dom += 'You are already in a Start status.';             
                     } else {
@@ -257,31 +257,32 @@ socket.on("trade_seller", function(data) {
                 case 3:
                     if(tradeStatus == "2") {
                         dom += 'Be sure to send the item and press Deliver. <br> If you sent it by courier, please inform the buyer of the invoice number.<br>';  
-                        dom += 'If you want to cancel the transaction, please click Cancel.';  
+                        dom += 'If you want to cancel trading, please click Cancel.';  
                         dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">Deliver</button>';
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';  
                     } else {
-                        dom += 'You are not in a transaction that can be completed.';
+                        dom += 'You are not in trading that can be completed.';
                     }
                     break;
                 case 3.1:           
                     chatUI.setTradeInfo(); 
-                    dom += 'Sale completed successfully. <br> Waiting for buyer to complete transaction.'
+                    dom += 'Sale completed successfully. <br> Waiting for buyer to complete trading.'
                     break;         
                 case 5:
                     if(tradeStatus == "50") {
-                        dom += 'The transaction to cancel has not yet been processed.';  
+                        dom += 'Trading cancellation has not yet been processed.';  
                     }else if(tradeStatus === "4") {               
-                        dom += 'You can not cancel a transaction while it\'s closed.'; 
+                        dom += 'You can not cancel trading while it\'s closed.'; 
                     } else {
-                        dom += 'Press the button below to cancel the transaction.';   
+                        dom += 'Press the button below to cancel trading.';   
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     }
                     break;
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += 'Transaction cancellation is complete.';
+                    dom += 'It is successfully completed trading cancellation.<br>';
+                    dom += 'If you want to reset trading, click exit icon on the left top.';
                     break;                                     
                 default:
                     dom += '';
@@ -304,7 +305,7 @@ socket.on("trade_buyer", function(data) {
     var vtrPrice = document.getElementById("vtrPrice").innerText;
 
     if(data.type === "err") {
-        dom += "<em>" + data.msg + "</em> 명령어는 구매자가 실행할 수 없습니다.";
+        dom += "The <em>" + data.msg + "</em> command can not be executed by the buyer.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
         dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);
@@ -324,14 +325,14 @@ socket.on("trade_buyer", function(data) {
                     break;
                 case 4:
                     if(tradeStatus == "3") {     
-                        dom += 'Waiting for buyer to complete the transaction.';
+                        dom += 'Waiting for buyer to complete trading.';
                     } else {    
                         return;
                     }
                     break;
                 case 4.1:
                     chatUI.setTradeInfo();          
-                    dom += 'The buyer has completed the transaction.<br> Make a safe transaction with Market Mach in the future.';
+                    dom += 'The buyer has completed trading.<br> Make trading safety with Market Mach in the future.';
                     break;
                 case 5:    
                     if(tradeStatus == "2") {
@@ -344,7 +345,7 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += 'The buyer has canceled the transaction.';
+                    dom += 'The buyer has canceled trading.';
                     break;                                        
                 default:
                     dom += '';
@@ -354,11 +355,11 @@ socket.on("trade_buyer", function(data) {
             switch (data.command) {
                 case 2:
                     if(tradeStatus == "1") {   
-                        dom += 'Please confirm the transaction price.<br>The <em>' + vtrPrice + '</em> confirm the purchase at the price, press Confirm Purchase. <br> If you want to cancel the transaction, click Cancel.';
+                        dom += 'Please confirm trading price.<br>The <em>' + vtrPrice + '</em> confirm the purchase at the price, press Confirm Purchase. <br> If you want to cancel trading, click Cancel.';
                         dom += '<button id="btnPurchaseConfirmation" class="btn_chat btn_p_c">Pay(Escrow)</button>';    
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     } else {
-                        dom += 'This is not a transactional state where you can confirm your purchase.';
+                        dom += 'This is not trading state where you can confirm your purchase.';
                     }
                     break;
                 case 2.1: 
@@ -367,34 +368,35 @@ socket.on("trade_buyer", function(data) {
                     break;
                 case 4:
                     if(tradeStatus == "3") {             
-                        dom += 'Did you receive the goods well? <br> If the transaction is completed, click on the <em>@MACH Completed</em>.';
+                        dom += 'Did you receive the goods well? <br> If trading is completed, click on the <em>@MACH Completed</em>.';
                         dom += '<button id="btnTransactionComplete" class="btn_chat btn_t_c">Completed</button>';   
                     } else {
-                        dom += 'It is not a condition to complete the transaction.';
+                        dom += 'It is not a condition to complete trading.';
                     }
                     break;
                 case 4.1:
                     chatUI.setTradeInfo();       
-                    dom += 'Your transaction has been completed.<br> Make a safe transaction with Market Mach in the future.';
+                    dom += 'Your trading has been completed.<br> Make trading safety with Market Mach in the future.';
                     break;                    
                 case 5:    
                     if(tradeStatus == "50") {
-                        dom += 'The transaction to cancel has not yet been processed.';      
+                        dom += 'Trading cancellation has not yet been processed.';      
                     } else if(tradeStatus === "2") {       
-                        dom += 'The buyer can not cancel a transaction while it is in complete purchase.'; 
+                        dom += 'The buyer can not cancel trading while it is in complete purchase.'; 
                     } else if(tradeStatus === "3") {       
-                        dom += 'The buyer can not cancel the transaction when the sale is complete.'; 
+                        dom += 'The buyer can not cancel trading when the sale is complete.'; 
                     } else if(tradeStatus === "4") {         
-                        dom += 'You can not cancel a transaction while it is closed.'; 
+                        dom += 'You can not cancel trading while it is closed.'; 
                     } else {
-                        dom += 'If you want to cancel the transaction, please press the button below.';   
+                        dom += 'If you want to cancel trading, please press the button below.';   
                         dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">Cancel</button>';    
                     }
                     break;
                 case 5.1:
                     chatUI.setTradeInfo();
                     socket.isTradeStep1 = undefined;
-                    dom += 'It is successfully completed cancel transaction.';
+                    dom += 'It is successfully completed trading cancellation.<br>';
+                    dom += 'If you want to reset trading, click exit icon on the left top.';
                     break;                                      
                 default:
                     dom += '';
