@@ -504,7 +504,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("It is occured a error during Cancel Transaction.");
+                    alert("It is occured a error during Cancel.");
                 });
             },
         };

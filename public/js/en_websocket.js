@@ -22,7 +22,7 @@ function fnSendMsg() {
     var msgVal = iptChat.value;
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["Transaction guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel Transaction"];
+    var arrComand = ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel"];
     var isCommand = false;
     var regTradingTxt = /^@MACH /;
     var userId = document.getElementById("userId").value;
@@ -394,7 +394,7 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo();
                     socket.isTradeStep1 = undefined;
-                    dom += 'Cancel Transaction is complete.';
+                    dom += 'It is successfully completed cancel transaction.';
                     break;                                      
                 default:
                     dom += '';
