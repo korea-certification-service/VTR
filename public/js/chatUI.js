@@ -99,6 +99,7 @@ var chatUI = {
                 iptChat.value = e.target.innerText;
                 hideDim();
                 // 여기서 메세지 입력되면 됨
+                document.getElementById("btnSend").click();
                 
                 fnScrollLast(); // 스크롤 자동 최하단 이동
             });

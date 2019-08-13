@@ -19,7 +19,7 @@ function fnScrollLast() {
 
 function fnSendMsg() {
     var iptChat = document.getElementById("iptChat");
-    var msgVal = iptChat.value;
+    var msgVal = iptChat.value.trim();
     var originMsg = iptChat.value;
     var sendTxt = "";
     var arrComand = ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel"];

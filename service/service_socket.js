@@ -170,13 +170,10 @@ function eventBinding(app){
           }
 
           if (data.who === socket.nickname) {
-            // 보낸 대상이 나
+            // 보낸 대상이 나일때 나빼고 전송
             socket.broadcast.to(room).emit("other_msg", data);
-          } else {
-            // 보낸 대상이 다른 누군가
-            socket.broadcast.to(room).emit("broadcast_msg", data);
-          }
-          //자기자신 전송
+          } 
+          // 자기자신 전송
           socket.emit("broadcast_msg", data);
 
           /*

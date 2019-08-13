@@ -15,7 +15,7 @@
 /* basic */
 html, body {width:100%; height:100%; -webkit-overflow-scrolling: touch; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; -moz-text-size-adjust: none; -ms-text-size-adjust: none; }
 html{overflow-y:scroll;}
-body{margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; word-break:break-all;-ms-word-break:break-all; }
+body{margin: 0; padding: 0; min-width: 320px; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; word-break:break-all;-ms-word-break:break-all; }
 a, address, blockquote, br, fieldset, legend, label, form, input, select, textarea, button, table, th, td caption, cite, code, dl, dt, dd, h1, h2, h3, h4, h5, h6, p, div, iframe, ul, ol, li, hr, img{margin:0; padding:0;}
 h1, h2, h3, h4, h5, h6 {font-size:14px; text-align:left;}
 ul, ol, li {list-style:none;}
@@ -45,16 +45,16 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .ellipse{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-break: normal}
 .chat_wrap{position: relative; min-width:320px; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
 .header{position: relative; padding-left: 80px; height: 80px; box-sizing: border-box;border-bottom: 1px solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 0 0 1px 0;}
-.header .hdr_menu{padding: 10px 20px;}
+.header .hdr_menu{padding: 10px 20px 10px 0;}
 .header .hdr_menu .status_text{float: left;}
 .header .hdr_menu .btn_trans{float: right; padding: 2px 10px; color: #333; border: 1px solid #0074bd; border-radius: 8px; font-size: 12px;}
-.header h1{padding: 0 20px; font-size: 16px; font-weight: 500;}
+.header h1{padding: 0 20px 0 0; font-size: 16px; font-weight: 500;}
 .header h1 > div{float: left;}
 .header h1 .vtr_category{width: 80px;}
-.header h1 .vtr_title{width: calc(100% - 230px); text-align: center;}
-.header h1 .vtr_price{float: right; width: 150px; text-align: right;}
-.header .btn_out{position: absolute; top: 0; left: 0; width: 80px; height: 79px;}
-.header .btn_out img{width: 40px;}
+.header h1 .vtr_title{width: calc(100% - 190px); text-align: center;}
+.header h1 .vtr_price{float: right; width: 110px; text-align: right;}
+.header .btn_out{position: absolute; top: 20px; left: 20px; width: 40px; height: 39px;}
+.header .btn_out img{width: 100%;}
 .content{height: calc(100% - 150px); overflow: scroll;}
 .content img[alt="안내문"]{width: 100%;} 
 .content > em{display: block; font-weight: 400;}
@@ -71,7 +71,7 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .content .mach_speech > p .chat_time{color: #000000;}
 .content .mach_speech button:nth-of-type(1){margin-right: 15px;}
 .content .bubble{font-size: 18px;}
-.content .bubble > p{position: relative; margin-top: 8px; display: inline-block; max-width: 80%; padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px;}
+.content .bubble > p{position: relative; margin-top: 8px; display: inline-block; max-width: calc(100% - 100px); padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px; word-break: normal;}
 .content .bubble > .max_p{max-width: 100%; padding: 10px;}
 .content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
 .content .mach_speech .chat_time{right: -50px;}
@@ -108,3 +108,19 @@ button{border: none; cursor: pointer; background-color: #fff;}
 .footer .at_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;}
 .footer .at_sec .mach_command{display: inline-block; margin: 0 0 15px 10px; padding: 0 12px; height: 45px; line-height: 45px; font-size: 14px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
 .chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
+
+
+/********** Korean **********/
+.kr_wrap{}
+/********** english **********/
+.en_wrap{}
+.en_wrap .header h1{font-size: 14px;}
+
+@media (max-width: 321px) {
+.header{padding-left: 40px;}
+.header .btn_out{top: 20px; left: 5px; width: 30px; height: 30px;}
+/********** Korean **********/
+.kr_wrap{}
+/********** english **********/
+.en_wrap .header h1{font-size: 12px;}
+}
