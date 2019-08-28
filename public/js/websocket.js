@@ -1,5 +1,4 @@
 var serverURL = document.getElementById("serverURL").value;
-//var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 
 var _room = document.getElementById("room").value;
@@ -167,6 +166,12 @@ socket.on('system_msg', function (data) {
     p.innerText = msg;
     document.getElementById("content").appendChild(p);
     p.scrollIntoView(false);
+});
+
+// 중복접속 내쫒기 
+socket.on('eject', function (data) {
+    alert("동일한 아이디로 여러개 디바이스에 접속 하실수 없습니다. 모바일과 PC중 하나에서 거래를 진행해주세요.");
+    self.close();
 });
 
 socket.on("trade_seller", function(data) {

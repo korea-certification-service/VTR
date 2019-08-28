@@ -1,5 +1,4 @@
 var serverURL = document.getElementById("serverURL").value;
-//var socket = io.connect(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 
 var _room = document.getElementById("room").value;
@@ -121,22 +120,6 @@ socket.on('broadcast_msg', function (data) {
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);
 
-    /* 잘되면 지우기
-    if(len > 1) { // 두번째 메세지 일때
-        var chatTimeLast = my_speech[len-2].querySelector('.chat_time');
-        //console.log(chatTimeLast, len)
-    
-        if(data.sameUser && chatTimeLast.innerText === data.msgtime){
-            // chatTimeLast.style.display = 'none';
-        }
-        
-        if(chatTimeLast.innerText !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
-            // var em = '<em class="my_id">'+_userId+'</em>';
-            // my_speech[len-1].insertAdjacentHTML("beforebegin", em);
-        }
-    }
-    */
-
     fnScrollLast(); // 스크롤 자동 최하단 이동
 });
 
@@ -164,22 +147,6 @@ socket.on('other_msg', function (data) {
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);
 
-    /* 잘되면 지우기
-    if(len > 1) { // 두번째 메세지 일때
-        var chatTimeLast = my_speech[len-2].querySelector('.chat_time');
-        //console.log(chatTimeLast, len)
-    
-        if(data.sameUser && chatTimeLast.innerText === data.msgtime){
-            // chatTimeLast.style.display = 'none';
-        }
-        
-        if(chatTimeLast.innerText !== data.msgtime) { // 같은 유저지만 시간이 다른경우 표시
-            // var em = '<em class="other_id">'+ data.who +'</em>';
-            // my_speech[len-1].insertAdjacentHTML("beforebegin", em);
-        }
-    }
-    */
-
     fnScrollLast(); // 스크롤 자동 최하단 이동
 });
 
@@ -199,6 +166,12 @@ socket.on('system_msg', function (data) {
     p.innerText = msg;
     document.getElementById("content").appendChild(p);
     p.scrollIntoView(false);
+});
+
+// 중복접속 내쫒기 
+socket.on('eject', function (data) {
+    alert("동일한 아이디로 여러개 디바이스에 접속 하실수 없습니다. 모바일과 PC중 하나에서 거래를 진행해주세요.");
+    self.close();
 });
 
 socket.on("trade_seller", function(data) {

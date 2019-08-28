@@ -84,6 +84,18 @@ function eventBinding(app){
       // broadcast changed user list in the room
       app.io.sockets.to(room).emit("userlist", { users: users });
 
+      /*
+      console.log(app.io.sockets.adapter.rooms[room]);
+      console.log(rooms[room].socket_ids);
+      console.log(app.io.sockets.adapter.rooms[room].length, Object.keys(rooms[room].socket_ids).length);
+
+      let roomSocketLen = app.io.sockets.adapter.rooms[room].length;  // room에 연결된 소켓 갯수
+      let connectedUser = Object.keys(rooms[room].socket_ids).length; // room에 접속한 아이디 갯수
+      if(roomSocketLen !== connectedUser){ // 두개가 일치하지 않는다는건 하나의 아이디로 두개 이상 디바이스로 접속하려는 경우
+        socket.emit("eject", {});
+      }
+      */
+     
       count++;
     });
 
@@ -129,6 +141,7 @@ function eventBinding(app){
             rooms[room].socket_ids != undefined &&
             rooms[room].socket_ids[nickname] != undefined
           ) {
+            // 동일 아이디로 여러개 디바이스로 서버 접속 하는 경우를 체크하기 위해서 아이디 지우지 않
             delete rooms[room].socket_ids[nickname];
           }
         }
