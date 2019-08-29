@@ -1,0 +1,15 @@
+var __lang = {
+    sendMsg_alert: "Please input the message.",
+    item_status: ["Start", "Pay(Escrow)", "Deliver", "Completed", "Trading"],
+    item_category: ["Asset", "Game Item", "OTC"],
+    setTradeInfo_fail: "It is occured a error(don't get a VTR info)",
+    getChatList_fail: "It is occured a error.(don't get a chat info)",
+    emitTradeProcess_fail: "It is occured a error.(don't get a item infomation)",
+    btnTransactionRequest_alert: "Please input a price only number.",
+    btnTransactionRequest_fail: "It is occured a error.(state: Start)",
+    btnPurchaseConfirmation_fail: "It is occured a error.(state: Pay(Escrow))",
+    btnSalesComplete_fail: "It is occured a error.(state: Deliver)",
+    btnTransactionComplete_fail: "It is occured a error.(state: Completed)",
+    btnCancelTransaction_fail: "It is occured a error.(state: Cancel)",
+    tempCloseMethod_confirm: "Do you want to out?",
+};

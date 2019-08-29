@@ -1,3 +1,7 @@
+/**
+ * 더이상 안씀
+ * lang_en_chatUI.js로 언어팩 분기처리함
+ */
 var chatUI = {
     isDim: false,
     country: document.getElementById("country").value,
@@ -130,7 +134,7 @@ var chatUI = {
             else btnSend.classList.add("on");
         });
         btnSend.addEventListener("click", function(ev){
-            if (ev.target.previousSibling.previousSibling.value==="") {
+            if (iptChat.value==="") {
                 alert("Please input the message.");
                 return;
             }

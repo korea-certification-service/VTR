@@ -1,3 +1,7 @@
+/**
+ * 언어 불문하고 chatUI 하나로 통합 => 각 국가에 맞는 언어는 lang_으로 시작하는 js 파일에 기술
+ * 웹소켓이 아닌 UI와 관련된 로직들 기술
+ */
 var chatUI = {
     isDim: false,
     country: document.getElementById("country").value,
@@ -119,7 +123,7 @@ var chatUI = {
         iptChat.addEventListener("keypress", function(ev){
             if (ev.which == 13) {
                 if (ev.target.value==="") {
-                    alert("메세지를 입력해주세요.");
+                    alert(__lang.sendMsg_alert);
                     return;
                 }
                 fnSendMsg();
@@ -130,8 +134,8 @@ var chatUI = {
             else btnSend.classList.add("on");
         });
         btnSend.addEventListener("click", function(ev){
-            if (ev.target.previousSibling.previousSibling.value==="") {
-                alert("메세지를 입력해주세요.");
+            if (iptChat.value==="") {
+                alert("__lang.sendMsg_alert");
                 return;
             }
             fnSendMsg();
@@ -158,32 +162,32 @@ var chatUI = {
 
             switch (item.status) {
                 case 1:
-                    statusText = "거래요청";
+                    statusText = __lang.item_status[0];
                     break;
                 case 2:
-                    statusText = "구매확인";
+                    statusText = __lang.item_status[1];
                     break;
                 case 3:
-                    statusText = "판매완료";
+                    statusText = __lang.item_status[2];
                     break;
                 case 4:
-                    statusText = "거래완료";                    
+                    statusText = __lang.item_status[3];                    
                     break;
                 default:
-                    statusText = "대화중";
+                    statusText = __lang.item_status[4];
                     break;
             }
             document.getElementById("statusText").innerText = statusText;
     
             switch (item.category) {
                 case "etc":
-                    categoryText = "자산거래";
+                    categoryText = __lang.item_category[0];
                     break;
                 case "game":
-                    categoryText = "게임아이템";
+                    categoryText = __lang.item_category[1];
                     break;
                 case "otc":
-                    categoryText = "OTC거래";
+                    categoryText = __lang.item_category[2];
                     break;
             }
             document.getElementById("vtrCategory").innerText = categoryText;
@@ -192,7 +196,7 @@ var chatUI = {
 
         })
         .fail(function(xhr, status, error) {
-            console.log("채팅방 정보를 가져오는 중에 에러 발생", error);
+            console.log(__lang.setTradeInfo_fail, error);
         });
     },
     loadLastStatus: function() {
@@ -260,7 +264,7 @@ var chatUI = {
                 emitTradeProcess();
             })
             .fail(function(xhr, status, error) {
-                console.log("채팅 내용를 가져오는 중에 에러 발생", error);
+                console.log(__lang.getChatList_fail, error);
                 emitTradeProcess();
             });
         }
@@ -305,7 +309,7 @@ var chatUI = {
                 }
             })
             .fail(function(xhr, status, error) {
-                console.log("초기 정보를 가져오는 중에 에러 발생", error);
+                console.log(__lang.emitTradeProcess_fail, error);
             });
         }
     },
@@ -324,7 +328,7 @@ var chatUI = {
                 // IE에서 disabled여도 클릭이 되는 이슈
                 if(thisDom.getAttribute("disabled") === "disabled") return;
                 if(tradePrice === 0 || tradePrice < 0 || isNaN(tradePrice)) {
-                    alert("가격을 숫자로 입력해주세요.");
+                    alert(__lang.btnTransactionRequest_alert);
                     ipt_price[ipt_price.length-1].focus();
                     return;
                 }
@@ -356,12 +360,12 @@ var chatUI = {
                     objOpt.price = tradePrice;
                     objOpt.ccCode=ccCode;
 
-                    console.log(objOpt);
+                    // console.log(objOpt);
                     socket.emit("trade", objOpt);
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("구매 요청 중 에러가 발생하였습니다.");
+                    alert(__lang.btnTransactionRequest_fail);
                 })                
             },        
             "btnPurchaseConfirmation": function() {
@@ -395,7 +399,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("구매 확인 중 에러가 발생하였습니다.");
+                    alert(__lang.btnPurchaseConfirmation_fail);
                 });
             },
             "btnSalesComplete": function() {
@@ -430,7 +434,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("판매 확인 중 에러가 발생하였습니다.");
+                    alert(__lang.btnSalesComplete_fail);
                 });               
             },
             "btnTransactionComplete": function() {
@@ -464,7 +468,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("거래 완료 중 에러가 발생하였습니다.");
+                    alert(__lang.btnTransactionComplete_fail);
                 });
 
             },
@@ -509,7 +513,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert("거래 취소 중 에러가 발생하였습니다.");
+                    alert(__lang.btnCancelTransaction_fail);
                 });
             },
         };
@@ -523,7 +527,7 @@ var chatUI = {
     },
     tempCloseMethod : function() {
         document.getElementById("btnOut").addEventListener("click", function(){
-            if(confirm("채팅방을 나가시겠습니까?")){
+            if(confirm(__lang.tempCloseMethod_confirm)){
                 chatUI.closeWindow();
             }
         });     

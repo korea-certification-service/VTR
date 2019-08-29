@@ -36,12 +36,9 @@
             <div class="msg_sec cf">
                 <button class="btn_at" id="btnAt"><img src="/img/ico_@.png" alt="@"></button>
                 <input type="text" class="ipt_chat" id="iptChat" placeholder="Message.">
+                <button class="btn_emoji">&#128513;</button>
                 <button class="btn_send" id="btnSend">Send</button>
             </div>
-            <!-- <div class="util_sec cf">
-                <button class="btn_sharp">#</button>
-                <button class="btn_emoji">&#128513;</button>
-            </div> -->
             <div class="at_sec" id="atSec">
                 <div class="mach_command machCmd">@MACH VTR Guide</div>
                 <div class="mach_command machCmd sellerCmd">@MACH Start</div>
@@ -99,7 +96,8 @@ document.querySelector("body").addEventListener("keydown", function(e) {
 
 $.ajaxSetup({cache:false});
 </script>    
+<script src="/js/lang_en_chatUI.js"></script>
 <script src="/js/en_websocket.js"></script>
-<script src="/js/en_chatUI.js"></script>
+<script src="/js/chatUI.js"></script>
 </body>
 </html>

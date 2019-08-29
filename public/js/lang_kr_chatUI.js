@@ -1,0 +1,15 @@
+var __lang = {
+    sendMsg_alert: "메세지를 입력해주세요.",
+    item_status: ["거래요청", "구매확인", "판매완료", "거래완료", "대화중"],
+    item_category: ["자산거래", "게임아이템", "OTC거래"],
+    setTradeInfo_fail: "채팅방 정보를 가져오는 중에 에러 발생",
+    getChatList_fail: "채팅 내용를 가져오는 중에 에러 발생",
+    emitTradeProcess_fail: "초기 정보를 가져오는 중에 에러 발생",
+    btnTransactionRequest_alert: "가격을 숫자로 입력해주세요.",
+    btnTransactionRequest_fail: "구매 요청 중 에러가 발생하였습니다.",
+    btnPurchaseConfirmation_fail: "구매 확인 중 에러가 발생하였습니다.",
+    btnSalesComplete_fail: "판매 확인 중 에러가 발생하였습니다.",
+    btnTransactionComplete_fail: "거래 완료 중 에러가 발생하였습니다.",
+    btnCancelTransaction_fail: "거래 취소 중 에러가 발생하였습니다.",
+    tempCloseMethod_confirm: "채팅방을 나가시겠습니까?",
+};
