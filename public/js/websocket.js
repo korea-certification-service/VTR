@@ -16,14 +16,14 @@ function fnScrollLast() {
     }
 }
 
-function fnSendMsg() {
+function fnSendMsg(_obj) {
     var iptChat = document.getElementById("iptChat");
     var msgVal = iptChat.value.trim();
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["거래안내", "거래요청", "구매확인", "판매완료", "거래완료", "거래취소"];
+    var arrComand = [__langChat.item_status[0], __langChat.item_status[1], __langChat.item_status[2], __langChat.item_status[3], __langChat.item_status[4], __langChat.item_status[5]];
     var isCommand = false;
-    var regTradingTxt = /^@마하 /;
+    var regTradingTxt = __langSocket.fnSendMsg.reg // /^@마하 /;
     var userId = document.getElementById("userId").value;
     var buyerTag = document.getElementById("buyerTag").value;
     var sellerTag = document.getElementById("sellerTag").value;
@@ -38,8 +38,10 @@ function fnSendMsg() {
         otherId = buyerTag;
     }
 
-    if (regTradingTxt.test(msgVal)) {
-        sendTxt = msgVal.replace('@마하 ', '');
+    if(_obj !== undefined){
+        socket.emit('send_msg', { who: _userId, to: otherId, msg: _obj.imoji, imoji: true});
+    } else if (regTradingTxt.test(msgVal)) {
+        sendTxt = msgVal.replace(__langSocket.fnSendMsg.command, '');
 
         var i;
         for (i = 0; i < arrComand.length; i++) {
@@ -54,8 +56,8 @@ function fnSendMsg() {
             switch (i) {
                 case 0:
                     dom = '<div class="bubble mach_speech"><p class="max_p">';
-                    dom += '거래 프로세스에 대해서 안내해드릴께요.<br>';
-                    dom += '<img src="/img/VTR_info.jpg" alt="안내문"/>'              
+                    dom += __langSocket.fnSendMsg.dom1; // '거래 프로세스에 대해서 안내해드릴께요.<br>';
+                    dom += '<img src="/img/VTR_info.jpg" alt="안내문"/>';             
                     content.insertAdjacentHTML("beforeend", dom);    
                     break;               
                 default:
@@ -64,7 +66,7 @@ function fnSendMsg() {
             }
 
         } else { // 없는 명령어
-            dom += originMsg +" 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.";      
+            dom += __langSocket.fnSendMsg.dom2(originMsg); // originMsg +" 명령어는 존재하지 않습니다. 다시 확인하시고 입력해주세요.";      
             dom += '</p></div>';
             content.insertAdjacentHTML("beforeend", dom);
         }
@@ -114,8 +116,13 @@ socket.on('broadcast_msg', function (data) {
         }
     }
 
-    txtChat += '<div class="bubble my_speech"><p>' + data.msg;
-    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    if(data.imoji){
+        txtChat += '<div class="bubble my_speech"><p><img src="/img/imoji/' + data.msg + '.gif" class="img_msg_imoji" />';
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    } else {
+        txtChat += '<div class="bubble my_speech"><p>' + data.msg;
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    }
 
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);
@@ -141,8 +148,13 @@ socket.on('other_msg', function (data) {
         }
     }
 
-    txtChat += '<div class="bubble other_speech"><p>' + data.msg;
-    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    if(data.imoji){
+        txtChat += '<div class="bubble other_speech"><p><img src="/img/imoji/' + data.msg + '.gif" class="img_msg_imoji" />';
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    } else {
+        txtChat += '<div class="bubble other_speech"><p>' + data.msg;
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    }
 
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);
@@ -158,9 +170,9 @@ socket.on('system_msg', function (data) {
     var msg = "";
     if(data.inout) {
         if (data.inout === "in") {
-            msg = data.who + " 님이 입장하셨습니다.";
+            msg = __langSocket.system_msg.in(data.who); // msg = data.who + " 님이 입장하셨습니다.";
         } else if (data.inout === "out") {
-            msg = data.who + " 님이 퇴장하셨습니다.";
+            msg = __langSocket.system_msg.out(data.who); // msg = data.who + " 님이 퇴장하셨습니다.";
         }
     }
     p.innerText = msg;
@@ -170,7 +182,7 @@ socket.on('system_msg', function (data) {
 
 // 중복접속 내쫒기 
 socket.on('eject', function (data) {
-    alert("동일한 아이디로 여러개 디바이스에 접속 하실수 없습니다. 모바일과 PC중 하나에서 거래를 진행해주세요.");
+    alert(__langSocket.eject.alert);
     self.close();
 });
 
@@ -182,7 +194,7 @@ socket.on("trade_seller", function(data) {
     var tradeStatus = document.getElementById("tradeStatus").value;
 
     if(data.type === "err") {
-        dom += "<em>" + data.msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
+        dom += __langSocket.trade_seller.err_dom(data.msg) // "<em>" + data.msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
         dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);
@@ -191,14 +203,14 @@ socket.on("trade_seller", function(data) {
             switch (data.command) {
                 case 1:     
                     if(tradeStatus === "50") {
-                        dom += '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
+                        dom += __langSocket.trade_seller.seller.case1_dom; // '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
                     } else {    
                         return;  
                     }
                     break;
                 case 1.1:
                     chatUI.setTradeInfo();
-                    dom += '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
+                    dom += __langSocket.trade_seller.seller.case1_1dom(data.price, data.ccCode); // '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
                     break;
                 case 3:           
                     //dom += '';
@@ -206,13 +218,13 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3.1:    
                     chatUI.setTradeInfo();        
-                    dom += '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
+                    dom += __langSocket.trade_seller.seller.case3_1dom; // '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
                     break;
                 case 5:    
                     if(tradeStatus == "50") {
                         return;  
                     } else if(tradeStatus !== "4") {            
-                        dom += '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
+                        dom += __langSocket.trade_seller.seller.case5_dom; // '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
                     } else {
                         return;
                     }
@@ -220,7 +232,7 @@ socket.on("trade_seller", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += '판매자가 거래취소를 하였습니다.';
+                    dom += __langSocket.trade_seller.seller.case5_1dom; // '판매자가 거래취소를 하였습니다.';
                     break;                      
                 default:
                     dom += '';
@@ -230,50 +242,50 @@ socket.on("trade_seller", function(data) {
             switch (data.command) {
                 case 1:    
                     if((tradeStatus === "0" && socket.isTradeStep1 === undefined) || (tradeStatus === "50" && socket.isTradeStep1 === undefined)) {
-                        dom += '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
-                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">거래요청</button>';
+                        dom += __langSocket.trade_seller.buyer.case1_dom1 // '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
+                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.buyer.case1_dom2 + '</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
-                        dom += '거래요청을 하시고 잠시만 기다려주세요.';
+                        dom += __langSocket.trade_seller.buyer.case1_dom3; // '거래요청을 하시고 잠시만 기다려주세요.';
                     } else if(tradeStatus !== "50") {
-                        dom += '이미 거래요청 상태입니다.';             
+                        dom += __langSocket.trade_seller.buyer.case1_dom4; // '이미 거래요청 상태입니다.';             
                     } else {
                         return;
                     }
                     break;
                 case 1.1:    
                     chatUI.setTradeInfo();       
-                    dom += '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
+                    dom += __langSocket.trade_seller.buyer.case1_1dom; // '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
                     break;
                 case 3:
                     if(tradeStatus == "2") {
-                        dom += '반드시 물건을 보내신 후 판매완료를 눌러주세요.<br>택배로 보내셨다면 송장번호를 구매자에게 알려주세요.<br>';  
-                        dom += '거래 취소를 원하시면 거래취소를 눌러주세요.';  
-                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">판매완료</button>';
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';  
+                        dom += __langSocket.trade_seller.buyer.case3_dom1; // '반드시 물건을 보내신 후 판매완료를 눌러주세요.<br>택배로 보내셨다면 송장번호를 구매자에게 알려주세요.<br>';  
+                        dom += __langSocket.trade_seller.buyer.case3_dom2; // '거래 취소를 원하시면 거래취소를 눌러주세요.';  
+                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">' + __langSocket.trade_seller.buyer.case3_dom3; + '</button>';
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.buyer.case3_dom4; + '</button>';  
                     } else {
-                        dom += '판매완료를 할 수 있는 거래상태가 아닙니다.';
+                        dom += __langSocket.trade_seller.buyer.case3_dom5; // '판매완료를 할 수 있는 거래상태가 아닙니다.';
                     }
                     break;
                 case 3.1:           
                     chatUI.setTradeInfo(); 
-                    dom += '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
+                    dom += __langSocket.trade_seller.buyer.case3_1dom; // '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
                     break;         
                 case 5:
                     if(tradeStatus == "50") {
-                        dom += '취소할 거래가 아직 진행 되지 않았습니다.';  
+                        dom += __langSocket.trade_seller.buyer.case5_dom1; // '취소할 거래가 아직 진행 되지 않았습니다.';  
                     }else if(tradeStatus === "4") {               
-                        dom += '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                        dom += __langSocket.trade_seller.buyer.case5_dom2; // '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
                     } else {
-                        dom += '거래취소를 원하시면 아래 버튼을 눌러주세요.';   
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">거래취소</button>';    
+                        dom += __langSocket.trade_seller.buyer.case5_dom3; // '거래취소를 원하시면 아래 버튼을 눌러주세요.';   
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.buyer.case5_dom4 + '</button>';    
                     }
                     break;
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += '거래 취소가 완료되었습니다.<br>';
-                    dom += '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
+                    dom += __langSocket.trade_seller.buyer.case5_1dom1; // '거래 취소가 완료되었습니다.<br>';
+                    dom += __langSocket.trade_seller.buyer.case5_1dom2; // '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
                     break;                                     
                 default:
                     dom += '';
@@ -296,7 +308,7 @@ socket.on("trade_buyer", function(data) {
     var vtrPrice = document.getElementById("vtrPrice").innerText;
 
     if(data.type === "err") {
-        dom += "<em>" + data.msg + "</em> 명령어는 구매자가 실행할 수 없습니다.";
+        dom += __langSocket.trade_buyer.err_dom(data.msg); // "<em>" + data.msg + "</em> 명령어는 구매자가 실행할 수 없습니다.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
         dom += '</p></div>';
         content.insertAdjacentHTML("beforeend", dom);

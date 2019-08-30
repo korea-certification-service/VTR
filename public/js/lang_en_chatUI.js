@@ -1,6 +1,6 @@
-var __lang = {
+var __langChat = {
     sendMsg_alert: "Please input the message.",
-    item_status: ["Start", "Pay(Escrow)", "Deliver", "Completed", "Trading"],
+    item_status: ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel", "Trading"],
     item_category: ["Asset", "Game Item", "OTC"],
     setTradeInfo_fail: "It is occured a error(don't get a VTR info)",
     getChatList_fail: "It is occured a error.(don't get a chat info)",

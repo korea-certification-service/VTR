@@ -16,12 +16,12 @@ function fnScrollLast() {
     }
 }
 
-function fnSendMsg() {
+function fnSendMsg(_obj) {
     var iptChat = document.getElementById("iptChat");
     var msgVal = iptChat.value.trim();
     var originMsg = iptChat.value;
     var sendTxt = "";
-    var arrComand = ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel"];
+    var arrComand = [__langChat.item_status[0], __langChat.item_status[1], __langChat.item_status[2], __langChat.item_status[3], __langChat.item_status[4], __langChat.item_status[5]];
     var isCommand = false;
     var regTradingTxt = /^@MACH /;
     var userId = document.getElementById("userId").value;
@@ -37,13 +37,14 @@ function fnSendMsg() {
     } else {
         otherId = buyerTag;
     }
-
-    if (regTradingTxt.test(msgVal)) {
+    if(_obj !== undefined){
+        socket.emit('send_msg', { who: _userId, to: otherId, msg: _obj.imoji, imoji: true});
+    } else if (regTradingTxt.test(msgVal)) {
         sendTxt = msgVal.replace('@MACH ', '');
 
         var i;
         for (i = 0; i < arrComand.length; i++) {
-          if(arrComand[i] == sendTxt){
+          if(arrComand[i].toLowerCase() == sendTxt.toLowerCase()){
             isCommand = true;
             break;
           }
@@ -114,8 +115,13 @@ socket.on('broadcast_msg', function (data) {
         }
     }
 
-    txtChat += '<div class="bubble my_speech"><p>' + data.msg;
-    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    if(data.imoji){
+        txtChat += '<div class="bubble my_speech"><p><img src="/img/imoji/' + data.msg + '.gif" class="img_msg_imoji" />';
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    } else {
+        txtChat += '<div class="bubble my_speech"><p>' + data.msg;
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    }
 
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);
@@ -141,8 +147,13 @@ socket.on('other_msg', function (data) {
         }
     }
 
-    txtChat += '<div class="bubble other_speech"><p>' + data.msg;
-    txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    if(data.imoji){
+        txtChat += '<div class="bubble other_speech"><p><img src="/img/imoji/' + data.msg + '.gif" class="img_msg_imoji" />';
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    } else {
+        txtChat += '<div class="bubble other_speech"><p>' + data.msg;
+        txtChat += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
+    }
 
     var content = document.getElementById("content");
     content.insertAdjacentHTML("beforeend", txtChat);

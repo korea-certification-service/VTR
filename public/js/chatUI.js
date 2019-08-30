@@ -13,6 +13,7 @@ var chatUI = {
         this.setOtherId();
         this.showCmdBtn();
         this.fnAt();
+        this.fnImoji();
         this.orientationchange();
         this.sendMsg();
         this.ActBtn();
@@ -69,28 +70,30 @@ var chatUI = {
             }
         }
     },
-    fnAt: function() {
-        var that = this;
-
-        function hideDim() {
-            that.isDim = false;
+    methodDim: {
+        hideDim: function() {
+            chatUI.isDim = false;
+            document.getElementById("imojiSec").style.display="none";
             document.getElementById("atSec").style.display="none";
-            document.getElementById("chatDim").style.display="none";  
-        }
-
-        function showDim() {
-            that.isDim = true;
-            document.getElementById("atSec").style.display="block";
+            document.getElementById("chatDim").style.display="none"; 
+        },
+        showDim: function(secId) {
+            this.hideDim();
+            chatUI.isDim = true;
+            document.getElementById(secId).style.display="block";
             document.getElementById("chatDim").style.display="block";
         }
+    },    
+    fnAt: function() {
+        var that = this;
         
         document.getElementById("btnAt").addEventListener("click", function(){
-            showDim();
+            that.methodDim.showDim("atSec");
         });
 
         document.getElementById("chatWrap").addEventListener("click", function(e){
             if(e.target.id === "chatDim" && that.isDim){
-                hideDim();
+                that.methodDim.hideDim();
             }
         });
 
@@ -101,11 +104,34 @@ var chatUI = {
                 //console.log(e.target.innerText);
                 iptChat.value = "";
                 iptChat.value = e.target.innerText;
-                hideDim();
+                that.methodDim.hideDim();
                 // 여기서 메세지 입력되면 됨
                 document.getElementById("btnSend").click();
                 
                 fnScrollLast(); // 스크롤 자동 최하단 이동
+            });
+        }
+    },
+    fnImoji: function() {
+        var that = this;
+        
+        document.getElementById("btnEmoji").addEventListener("click", function(){
+            that.methodDim.showDim("imojiSec");
+        });
+
+        document.getElementById("chatWrap").addEventListener("click", function(e){
+            if(e.target.id === "chatDim" && that.isDim){
+                that.methodDim.hideDim();
+            }
+        });
+
+        var imoji = document.querySelectorAll(".imoji_sec li img");
+        for (var i = 0; i < imoji.length; i++) {
+            imoji[i].addEventListener("click", function(e){
+                var title = e.currentTarget.getAttribute("title");
+                fnSendMsg({imoji: title});
+
+                that.methodDim.hideDim();
             });
         }
     },
@@ -123,7 +149,7 @@ var chatUI = {
         iptChat.addEventListener("keypress", function(ev){
             if (ev.which == 13) {
                 if (ev.target.value==="") {
-                    alert(__lang.sendMsg_alert);
+                    alert(__langChat.sendMsg_alert);
                     return;
                 }
                 fnSendMsg();
@@ -135,7 +161,7 @@ var chatUI = {
         });
         btnSend.addEventListener("click", function(ev){
             if (iptChat.value==="") {
-                alert("__lang.sendMsg_alert");
+                alert(__langChat.sendMsg_alert);
                 return;
             }
             fnSendMsg();
@@ -162,32 +188,32 @@ var chatUI = {
 
             switch (item.status) {
                 case 1:
-                    statusText = __lang.item_status[0];
+                    statusText = __langChat.item_status[1];
                     break;
                 case 2:
-                    statusText = __lang.item_status[1];
+                    statusText = __langChat.item_status[2];
                     break;
                 case 3:
-                    statusText = __lang.item_status[2];
+                    statusText = __langChat.item_status[3];
                     break;
                 case 4:
-                    statusText = __lang.item_status[3];                    
+                    statusText = __langChat.item_status[4];                    
                     break;
                 default:
-                    statusText = __lang.item_status[4];
+                    statusText = __langChat.item_status[6];
                     break;
             }
             document.getElementById("statusText").innerText = statusText;
     
             switch (item.category) {
                 case "etc":
-                    categoryText = __lang.item_category[0];
+                    categoryText = __langChat.item_category[0];
                     break;
                 case "game":
-                    categoryText = __lang.item_category[1];
+                    categoryText = __langChat.item_category[1];
                     break;
                 case "otc":
-                    categoryText = __lang.item_category[2];
+                    categoryText = __langChat.item_category[2];
                     break;
             }
             document.getElementById("vtrCategory").innerText = categoryText;
@@ -196,7 +222,7 @@ var chatUI = {
 
         })
         .fail(function(xhr, status, error) {
-            console.log(__lang.setTradeInfo_fail, error);
+            console.log(__langChat.setTradeInfo_fail, error);
         });
     },
     loadLastStatus: function() {
@@ -264,7 +290,7 @@ var chatUI = {
                 emitTradeProcess();
             })
             .fail(function(xhr, status, error) {
-                console.log(__lang.getChatList_fail, error);
+                console.log(__langChat.getChatList_fail, error);
                 emitTradeProcess();
             });
         }
@@ -309,7 +335,7 @@ var chatUI = {
                 }
             })
             .fail(function(xhr, status, error) {
-                console.log(__lang.emitTradeProcess_fail, error);
+                console.log(__langChat.emitTradeProcess_fail, error);
             });
         }
     },
@@ -328,7 +354,7 @@ var chatUI = {
                 // IE에서 disabled여도 클릭이 되는 이슈
                 if(thisDom.getAttribute("disabled") === "disabled") return;
                 if(tradePrice === 0 || tradePrice < 0 || isNaN(tradePrice)) {
-                    alert(__lang.btnTransactionRequest_alert);
+                    alert(__langChat.btnTransactionRequest_alert);
                     ipt_price[ipt_price.length-1].focus();
                     return;
                 }
@@ -365,7 +391,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert(__lang.btnTransactionRequest_fail);
+                    alert(__langChat.btnTransactionRequest_fail);
                 })                
             },        
             "btnPurchaseConfirmation": function() {
@@ -399,7 +425,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert(__lang.btnPurchaseConfirmation_fail);
+                    alert(__langChat.btnPurchaseConfirmation_fail);
                 });
             },
             "btnSalesComplete": function() {
@@ -434,7 +460,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert(__lang.btnSalesComplete_fail);
+                    alert(__langChat.btnSalesComplete_fail);
                 });               
             },
             "btnTransactionComplete": function() {
@@ -468,7 +494,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert(__lang.btnTransactionComplete_fail);
+                    alert(__langChat.btnTransactionComplete_fail);
                 });
 
             },
@@ -513,7 +539,7 @@ var chatUI = {
                 })
                 .fail(function(xhr, status, error) {
                     console.log(error);
-                    alert(__lang.btnCancelTransaction_fail);
+                    alert(__langChat.btnCancelTransaction_fail);
                 });
             },
         };
@@ -527,7 +553,7 @@ var chatUI = {
     },
     tempCloseMethod : function() {
         document.getElementById("btnOut").addEventListener("click", function(){
-            if(confirm(__lang.tempCloseMethod_confirm)){
+            if(confirm(__langChat.tempCloseMethod_confirm)){
                 chatUI.closeWindow();
             }
         });     
