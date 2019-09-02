@@ -41,7 +41,7 @@ function fnSendMsg(_obj) {
     if(_obj !== undefined){
         socket.emit('send_msg', { who: _userId, to: otherId, msg: _obj.imoji, imoji: true});
     } else if (regTradingTxt.test(msgVal)) {
-        sendTxt = msgVal.replace(__langSocket.fnSendMsg.command, '');
+        sendTxt = msgVal.replace(regTradingTxt, '');
 
         var i;
         for (i = 0; i < arrComand.length; i++) {
