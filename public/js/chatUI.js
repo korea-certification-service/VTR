@@ -252,12 +252,20 @@ var chatUI = {
                     if (msgs[i].who === userId) { // 내가 쓴글
                         if(msgs[i].sameUser) { // 또 쓴 글
                             domMsg += '<div class="bubble my_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            if(msgs[i].imoji === true) {
+                                domMsg += '<p><img src="/img/imoji/'+msgs[i].msg+'.gif" class="img_msg_imoji"><span class="chat_time" style="display:none">';
+                            } else {
+                                domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            }
                             domMsg += msgs[i].msgtime+'</span></p></div>';
                         } else {
                             domMsg += '<em class="my_id">'+msgs[i].who+'</em>';
                             domMsg += '<div class="bubble my_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            if(msgs[i].imoji === true) {
+                                domMsg += '<p><img src="/img/imoji/'+msgs[i].msg+'.gif" class="img_msg_imoji"><span class="chat_time" style="display:none">';
+                            } else {
+                                domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            }
                             domMsg += msgs[i].msgtime+'</span></p></div>';
                             arrIdx.push(i);
                         }
@@ -265,12 +273,20 @@ var chatUI = {
                     } else if (msgs[i].who !== userId){ // 상대방이 쓴 글
                         if(msgs[i].sameUser) { // 또 쓴 글
                             domMsg += '<div class="bubble other_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            if(msgs[i].imoji === true) {
+                                domMsg += '<p><img src="/img/imoji/'+msgs[i].msg+'.gif" class="img_msg_imoji"><span class="chat_time" style="display:none">';
+                            } else {
+                                domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            }
                             domMsg += msgs[i].msgtime+'</span></p></div>';
                         } else {
                             domMsg += '<em class="other_id">'+msgs[i].who+'</em>';
                             domMsg += '<div class="bubble other_speech">';
-                            domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            if(msgs[i].imoji === true) {
+                                domMsg += '<p><img src="/img/imoji/'+msgs[i].msg+'.gif" class="img_msg_imoji"><span class="chat_time" style="display:none">';
+                            } else {
+                                domMsg += '<p>'+msgs[i].msg+'<span class="chat_time" style="display:none">';
+                            }
                             domMsg += msgs[i].msgtime+'</span></p></div>';
                             arrIdx.push(i);
                         }
@@ -288,10 +304,12 @@ var chatUI = {
                 bubble[bubble.length-1].querySelector(".chat_time").style.display="inline";
 
                 emitTradeProcess();
+                fnScrollLast(); // 스크롤 자동 최하단 이동
             })
             .fail(function(xhr, status, error) {
                 console.log(__langChat.getChatList_fail, error);
                 emitTradeProcess();
+                fnScrollLast(); // 스크롤 자동 최하단 이동
             });
         }
         // 완성할 때까지 막기

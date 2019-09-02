@@ -218,13 +218,13 @@ function eventBinding(app){
             json: true
           };
           
-          /*
+
           // 로직 완성될때까지 메세지 디비 저장 막기
           request.post(options, function(err, response, body) {
             if (err !== null) {
             }
           });
-          */
+
         }
       } else {
         console.log("[Error] room이나 rooms[room]이 undefined");
@@ -274,21 +274,22 @@ function eventBinding(app){
       };
 
       const options = {
-        uri: "http://localhost:4000/vtr/setChat",
+        uri: "http://192.168.0.100:4000/vtr/setChat",
         method: "POST",
         body: reqData,
         json: true
       };
-
+      /*
       request.post(options, function(err, response, body) {
         if (err !== null) {
         }
       });
+      */
     });
 
     // 메세지 DB 불러오기 API 호출 방식
     socket.on("loadDB", function(data) {
-      request.get({ uri: "http://localhost:4000/vtr/getChat" }, function(
+      request.get({ uri: "http://192.168.0.100:4000/vtr/getChat" }, function(
         err,
         response,
         body

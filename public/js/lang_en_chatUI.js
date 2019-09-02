@@ -1,6 +1,6 @@
 var __langChat = {
     sendMsg_alert: "Please input the message.",
-    item_status: ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel", "Trading"],
+    item_status: ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel", "Talking"],
     item_category: ["Asset", "Game Item", "OTC"],
     setTradeInfo_fail: "It is occured a error(don't get a VTR info)",
     getChatList_fail: "It is occured a error.(don't get a chat info)",
@@ -15,7 +15,7 @@ var __langChat = {
 };
 var __langSocket = {
     fnSendMsg:{
-        reg: /^@MACH /,
+        reg: /^@MACH /i,
         command: "@MACH ",
         dom1: 'Let me tell you about trading process.<br>',
         dom2: function(originMsg){
@@ -49,7 +49,7 @@ var __langSocket = {
         seller: {
             case1_dom1: 'You will start trading. <br> Please enter trading price first.<br>',
             case1_dom2: 'Start',
-            case1_dom3: 'Please request trading and wait a moment.',
+            case1_dom3: 'After fix the price, click Start button', //'Please request trading and wait a moment.',
             case1_dom4: 'You are already in a Start status.',
             case1_1dom: 'Your Start has been successfully completed. <br> Waiting for buyer to confirm purchase.',
             case3_dom1: 'Be sure to send the item and press Deliver. <br> If you sent it by courier, please inform the buyer of the invoice number.<br>',

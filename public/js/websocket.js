@@ -45,7 +45,7 @@ function fnSendMsg(_obj) {
 
         var i;
         for (i = 0; i < arrComand.length; i++) {
-          if(arrComand[i] == sendTxt){
+        if(arrComand[i].toLowerCase() == sendTxt.toLowerCase()){
             isCommand = true;
             break;
           }
@@ -192,7 +192,6 @@ socket.on("trade_seller", function(data) {
     var content = document.getElementById("content");    
     var tradePrice = document.getElementById("tradePrice").value;   
     var tradeStatus = document.getElementById("tradeStatus").value;
-
     if(data.type === "err") {
         dom += __langSocket.trade_seller.err_dom(data.msg) // "<em>" + data.msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
@@ -246,7 +245,10 @@ socket.on("trade_seller", function(data) {
                         dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.seller.case1_dom2 + '</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
-                        dom += __langSocket.trade_seller.seller.case1_dom3; // '거래요청을 하시고 잠시만 기다려주세요.';
+                        // dom += __langSocket.trade_seller.seller.case1_dom3; 
+                        alert(__langSocket.trade_seller.seller.case1_dom3); // '가격을 입력하셨으면 거래요청 버튼을 눌러주세요.';
+                        document.getElementById("btnTransactionRequest").scrollIntoView(false);
+                        return;
                     } else if(tradeStatus !== "50") {
                         dom += __langSocket.trade_seller.seller.case1_dom4; // '이미 거래요청 상태입니다.';             
                     } else {
@@ -295,8 +297,9 @@ socket.on("trade_seller", function(data) {
 
 		dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';
         content.insertAdjacentHTML("beforeend", dom);
-    }
 
+    }
+    
     fnScrollLast(); // 스크롤 자동 최하단 이동
 });
 
