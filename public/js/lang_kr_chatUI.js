@@ -37,7 +37,7 @@ var __langSocket = {
         err_dom: function(msg){
             return "<em>" + msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
         },
-        seller: {
+        buyer: {
             case1_dom: '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.',
             case1_1dom: function(price, ccCode){
                 return '판매자가 <em>' + price + ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
@@ -46,7 +46,7 @@ var __langSocket = {
             case5_dom: '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.',
             case5_1dom: '판매자가 거래취소를 하였습니다.',
         },
-        buyer: {
+        seller: {
             case1_dom1: '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>',
             case1_dom2: '거래요청',
             case1_dom3: '거래요청을 하시고 잠시만 기다려주세요.',
@@ -96,7 +96,8 @@ var __langSocket = {
             case5_dom4: '거래완료 상태에서는 거래를 취소할 수 없습니다.',
             case5_dom5: '거래를 취소를 원하시면 아래 버튼을 눌러주세요.',
             case5_dom6: '거래취소',
-            case5_1dom: '거래 취소가 완료되었습니다.',
+            case5_1dom1: '거래 취소가 완료되었습니다.',
+            case5_1dom2: '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.',
         }
     },
 } // end

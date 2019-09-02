@@ -203,14 +203,14 @@ socket.on("trade_seller", function(data) {
             switch (data.command) {
                 case 1:     
                     if(tradeStatus === "50") {
-                        dom += __langSocket.trade_seller.seller.case1_dom; // '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
+                        dom += __langSocket.trade_seller.buyer.case1_dom; // '판매자의 거래요청을 기다리는 중입니다.<br>잠시만 기다려주세요.'; 
                     } else {    
                         return;  
                     }
                     break;
                 case 1.1:
                     chatUI.setTradeInfo();
-                    dom += __langSocket.trade_seller.seller.case1_1dom(data.price, data.ccCode); // '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
+                    dom += __langSocket.trade_seller.buyer.case1_1dom(data.price, data.ccCode); // '판매자가 <em>' + data.price + data.ccCode + '</em>의 가격으로 거래요청을 하였습니다.<br>거래를 진행하시려면 <em>@마하 구매확인</em>을 입력해주세요.';
                     break;
                 case 3:           
                     //dom += '';
@@ -218,13 +218,13 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 3.1:    
                     chatUI.setTradeInfo();        
-                    dom += __langSocket.trade_seller.seller.case3_1dom; // '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
+                    dom += __langSocket.trade_seller.buyer.case3_1dom; // '판매자가 판매완료를 하였습니다.<br>거래가 정상적으로 끝났다면 <em>@마하 거래완료</em>를 입력해주세요.';
                     break;
                 case 5:
                     if(tradeStatus == "50") {
                         return;  
                     } else if(tradeStatus !== "4") {            
-                        dom += __langSocket.trade_seller.seller.case5_dom; // '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
+                        dom += __langSocket.trade_seller.buyer.case5_dom; // '판매자가 거래취소를 요청 중입니다.<br>잠시만 기다려주세요.';   
                     } else {
                         return;
                     }
@@ -232,7 +232,7 @@ socket.on("trade_seller", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += __langSocket.trade_seller.seller.case5_1dom; // '판매자가 거래취소를 하였습니다.';
+                    dom += __langSocket.trade_seller.buyer.case5_1dom; // '판매자가 거래취소를 하였습니다.';
                     break;                      
                 default:
                     dom += '';
@@ -242,50 +242,50 @@ socket.on("trade_seller", function(data) {
             switch (data.command) {
                 case 1:    
                     if((tradeStatus === "0" && socket.isTradeStep1 === undefined) || (tradeStatus === "50" && socket.isTradeStep1 === undefined)) {
-                        dom += __langSocket.trade_seller.buyer.case1_dom1 // '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
-                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.buyer.case1_dom2 + '</button>';
+                        dom += __langSocket.trade_seller.seller.case1_dom1 // '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
+                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.seller.case1_dom2 + '</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
-                        dom += __langSocket.trade_seller.buyer.case1_dom3; // '거래요청을 하시고 잠시만 기다려주세요.';
+                        dom += __langSocket.trade_seller.seller.case1_dom3; // '거래요청을 하시고 잠시만 기다려주세요.';
                     } else if(tradeStatus !== "50") {
-                        dom += __langSocket.trade_seller.buyer.case1_dom4; // '이미 거래요청 상태입니다.';             
+                        dom += __langSocket.trade_seller.seller.case1_dom4; // '이미 거래요청 상태입니다.';             
                     } else {
                         return;
                     }
                     break;
                 case 1.1:    
                     chatUI.setTradeInfo();       
-                    dom += __langSocket.trade_seller.buyer.case1_1dom; // '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
+                    dom += __langSocket.trade_seller.seller.case1_1dom; // '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
                     break;
                 case 3:
                     if(tradeStatus == "2") {
-                        dom += __langSocket.trade_seller.buyer.case3_dom1; // '반드시 물건을 보내신 후 판매완료를 눌러주세요.<br>택배로 보내셨다면 송장번호를 구매자에게 알려주세요.<br>';  
-                        dom += __langSocket.trade_seller.buyer.case3_dom2; // '거래 취소를 원하시면 거래취소를 눌러주세요.';  
-                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">' + __langSocket.trade_seller.buyer.case3_dom3; + '</button>';
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.buyer.case3_dom4; + '</button>';  
+                        dom += __langSocket.trade_seller.seller.case3_dom1; // '반드시 물건을 보내신 후 판매완료를 눌러주세요.<br>택배로 보내셨다면 송장번호를 구매자에게 알려주세요.<br>';  
+                        dom += __langSocket.trade_seller.seller.case3_dom2; // '거래 취소를 원하시면 거래취소를 눌러주세요.';  
+                        dom += '<button id="btnSalesComplete" class="btn_chat btn_s_c">' + __langSocket.trade_seller.seller.case3_dom3; + '</button>';
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.seller.case3_dom4; + '</button>';  
                     } else {
-                        dom += __langSocket.trade_seller.buyer.case3_dom5; // '판매완료를 할 수 있는 거래상태가 아닙니다.';
+                        dom += __langSocket.trade_seller.seller.case3_dom5; // '판매완료를 할 수 있는 거래상태가 아닙니다.';
                     }
                     break;
                 case 3.1:           
                     chatUI.setTradeInfo(); 
-                    dom += __langSocket.trade_seller.buyer.case3_1dom; // '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
+                    dom += __langSocket.trade_seller.seller.case3_1dom; // '판매완료가 정상적으로 완료되었습니다.<br>구매자의 거래완료를 기다리는 중입니다.'
                     break;         
                 case 5:
                     if(tradeStatus == "50") {
-                        dom += __langSocket.trade_seller.buyer.case5_dom1; // '취소할 거래가 아직 진행 되지 않았습니다.';  
+                        dom += __langSocket.trade_seller.seller.case5_dom1; // '취소할 거래가 아직 진행 되지 않았습니다.';  
                     }else if(tradeStatus === "4") {               
-                        dom += __langSocket.trade_seller.buyer.case5_dom2; // '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
+                        dom += __langSocket.trade_seller.seller.case5_dom2; // '거래완료 상태에서는 거래를 취소할 수 없습니다.'; 
                     } else {
-                        dom += __langSocket.trade_seller.buyer.case5_dom3; // '거래취소를 원하시면 아래 버튼을 눌러주세요.';   
-                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.buyer.case5_dom4 + '</button>';    
+                        dom += __langSocket.trade_seller.seller.case5_dom3; // '거래취소를 원하시면 아래 버튼을 눌러주세요.';   
+                        dom += '<button id="btnCancelTransaction" class="btn_chat btn_c_t">' + __langSocket.trade_seller.seller.case5_dom4 + '</button>';    
                     }
                     break;
                 case 5.1:
                     chatUI.setTradeInfo(); 
                     socket.isTradeStep1 = undefined;
-                    dom += __langSocket.trade_seller.buyer.case5_1dom1; // '거래 취소가 완료되었습니다.<br>';
-                    dom += __langSocket.trade_seller.buyer.case5_1dom2; // '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
+                    dom += __langSocket.trade_seller.seller.case5_1dom1; // '거래 취소가 완료되었습니다.<br>';
+                    dom += __langSocket.trade_seller.seller.case5_1dom2; // '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
                     break;                                     
                 default:
                     dom += '';
@@ -399,7 +399,8 @@ socket.on("trade_buyer", function(data) {
                 case 5.1:
                     chatUI.setTradeInfo();
                     socket.isTradeStep1 = undefined;
-                    dom += __langSocket.trade_buyer.buyer.case5_1dom; // '거래 취소가 완료되었습니다.';
+                    dom += __langSocket.trade_buyer.buyer.case5_1dom1; // '거래 취소가 완료되었습니다.';
+                    dom += __langSocket.trade_buyer.buyer.case5_1dom2; // '거래를 초기화 하실려면 좌측 상단의 나가기 버튼을 눌러주세요.';
                     break;                                      
                 default:
                     dom += '';
