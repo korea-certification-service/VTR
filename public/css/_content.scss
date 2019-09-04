@@ -1,0 +1,37 @@
+.content{height: calc(100% - 150px); overflow: scroll;
+    img[alt="안내문"]{width: 100%;}
+    > em{display: block; font-weight: 400;}
+    .ymd{text-align: center;}
+    .other_id{margin-left: 15px;}
+    .my_id{text-align: right; margin-right: 15px;}
+    .mach_id{margin-left: 15px;}
+    .other_speech {
+        > p{margin-right: 60px; margin-left: 15px; border: 1px solid #d9d9d9;}
+        .chat_time{right: -50px;}
+    }
+    .my_speech{text-align: right;
+        > p{margin-right: 15px; margin-left: 60px; background-color: #ededed;}
+        .chat_time{left: -50px;}
+    }
+    .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 15px 50% no-repeat; background-size: 51px 39px; 
+        > p{margin-right: 15px; background-color: #0074bd; color: #ffffff;
+            .chat_time{color: #000000;}
+        }
+        button:nth-of-type(1){margin-right: 15px;}
+        .chat_time{right: -50px;}
+    }
+    .bubble{font-size: 18px;
+        > p{position: relative; margin-top: 8px; display: inline-block; max-width: calc(100% - 100px); padding: 15px 15px; line-height: 1.5; font-size: 14px; border-radius: 30px; word-break: normal;}
+        > .max_p{max-width: 100%; padding: 10px;}
+        .chat_time{position: absolute; bottom: 0; font-size: 11px;}
+        .img_msg_imoji{max-width: 193px;}
+    }
+    .p_system{text-align: center;}
+}
+.ipt_price{width: 150px; height: 30px; font-size: 14px;}
+/* 버튼 */
+.btn_chat{margin-top: 5px; width: 50%; max-width: 120px; height: 35px; border-radius: 6px; font-size: 14px;}
+.btn_chat.btn_t_r{}
+.btn_chat.btn_p_c{}
+.btn_chat.btn_s_c{}
+.btn_chat.btn_t_c{}

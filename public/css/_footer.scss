@@ -1,0 +1,34 @@
+.footer{height: 70px; position: relative;
+    .btn_sharp{font-size: 28px;}
+    .ipt_chat{float: left; margin: 5.5px 10px 0 10px; width: calc(100% - 180px); height: 30px; font-size: 18px; border: none;}
+    .btn_send{float: right; margin-right: 15px; width: 60px; height: 38px; font-weight: 600; color: #9c9c9c; border: 1px solid #9c9c9c; border-radius: 5px; font-size: 18px;}
+    .btn_send:active{background-color: #eee;}
+    .btn_send.on{border-style: solid; border-image: linear-gradient(45deg, #01c9ca 0%, #3886FF 100%); border-image-slice: 1; border-width: 1px; font-weight: bold;}
+    .btn_at{float: left; margin-top: 4px; margin-left: 15px; width: 30px; height: 30px;}
+    .btn_emoji{float: left; margin-top: 4px; font-size: 30px; width: 30px; height: 30px; line-height: 30px;
+        img{vertical-align: top;}
+    }
+    .msg_sec{margin: 0 10px; padding: 7px 0; height: 55px; box-sizing: border-box; font-size: 0; border: 1px solid #d9d9d9; border-radius: 30px;}
+    .util_sec{float: left;
+        button{vertical-align: middle;}
+    }
+    .ft_l_sec{width: 40px;
+        button{width: 100%; height: 40px;}
+    }
+    .ft_c_sec{width: calc(100% - 130px);
+        input[type="text"]{width: 100%; height: 100%;}
+    }
+    .ft_r_sec{width: 90px; font-size: 0;
+        button{width: 30px; height: 40px; font-size: 12px;}
+    }
+    .at_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;
+        .mach_command{display: inline-block; margin: 0 0 15px 10px; padding: 0 12px; height: 45px; line-height: 45px; font-size: 14px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
+    }
+    .imoji_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;
+        > ul{display: flex; flex-wrap: wrap; display: -ms-flexbox; -ms-flex-wrap: wrap;}
+        li{width: 25%; padding: 10px; box-sizing: border-box;}
+        img{max-width: 100%; cursor: pointer;}
+    }
+
+}
+.chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
