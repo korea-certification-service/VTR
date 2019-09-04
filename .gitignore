@@ -96,4 +96,4 @@ typings/
 #config
 config/*
 
-*/vtr.min.css.map
+public/dist/vtr.min.css.map
