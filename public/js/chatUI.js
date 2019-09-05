@@ -232,8 +232,9 @@ var chatUI = {
         var that = this;
 
         function getChatList() {
+            var uri = document.getElementById("serverURL").value + '/vtr/getChat';
             $.ajax({
-                url: "http://192.168.0.100:4000/vtr/getChat",
+                url: uri,
                 type: "GET",
                 data: {"room": room},
                 contentType: "application/json; charset=utf-8",
@@ -579,6 +580,7 @@ var chatUI = {
 }    
 chatUI.init();
 
+// 테스트용
 function getChatInDB() {
     $.ajax({
         url: "http://localhost:4000/vtr/getchat",

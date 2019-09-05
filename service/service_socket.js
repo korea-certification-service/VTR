@@ -212,18 +212,18 @@ function eventBinding(app){
           };
 
           const options = {
-            uri: process.env.CHAT_DB, // 현재 로컬에 저장
+            uri: process.env.CHAT_DB, // .env 파일에서 입력한 경로로 호출
             method: "POST",
             body: reqData,
             json: true
           };
           
-
-          // 로직 완성될때까지 메세지 디비 저장 막기
+          /*
+          // 메세지 디비 저장
           request.post(options, function(err, response, body) {
-            if (err !== null) {
-            }
+            if (err !== null) { }
           });
+          */
 
         }
       } else {
@@ -287,7 +287,7 @@ function eventBinding(app){
       */
     });
 
-    // 메세지 DB 불러오기 API 호출 방식
+    // test용도: 메세지 DB 불러오기 API 호출 방식
     socket.on("loadDB", function(data) {
       request.get({ uri: "http://192.168.0.100:4000/vtr/getChat" }, function(
         err,
