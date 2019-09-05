@@ -4,91 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Document</title>
-<style>
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 100;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');}
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 300;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');}
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 400;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');}
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 500;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');}
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 700;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');}
-@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 900;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');}
-/********** reset **********/
-/* basic */
-html, body {width:100%; height:100%; -webkit-overflow-scrolling: touch; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; -moz-text-size-adjust: none; -ms-text-size-adjust: none; }
-html{overflow-y:scroll;}
-body{margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; word-break:break-all;-ms-word-break:break-all; }
-a, address, blockquote, br, fieldset, legend, label, form, input, select, textarea, button, table, th, td caption, cite, code, dl, dt, dd, h1, h2, h3, h4, h5, h6, p, div, iframe, ul, ol, li, hr, img{margin:0; padding:0;}
-h1, h2, h3, h4, h5, h6 {font-size:14px; text-align:left;}
-ul, ol, li {list-style:none;}
-abbr,acronym {border:0;}
-img{vertical-align:middle; border:none; max-width: 100%;}
-img, fieldset, iframe{border:none;}
-em, address{font-style:normal;}
-textarea{overflow:auto; resize: none;}
-table{border-collapse:collapse; border-spacing:0;}
-input, select, textarea{vertical-align:middle;}
-strong, em{font-weight: bold;}
-a, a:link, a:visited{text-decoration:none;}
-a:active, a:hover{text-decoration:none;}
-input{box-sizing: border-box;vertical-align: baseline;}
-input::placeholder {font-size: 13px;}
-input::-webkit-input-placeholder {font-size: 13px;}
-input:-ms-input-placeholder {font-size: 13px;}
-/* input box color */
-input:-webkit-autofill {-webkit-box-shadow: 0 0 0 30px #fff inset ; -webkit-text-fill-color: #000; } 
-input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, 
-input:-webkit-autofill:active { transition: background-color 5000s ease-in-out 0s; }
-input::placeholder {font-size: 18px;}
-button{border: none; cursor: pointer;}
-*{outline: none;}
-.cf:after{display: block; content: ''; clear: both;}
-.chat_wrap{position: relative; max-width: 600px; height: 100%; margin: auto; box-sizing: border-box; border: 1px solid #d9d9d9;}
-.header{height: 80px; border-bottom: 1px solid #d9d9d9; box-sizing: border-box;}
-.header h1{padding-left: 40px; line-height: 80px; font-size: 20px; font-weight: 400;}
-.content{height: calc(100% - 150px); overflow: scroll;}
-.content > em{display: block; font-weight: 400;}
-.content .ymd{text-align: center;}
-.content .other_id{margin-left: 15px;}
-.content .my_id{text-align: right; margin-right: 15px;}
-.content .mach_id{margin-left: 15px;}
-.content .other_speech > p{margin-right: 60px; margin-left: 15px; border: 1px solid #d9d9d9;}
-.content .my_speech{text-align: right;}
-.content .my_speech > p{margin-right: 15px; margin-left: 60px; background-color: #ededed;}
-.content .mach_speech{padding-left: 80px; background: url("/img/ico_chatbot.png") 15px 50% no-repeat; background-size: 51px 39px; }
-.content .mach_speech > p{margin-right: 15px; background-color: #0074bd; color: #ffffff;}
-.content .bubble{font-size: 18px;}
-.content .bubble > p{position: relative; margin-top: 8px; display: inline-block; padding: 15px 15px; font-size: 14px; border-radius: 30px;}
-.content .bubble .chat_time{position: absolute; bottom: 0; font-size: 11px;}
-.content .other_speech .chat_time{right: -50px;}
-.content .my_speech .chat_time{left: -50px;}
-
-
-.footer{height: 70px; position: relative;}
-.footer .btn_sharp{font-size: 28px;}
-.footer .ipt_chat{float: left; margin-top: 5.5px; margin-left: 25px; width: calc(100% - 150px); height: 30px; font-size: 18px; border: none;}
-.footer .btn_send{float: right; margin-right: 20px; width: 60px; height: 38px; font-weight: 600; color: #9c9c9c; border: 1px solid #9c9c9c; border-radius: 5px; font-size: 18px;}
-.footer .btn_at{float: left; margin-top: 4px; margin-left: 15px; width: 30px; height: 30px;}
-.footer .btn_emoji{font-size: 30px; line-height: 30px;}
-.footer .msg_sec{margin: 0 10px; padding: 7px 0; height: 55px; box-sizing: border-box; font-size: 0; border: 1px solid #d9d9d9; border-radius: 30px;}
-.footer .util_sec{float: left;}
-.footer .util_sec button{vertical-align: middle;}
-
-.footer .ft_l_sec{width: 40px;}
-.footer .ft_l_sec button{width: 100%; height: 40px;}
-.footer .ft_c_sec{width: calc(100% - 130px);}
-.footer .ft_c_sec input[type="text"]{width: 100%; height: 100%;}
-.footer .ft_r_sec{width: 90px; font-size: 0;}
-.footer .ft_r_sec button{width: 30px; height: 40px; font-size: 12px;}
-
-.footer .at_sec{display: none; position: absolute; z-index: 2; bottom: 70px; left: 0; width: 100%; padding-top: 15px; background-color: #ffffff;}
-.footer .at_sec .mach_command{display: inline-block; margin: 0 0 15px 12px; padding: 0 15px; height: 45px; line-height: 45px; font-size: 15px; border-radius: 30px; border: 1px solid #d9d9d9; cursor: pointer;}
-.chat_dim{display: none; position: absolute; z-index: 1; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); width: 100%; height: calc(100% - 70px);}
-</style>
+<title>Chat Template</title>
+<link rel="stylesheet" href="/css/backup/vtr.css">
 </head>
 <body>
     <div class="chat_wrap" id="chatWrap">
         <header class="header">
-            <h1>세라핌 클레압 팝니다</h1>
+            <div class="hdr_menu cf">
+                <p class="status_text">Status : <em id="statusText"></em></p>
+                <a class="btn_trans" href="https://translate.google.com/" target="_blank">Translate</a>
+            </div>
+            <h1 class="cf">
+                <div class="vtr_category" id="vtrCategory">게임아이템</div>
+                <div class="vtr_title ellipse" id="vtrTitle">세라핌  팝니다</div>
+                <div class="vtr_price" id="vtrPrice"><span id="vtrPriceNum">11</span> MACH</div>
+            </h1>
+            <button id="btnOut" class="btn_out"><img src="/img/ico_exit.png" alt="나가기"></button>
         </header>
         <div class="content" id="content">
             <em class="other_id">other</em>
@@ -126,21 +57,22 @@ button{border: none; cursor: pointer;}
             <div class="msg_sec cf">
                 <button class="btn_at" id="btnAt"><img src="/img/ico_@.png" alt="@"></button>
                 <input type="text" class="ipt_chat" id="iptChat" placeholder="메세지를 입력하세요.">
-                <button class="btn_send">Send</button>
+                <button class="btn_emoji" id="btnEmoji"><img src="/img/ico_emoji.png" alt="emoji"></button>
+                <button class="btn_send" id="btnSend">Send</button>
             </div>
-            <!-- <div class="util_sec cf">
-                <button class="btn_sharp">#</button>
-                <button class="btn_emoji">&#128513;</button>
-            </div> -->
+            <div class="imoji_sec" id="imojiSec">
+                <ul>
+                    <li><img src="/img/imoji/imac_crying.gif" title="imac_crying" alt=""></li>
+                    <li><img src="/img/imoji/imac_amazing.gif" title="imac_amazing" alt=""></li>
+                    <li><img src="/img/imoji/imac_excited.gif" title="imac_excited" alt=""></li>
+                    <li><img src="/img/imoji/imac_lame.gif" title="imac_lame" alt=""></li>
+                </ul>
+            </div>
             <div class="at_sec" id="atSec">
-                <div class="mach_command machCmd">@마하 거래시작</div>
                 <div class="mach_command machCmd">@마하 거래안내</div>
-                <div class="mach_command machCmd">@마하 거래중단</div>
-                <div class="mach_command machCmd">@마하 거래흥정</div>
-                <div class="mach_command machCmd">@마하 거래시작</div>
-                <div class="mach_command machCmd">@마하 거래안내</div>
-                <div class="mach_command machCmd">@마하 거래중단</div>
-                <div class="mach_command machCmd">@마하 거래흥정</div>
+                <div class="mach_command machCmd sellerCmd">@마하 거래요청</div>
+                <div class="mach_command machCmd sellerCmd">@마하 판매완료</div>
+                <div class="mach_command machCmd">@마하 거래취소</div>
             </div>
         </footer>
     </div>
@@ -149,31 +81,34 @@ var chatUI = {
     isDim: false,
     init: function() {
         this.fnAt();
+        this.fnImoji();
         this.orientationchange();
         this.sendMsg();
     },
-    fnAt: function() {
-        var that = this;
-
-        function hideDim() {
-            that.isDim = false;
+    methodDim: {
+        hideDim: function() {
+            chatUI.isDim = false;
+            document.getElementById("imojiSec").style.display="none";
             document.getElementById("atSec").style.display="none";
-            document.getElementById("chatDim").style.display="none";  
-        }
-
-        function showDim() {
-            that.isDim = true;
-            document.getElementById("atSec").style.display="block";
+            document.getElementById("chatDim").style.display="none"; 
+        },
+        showDim: function(secId) {
+            this.hideDim();
+            chatUI.isDim = true;
+            document.getElementById(secId).style.display="block";
             document.getElementById("chatDim").style.display="block";
         }
+    },  
+    fnAt: function() {
+        var that = this;
         
         document.getElementById("btnAt").addEventListener("click", function(){
-            showDim();
+            that.methodDim.showDim("atSec");
         });
 
         document.getElementById("chatWrap").addEventListener("click", function(e){
             if(e.target.id === "chatDim" && that.isDim){
-                hideDim();
+                that.methodDim.hideDim();
             }
         });
 
@@ -184,8 +119,34 @@ var chatUI = {
                 //console.log(e.target.innerText);
                 iptChat.value = "";
                 iptChat.value = e.target.innerText;
-                hideDim();
+                that.methodDim.hideDim();
                 // 여기서 메세지 입력되면 됨
+                document.getElementById("btnSend").click();
+                
+                fnScrollLast(); // 스크롤 자동 최하단 이동
+            });
+        }
+    },
+    fnImoji: function() {
+        var that = this;
+        
+        document.getElementById("btnEmoji").addEventListener("click", function(){
+            that.methodDim.showDim("imojiSec");
+        });
+
+        document.getElementById("chatWrap").addEventListener("click", function(e){
+            if(e.target.id === "chatDim" && that.isDim){
+                that.methodDim.hideDim();
+            }
+        });
+
+        var imoji = document.querySelectorAll(".imoji_sec li img");
+        for (var i = 0; i < imoji.length; i++) {
+            imoji[i].addEventListener("click", function(e){
+                var title = e.currentTarget.getAttribute("title");
+                fnSendMsg({imoji: title});
+
+                that.methodDim.hideDim();
             });
         }
     },
