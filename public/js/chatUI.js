@@ -23,13 +23,15 @@ var chatUI = {
     },
     closeWindow: function() {
         var itemId = this.itemId;
+        var roomNum = document.getElementById("room").value;
         
         var bodyParam = {};
         bodyParam.itemId = itemId;
         bodyParam.stepValue = "15";
         bodyParam.reqValue = {
             reqUserTag: _userId,
-            country: this.country
+            country: this.country,
+            roomToken:roomNum
         };
 
         if(document.getElementById("tradeStatus").value === "50"){
@@ -168,10 +170,12 @@ var chatUI = {
         });
     },
     setTradeInfo: function() {
-        var itemId = this.itemId;
+        //var itemId = this.itemId;
         var APIServer = document.getElementById("APIServer").value;
+        var roomNum = document.getElementById("room").value;
         $.ajax({
-            url: APIServer + "/v2/items/" + itemId,
+            //url: APIServer + "/v2/items/" + itemId,
+            url: APIServer + "/v2/vtrs/room/" + roomNum,
             headers: {"token": document.getElementById("tk").value},
             type: "GET",
             contentType: "application/json; charset=utf-8",

@@ -51,7 +51,8 @@
         frmVtr.setAttribute("action", url);
 
         $.ajax({
-            url: "<%=APIServer%>/v2/items/" + itemId,
+            //url: "<%=APIServer%>/v2/items/" + itemId,
+            url: "<%=APIServer%>/v2/vtrs/room/" + roomNum,
             headers: {"token": "<%=token%>"},
             type: "GET",
             contentType: "application/json; charset=utf-8",
