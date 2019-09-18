@@ -274,7 +274,7 @@ function eventBinding(app){
       };
 
       const options = {
-        uri: "http://192.168.0.100:4000/vtr/setChat",
+        uri: "http://192.168.1.200:4000/vtr/setChat",
         method: "POST",
         body: reqData,
         json: true
@@ -289,7 +289,7 @@ function eventBinding(app){
 
     // test용도: 메세지 DB 불러오기 API 호출 방식
     socket.on("loadDB", function(data) {
-      request.get({ uri: "http://192.168.0.100:4000/vtr/getChat" }, function(
+      request.get({ uri: "http://192.168.1.200:4000/vtr/getChat" }, function(
         err,
         response,
         body

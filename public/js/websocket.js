@@ -257,6 +257,7 @@ socket.on("trade_seller", function(data) {
                     break;
                 case 1.1:    
                     chatUI.setTradeInfo();       
+                    alert(tradeStatus)
                     dom += __langSocket.trade_seller.seller.case1_1dom; // '거래요청이 정상적으로 완료되었습니다.<br>구매자의 구매확인을 기다리는 중입니다.';   
                     break;
                 case 3:
