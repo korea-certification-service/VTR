@@ -192,6 +192,7 @@ socket.on("trade_seller", function(data) {
     var content = document.getElementById("content");    
     var tradePrice = document.getElementById("tradePrice").value;   
     var tradeStatus = document.getElementById("tradeStatus").value;
+    var ccCode = document.getElementById("ccCode").value;
     if(data.type === "err") {
         dom += __langSocket.trade_seller.err_dom(data.msg) // "<em>" + data.msg + "</em> 명령어는 판매자가 실행할 수 없습니다.";
         dom += '<span class="chat_time">' + data.msgtime + '</span></p></div>';    
@@ -242,7 +243,8 @@ socket.on("trade_seller", function(data) {
                 case 1:    
                     if((tradeStatus === "0" && socket.isTradeStep1 === undefined) || (tradeStatus === "50" && socket.isTradeStep1 === undefined)) {
                         dom += __langSocket.trade_seller.seller.case1_dom1 // '거래를 시작하겠습니다.<br>먼저 거래 가격을 입력해주세요.<br>';             
-                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"><button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.seller.case1_dom2 + '</button>';
+                        dom += '<input type="text" class="ipt_price" maxLength="10" value="' + tradePrice + '"> <em class="txt_ccCode">'+ccCode+'</em>';
+                        dom += '<button id="btnTransactionRequest" class="btn_chat btn_t_r">'+ __langSocket.trade_seller.seller.case1_dom2 + '</button>';
                         socket.isTradeStep1 = true;
                     } else if(tradeStatus === "50" && socket.isTradeStep1) {
                         // dom += __langSocket.trade_seller.seller.case1_dom3; 
