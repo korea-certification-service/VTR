@@ -1,3 +1,4 @@
+// 영어 언어팩
 var __langChat = {
     sendMsg_alert: "Please input the message.",
     item_status: ["VTR Guide", "Start", "Pay(Escrow)", "Deliver", "Completed", "Cancel", "Talking"],

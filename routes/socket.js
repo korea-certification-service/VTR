@@ -1,3 +1,8 @@
+/**
+ * 채팅 관련
+ * @author Jongmin Kim
+ * @since 191121
+ */
 const express = require('express');
 const Chat = require('../model/chat');
 const config = require('../config/config');

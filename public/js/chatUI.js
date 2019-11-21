@@ -1,7 +1,10 @@
-/**
- * 언어 불문하고 chatUI 하나로 통합 => 각 국가에 맞는 언어는 lang_으로 시작하는 js 파일에 기술
- * 웹소켓이 아닌 UI와 관련된 로직들 기술
- */
+/***********************************************************************
+* KCS: http://www.onlykcs.com/
+* since: 20190811 
+* Author: Jongmin Kim
+* 웹소켓이 아닌 UI와 관련된 로직들
+***********************************************************************/
+
 var chatUI = {
     isDim: false,
     country: document.getElementById("country").value,

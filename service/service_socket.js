@@ -1,3 +1,8 @@
+/**
+ * 채팅 비지니스 로직
+ * @author Jongmin Kim
+ * @since 191121
+ */
 const moment = require('moment-timezone'); // 서버시간과 무관하게 한국시간으로 설정 가능
 const request = require('request');
 
@@ -266,7 +271,10 @@ function eventBinding(app){
       //console.dir(arrData);
     });
 
-    // Deprecated: 메세지 DB 저장 API 호출 방식
+    /**
+     * @deprecated only test
+     * @description 메세지 DB 저장 API 호출 방식
+     */
     socket.on("saveDB", function(data) {
       let reqData = {
         room: socket.room,
@@ -287,7 +295,10 @@ function eventBinding(app){
       */
     });
 
-    // test용도: 메세지 DB 불러오기 API 호출 방식
+    /**
+     * @deprecated only test
+     * @description 메세지 DB 불러오기 API 호출 방식
+     */
     socket.on("loadDB", function(data) {
       request.get({ uri: "http://192.168.1.200:4000/vtr/getChat" }, function(
         err,
@@ -300,7 +311,10 @@ function eventBinding(app){
       });
     });
 
-    // 빼버릴 로직: 이름 바꾸기 안할
+    /**
+     * @deprecated since version 2.0
+     * @description 사용자 이름 바꾸기
+     */
     socket.on("changename", function(data) {
       console.log("changename - " + data.nickname);
 

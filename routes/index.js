@@ -1,3 +1,8 @@
+/**
+ * 웹소켓 테스트용 소스 및 외부API 호출
+ * @author Jongmin Kim
+ * @since 191121
+ */
 var express = require('express');
 var router = express.Router();
 let call_vtr = require('../util/call_vtr');
@@ -12,7 +17,10 @@ router.get("/temp", (req, res, next) => {
   res.render("template_chat", {});
 });
 
-// 판매자
+/**
+ * @deprecated only test
+ * @description 판매자 접속 라우터
+ */
 router.get("/seller", (req, res, next) => {
     let session = req.session;
     session.user = {
@@ -23,12 +31,18 @@ router.get("/seller", (req, res, next) => {
     res.redirect("/vtr/room/" + "tjdudwp02|testkcs|5d354b76969eb20ac8890f77");
 });
 
-// 구매자 로그인
+/**
+ * @deprecated only test
+ * @description 구매자 로그인 라우터
+ */
 router.get("/login", (req, res, next) => {
     res.render("login", {});
 });
 
-// 로그인 성공
+/**
+ * @deprecated only test
+ * @description 로그인 성공
+ */
 router.post("/loginSuccess", (req, res, next) => {
   let session = req.session;
 
@@ -48,7 +62,7 @@ router.post("/loginSuccess", (req, res, next) => {
   res.redirect("/vtr/room/" + "tjdudwp02|" + session.user.id + "|5d354b76969eb20ac8890f77");
 });
 
-// External API call 
+// 마켓마하 API서버 호출을 위한 라우터
 router.post("/test/call-backend", (req, res, next) => {
   let body = req.body; 
 

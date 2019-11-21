@@ -1,3 +1,8 @@
+/**
+ * 채팅내용 DB 저장을 위한 모델
+ * @author Jongmin Kim
+ * @since 191121
+ */
 const mongoose = require('mongoose');
 let Mixed = mongoose.Schema.Types.Mixed;
 // Define Schemes

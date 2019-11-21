@@ -1,3 +1,11 @@
+/***********************************************************************
+* KCS: http://www.onlykcs.com/
+* since: 20190811 
+* Author: Jongmin Kim
+* 웹소켓 클라이언트 로직
+* 언어 불문하고 chatUI 하나로 통합 => 각 국가에 맞는 언어는 lang_으로 시작하는 js 파일에 기술
+***********************************************************************/
+
 var serverURL = document.getElementById("serverURL").value;
 var socket = io(serverURL, { transports: ['websocket'] }); // polling 사용 안함
 

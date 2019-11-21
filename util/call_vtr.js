@@ -1,3 +1,8 @@
+/**
+ * 외부 API 서버 호출
+ * 작성자 : Chef Kim
+ * 작성일 : 2019-07-23
+ */
 let request = require('request');
 let config = require('../config/config');
 

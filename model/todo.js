@@ -1,3 +1,8 @@
+/**
+ * 몽구스 테스트용 소스
+ * @author Jongmin Kim
+ * @since 191121
+ */
 const mongoose = require('mongoose');
 
 // Define Schemes
